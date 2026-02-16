@@ -80,17 +80,35 @@
             letter-spacing: 6px; margin-top: 2px;
         }
         
+        /* --- MOVED CART BTN TO BOTTOM RIGHT --- */
         .cart-btn {
-            position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
-            background: var(--bg-panel); color: var(--green); border: 1px solid var(--green);
-            padding: 8px 16px; font-family: var(--font-mono); font-weight: bold; cursor: pointer;
+            position: fixed; 
+            right: 20px; 
+            bottom: 20px; 
+            z-index: 10001; /* Above modal overlay/content but below modal itself */
+            background: var(--gold); /* Bright Gold */
+            color: #000; /* High Contrast */
+            border: 2px solid #fff;
+            padding: 15px 25px; 
+            font-family: var(--font-mono); 
+            font-weight: bold; 
+            font-size: 1rem;
+            cursor: pointer;
             clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
             transition: 0.3s;
+            box-shadow: 0 0 20px rgba(214, 194, 106, 0.5);
+            animation: pulseBtn 3s infinite;
         }
-        .cart-btn:hover { background: var(--green); color: #000; box-shadow: 0 0 15px var(--green); }
+        .cart-btn:hover { background: #fff; transform: scale(1.05); box-shadow: 0 0 30px rgba(255,255,255,0.8); }
+
+        @keyframes pulseBtn {
+            0% { box-shadow: 0 0 0 0 rgba(214, 194, 106, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(214, 194, 106, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(214, 194, 106, 0); }
+        }
 
         /* --- GRID LAYOUT --- */
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; padding-bottom: 100px; /* Space for cart btn */ }
         .grid { 
             display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 25px; 
         }
@@ -112,7 +130,7 @@
         }
         .card-img { 
             width: 100%; height: 100%; object-fit: cover; opacity: 0.8; transition: 0.4s;
-            filter: grayscale(40%);
+            filter: grayscale(40%); cursor: zoom-in;
         }
         .card:hover .card-img { opacity: 1; filter: grayscale(0%); transform: scale(1.05); }
 
@@ -140,17 +158,21 @@
 
         /* --- TOAST --- */
         .toast {
-            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
-            background: var(--gold); color: #000; padding: 10px 25px;
-            font-weight: bold; opacity: 0; transition: 0.4s; z-index: 10000;
+            position: fixed; bottom: 50%; left: 50%; transform: translate(-50%, 50%) scale(0.8);
+            background: var(--bg-panel); color: var(--gold); border: 2px solid var(--gold);
+            padding: 20px 30px; text-align: center; box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            font-weight: bold; opacity: 0; transition: 0.3s; z-index: 10002; pointer-events: none;
             clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+            width: 80%; max-width: 400px;
         }
-        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+        .toast.show { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        .toast-msg { display: block; margin-bottom: 5px; color: #fff; font-size: 1.1rem; }
+        .toast-sub { display: block; font-family: var(--font-mono); font-size: 0.8rem; color: var(--green); }
 
         /* --- MODAL SYSTEM --- */
         .modal-overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
-            z-index: 10000; display: none; align-items: center; justify-content: center;
+            z-index: 10005; display: none; align-items: center; justify-content: center;
         }
         .modal {
             background: var(--bg-panel); width: 95%; max-width: 500px;
@@ -195,11 +217,25 @@
         .btn-sec { background: transparent; border: 1px solid var(--olive); color: #888; }
         .btn-sec:hover { color: #fff; border-color: #fff; }
 
+        /* --- IMAGE PREVIEW MODAL --- */
+        #img-view-modal {
+            position: fixed; inset: 0; z-index: 11000;
+            background: rgba(0,0,0,0.95); backdrop-filter: blur(10px);
+            display: none; justify-content: center; align-items: center;
+            cursor: pointer;
+        }
+        #img-view-content {
+            max-width: 95%; max-height: 90%;
+            border: 2px solid var(--gold);
+            box-shadow: 0 0 50px rgba(214, 194, 106, 0.2);
+            object-fit: contain;
+        }
+
         @media(max-width: 600px) {
             .grid { grid-template-columns: 1fr 1fr; gap: 10px; }
             .card-img-wrap { height: 160px; }
             .brand { font-size: 1.4rem; }
-            .cart-btn { padding: 6px 12px; font-size: 0.8rem; }
+            .cart-btn { padding: 12px 20px; font-size: 0.9rem; bottom: 15px; right: 15px; }
         }
     </style>
 </head>
@@ -288,14 +324,21 @@
     <!-- HEADER -->
     <header>
         <div class="brand">ISHYA -26 <span>STORE</span></div>
-        <button class="cart-btn" onclick="openCart()">CART [<span id="cartCount">0</span>]</button>
+        <!-- Removed Cart Button from Header -->
     </header>
 
     <div class="container">
         <div class="grid" id="productGrid"></div>
     </div>
 
-    <div id="toast" class="toast">ITEM ACQUIRED</div>
+    <!-- FLOATING CART BUTTON (Moved here) -->
+    <button class="cart-btn" onclick="openCart()">CART [<span id="cartCount">0</span>]</button>
+
+    <!-- UPDATED POP UP MESSAGE -->
+    <div id="toast" class="toast">
+        <span class="toast-msg">ITEM ADDED TO CART</span>
+        <span class="toast-sub">CHECKOUT THE CART TO FINALISE THE PURCHASE.</span>
+    </div>
 
     <!-- MODAL WRAPPER -->
     <div class="modal-overlay" id="mainModal">
@@ -308,11 +351,15 @@
         </div>
     </div>
 
+    <!-- IMAGE PREVIEW MODAL -->
+    <div id="img-view-modal" onclick="closeImageModal()">
+        <img id="img-view-content" src="" alt="Zoomed Product">
+    </div>
+
     <script>
         // ================= CONFIGURATION =================
         const API = "https://script.google.com/macros/s/AKfycbyld8a111hLb9SydZmH6K2dTAlAMG8a0HPdJ-oxoy8jjq01pkCLGwV5NInelko4QJpj5A/exec";
         
-        // This will be populated from Google Sheet "Batch" tab
         let BATCH_UPI_MAP = {};
 
         // ================= STATE =================
@@ -331,13 +378,11 @@
                 const res = await fetch(API);
                 const json = await res.json();
                 
-                // 1. Store Products
                 if(json.products) {
                     products = json.products;
                     renderProducts();
                 }
 
-                // 2. Store Batches
                 if(json.batches) {
                     BATCH_UPI_MAP = json.batches;
                 }
@@ -346,12 +391,18 @@
             } catch (e) { console.error("Data Fetch Error:", e); }
         }
 
+        // --- UPDATED RENDER FUNCTION (Btn Text Changed) ---
         function renderProducts() {
             const grid = document.getElementById('productGrid');
             grid.innerHTML = products.map(p => `
                 <div class="card">
                     <div class="card-img-wrap">
-                        <img src="${p.images?.split(',')[0] || ''}" class="card-img" onerror="this.src='https://via.placeholder.com/300x300/181C10/4D8F48?text=NO+IMAGE'">
+                        <img 
+                            src="${p.images?.split(',')[0] || ''}" 
+                            class="card-img" 
+                            onclick="openImageModal(this.src)" 
+                            onerror="this.src='https://via.placeholder.com/300x300/181C10/4D8F48?text=NO+IMAGE'"
+                        >
                     </div>
                     <div class="card-info">
                         <span class="cat-tag">${p.category}</span>
@@ -363,10 +414,20 @@
                             </select>
                             <input type="number" id="qty-${p.id}" value="1" min="1">
                         </div>
-                        <button class="add-btn" onclick="addToCart('${p.id}')">ADD +</button>
+                        <button class="add-btn" onclick="addToCart('${p.id}')">ADD TO CART</button>
                     </div>
                 </div>
             `).join('');
+        }
+
+        // --- IMAGE MODAL LOGIC ---
+        function openImageModal(src) {
+            document.getElementById('img-view-content').src = src;
+            document.getElementById('img-view-modal').style.display = 'flex';
+        }
+
+        function closeImageModal() {
+            document.getElementById('img-view-modal').style.display = 'none';
         }
 
         // ================= CART LOGIC =================
@@ -397,7 +458,7 @@
         function showToast() {
             const t = document.getElementById('toast');
             t.classList.add('show');
-            setTimeout(() => t.classList.remove('show'), 2000);
+            setTimeout(() => t.classList.remove('show'), 3500); // Increased duration to read text
         }
 
         // ================= MODAL & STEPS =================
@@ -447,14 +508,12 @@
         function renderDetailsStep() {
             mTitle.innerText = "OPERATOR DETAILS";
             
-            // Generate Batch Options Dynamically from Sheet Data
             let batchOptions = `<option value="">-- SELECT --</option>`;
             if (Object.keys(BATCH_UPI_MAP).length === 0) {
                 batchOptions += `<option value="OTHERS">General Fund (Default)</option>`;
             } else {
                 for (const key in BATCH_UPI_MAP) {
                     const isSelected = userDetails.batch === key ? 'selected' : '';
-                    // key = BSMS21, BATCH_UPI_MAP[key].name = BSMS 21 Rep
                     batchOptions += `<option value="${key}" ${isSelected}>${key}</option>`;
                 }
             }
@@ -523,17 +582,13 @@
             
             const total = cart.reduce((a,b) => a + (b.price*b.qty), 0);
             
-            // Fetch correct UPI based on batch
             let batchInfo = BATCH_UPI_MAP[userDetails.batch];
             
-            // Fallback if data is missing
             if (!batchInfo) {
-                // Try finding an "OTHERS" key or just default
                 if(BATCH_UPI_MAP["OTHERS"]) batchInfo = BATCH_UPI_MAP["OTHERS"];
                 else batchInfo = { id: "", name: "Unknown Receiver" };
             }
             
-            // Fallback UPI if ID is missing in sheet
             const payId = batchInfo.upi || "error@upi";
             const payName = batchInfo.name || userDetails.batch;
             
