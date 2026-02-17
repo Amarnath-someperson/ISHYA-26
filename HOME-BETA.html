@@ -40,7 +40,7 @@
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
     
     html, body { 
-        background: var(--bg-dark); 
+        background: transparent; 
         color: var(--text-light); 
         font-family: var(--font-body); 
         overflow-x: hidden; 
@@ -50,26 +50,46 @@
     
     /* --- PRELOADER --- */
     #preloader {
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: var(--bg-dark); z-index: 9999;
-        display: flex; justify-content: center; align-items: center;
-        transition: opacity 0.5s ease;
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background-color: var(--bg-dark);
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: opacity 0.8s ease-out, visibility 0.8s;
     }
-    .loader-spinner {
-        width: 50px; height: 50px;
-        border: 3px solid rgba(214, 194, 106, 0.3);
-        border-radius: 50%;
-        border-top-color: var(--accent-gold);
-        animation: spin 1s ease-in-out infinite;
+    .preloader-logo {
+        width: 120px;
+        height: 120px;
+        animation: pulseLogo 2s infinite ease-in-out;
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes pulseLogo {
+        0% { transform: scale(0.9); opacity: 0.7; }
+        50% { transform: scale(1.1); opacity: 1; filter: drop-shadow(0 0 15px var(--accent-gold)); }
+        100% { transform: scale(0.9); opacity: 0.7; }
+    }
+    .preloader-hidden {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+    }
+
+    .ishya-floating-nav-wrapper{
+        padding-top: 85vh;
+    }
+    .ishya-nav-backdrop {
+        position: fixed;
+        top: 0;
+        height: var(--bar-height);
+    }
 
     /* --- LAYERS --- */
-    #animated-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -10; pointer-events: none; }
+    #animated-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -10; background-color: var(--bg-dark); pointer-events: none; }
     #webgl { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
     #bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, transparent 0%, rgba(5, 20, 8, 0.85) 100%); z-index: -5; pointer-events: none; }
 
-    main { position: relative; z-index: 10; will-change: opacity; opacity: 0; /* Hidden initially until loaded */ }
+    main { position: relative; z-index: 10; will-change: opacity; }
     
     /* --- UTILITIES & GLASSMORPHISM --- */
     section { min-height: 100vh; padding: 0 5vw; position: relative; display: flex; align-items: center; justify-content: center; }
@@ -85,7 +105,8 @@
     .section-layout { width: 100%; max-width: 1600px; display: flex; align-items: center; justify-content: space-between; }
     
     .perch-title { 
-        font-family: var(--font-fold); font-size: clamp(3rem, 6vw, 5rem); 
+        font-family: var(--font-fold), var(--font-display), sans-serif; 
+        font-size: clamp(3rem, 6vw, 5rem); 
         color: var(--accent-gold); opacity: 0.9; text-shadow: 0 0 20px rgba(0,0,0,0.8); 
         line-height: 1; margin-bottom: 10px;
     }
@@ -113,27 +134,47 @@
     }
     .hero-content { pointer-events: none; width: 100%; position: relative; z-index: 20; }
     
-    /* UPDATED FIERY COLOR */
+    /* --- GRADIENT TEXT UPDATE --- */
     .hero-title { 
-        perspective: 1000px; font-family: var(--font-fold); 
-        font-size: clamp(3rem, 7vw, 8rem); line-height: 1.1; text-transform: uppercase; 
-        background: linear-gradient(to bottom, #ffff00 0%, #ffaa00 40%, #ff4500 100%);
-        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        filter: drop-shadow(0 0 25px rgba(255, 69, 0, 0.4));
+        perspective: 1000px; 
+        font-family: var(--font-fold), 'Syncopate', 'Impact', sans-serif; 
+        font-size: clamp(3rem, 7vw, 8rem); 
+        line-height: 1.1; 
+        text-transform: uppercase; 
         margin-bottom: 1vh; font-weight: 900; 
         width: 100%;
         max-width: 95vw;
         margin-left: auto; margin-right: auto;
     }
-    .word-group { display: inline-block; white-space: nowrap; margin: 0 15px; }
+
+    /* Apply Gold Gradient to Lines 1 & 2 (FLAMES IN) */
+    .hero-title .word-group:nth-child(1),
+    .hero-title .word-group:nth-child(2) {
+        background: linear-gradient(180deg, #F9E68C 20%, #D6C26A 75%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-shadow: none; /* Gradient handles the look */
+        filter: drop-shadow(0px 4px 10px rgba(214, 194, 106, 0.3));
+    }
+
+    /* Apply Green Gradient to Lines 3 & 4 (EVERY FOLD) */
+    .hero-title .word-group:nth-child(3),
+    .hero-title .word-group:nth-child(4) {
+        background: linear-gradient(180deg, #8BC34A 20%, #4D8F48 75%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-shadow: none;
+        filter: drop-shadow(0px 4px 10px rgba(77, 143, 72, 0.3));
+    }
     
-    /* Strict hidden state for animation sync */
-    .hero-title .letter { display: inline-block; transform-style: preserve-3d; opacity: 0; }
-    .hero-date .date-char { display: inline-block; transform-style: preserve-3d; opacity: 0; }
+    .word-group { display: inline-block; white-space: nowrap; margin: 0 15px; }
+    .hero-title .letter { display: inline-block; transform-style: preserve-3d; opacity: 1; }
     
     .hero-date { 
         perspective: 1000px; 
-        font-family: var(--font-fold); 
+        font-family: var(--font-fold), var(--font-display), sans-serif; 
         font-weight: 900; 
         font-size: clamp(1.8rem, 5vw, 4rem); 
         color: var(--accent-gold); 
@@ -142,6 +183,7 @@
         margin-top: 2vh; 
         text-shadow: 4px 4px 0px #3e2b18;
     }
+    .hero-date .date-char { display: inline-block; transform-style: preserve-3d; opacity: 1; }
     
     .hero-countdown { display: flex; justify-content: center; gap: 15px; margin-top: 40px; font-family: var(--font-tech); color: var(--accent-green); opacity: 0; flex-wrap: wrap; }
     .time-block { 
@@ -240,7 +282,7 @@
         100% { transform: translateX(-50%);}
     }
 
-    /* --- SECTION 3: EVENTS --- */
+    /* --- SECTION 3: EVENTS (OPTIMIZED) --- */
     .events-3d-section { flex-direction: column; overflow: hidden; position: relative; padding-top: 5vh; padding-bottom: 5vh; justify-content: flex-start; }
     .events-header { padding: 0 5vw; margin-bottom: 20px; width: 100%; display: flex; justify-content: space-between; align-items: flex-end; z-index: 5; }
     .carousel-stage { 
@@ -254,29 +296,34 @@
         transform-style: preserve-3d; display: flex; 
         justify-content: center; align-items: center; 
     }
+
     .carousel-card-3d {
         position: absolute; 
         width: 320px; height: 500px;
-        background: rgba(10, 15, 8, 0.9);
+        background: rgba(10, 15, 8, 1); /* Solid bg for performance */
         border-radius: 12px;
         border: 1px solid rgba(255, 255, 255, 0.1);
         transform-origin: center center; 
         left: 0; right: 0; margin: auto;
         overflow: hidden; cursor: pointer;
-        box-shadow: 0 15px 40px rgba(0,0,0,0.8);
-        transition: border-color 0.3s;
+        /* box-shadow removed for mobile performance during animation */
+        transition: border-color 0.3s; 
         will-change: transform, opacity; 
         backface-visibility: hidden;
         transform-style: preserve-3d;
     }
+    .carousel-card-3d.active-card {
+        box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+    }
+    
     .carousel-card-3d::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(5,20,8,0.95) 100%); z-index: 2; pointer-events: none; }
     .carousel-card-3d:hover { border-color: var(--accent-gold); }
     
     .card-bg-img { 
         width: 100%; height: 100%; object-fit: cover; 
-        filter: grayscale(100%); transition: filter 0.5s; 
+        filter: grayscale(100%); 
         position: absolute; top: 0; left: 0; z-index: 1; 
-        will-change: filter;
+        /* Removed transition on filter for performance */
     }
     .carousel-card-3d.active-card .card-bg-img { filter: grayscale(0%); }
     .card-content { position: absolute; z-index: 3; padding: 25px; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; pointer-events: none; }
@@ -383,7 +430,8 @@
         .perch-subtitle { font-size: 0.8rem; }
         
         .hero-title {
-            font-family: 'Syncopate', sans-serif !important; 
+            /* --- FIX: Robust Stack for Mobile Too --- */
+            font-family: var(--font-fold), 'Syncopate', 'Impact', sans-serif !important; 
             font-weight: 700;
             font-size: 10vw;
             display: flex;
@@ -393,11 +441,23 @@
             margin-top: 45vh; 
             margin-bottom: 0;
             gap: 5px;
-            color: var(--accent-gold);
-            background: none !important; 
-            -webkit-text-fill-color: #ffaa00 !important;
             flex-grow: 0;
         }
+        
+        /* Ensure gradients apply on mobile too */
+        .hero-title .word-group:nth-child(1),
+        .hero-title .word-group:nth-child(2) {
+            background: linear-gradient(180deg, #F9E68C 20%, #D6C26A 75%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero-title .word-group:nth-child(3),
+        .hero-title .word-group:nth-child(4) {
+            background: linear-gradient(180deg, #8BC34A 20%, #4D8F48 75%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
         .word-group { margin: 0; }
         
         #hero {
@@ -431,7 +491,7 @@
             align-items: center;
         }
         #memories .perch-title {
-            font-family: var(--font-fold); 
+            font-family: var(--font-fold), var(--font-display), sans-serif;
         }
         
         .events-header {
@@ -462,7 +522,9 @@
 </head>
 <body>
     <!-- PRELOADER -->
-    <div id="preloader"><div class="loader-spinner"></div></div>
+    <div id="preloader">
+        <img src="logo.png" alt="Ishya Logo" class="preloader-logo">
+    </div>
 
     <ishya-header></ishya-header>
 
@@ -483,7 +545,7 @@
                 <span class="word-group"><span class="letter">E</span><span class="letter">V</span><span class="letter">E</span><span class="letter">R</span><span class="letter">Y</span></span>
                 <span class="word-group"><span class="letter">F</span><span class="letter">O</span><span class="letter">L</span><span class="letter">D</span></span>
             </h1>
-            <h2 class="hero-date"><span class="date-char">M</span><span class="date-char">A</span><span class="date-char">R</span><span class="date-char">C</span><span class="date-char">H</span><span class="date-char"> </span><span class="date-char">1</span><span class="date-char">3</span><span class="date-char"> </span><span class="date-char">-</span><span class="date-char"> </span><span class="date-char">1</span><span class="date-char">5</span></h2>
+            <h2 class="hero-date"><span class="date-char">M</span><span class="date-char">A</span><span class="date-char">R</span><span class="date-char">C</span><span class="date-char">H </span><span> </span> <span class="date-char">  </span><span class="date-char"> 1</span><span class="date-char">3</span><span class="date-char"> </span><span class="date-char">-</span><span class="date-char"> </span><span class="date-char">1</span><span class="date-char">5</span></h2>
             
             <div id="countdown" class="hero-countdown">
                 <div class="time-block glass-panel"><span id="days">00</span><span class="label">Days</span></div>
@@ -531,27 +593,27 @@
                 <div class="image-marquee-container glass-panel">
                     <div class="image-marquee-track">
                         <!-- Added loading="lazy" for performance -->
-                        <div class="image-marquee-item"><img src="https://static.wixstatic.com/media/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg/v1/fill/w_400,h_200,al_c,q_80/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg" loading="lazy" decoding="async"></div>
-                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1FAwb4Q6bGfn8LfGYl7bzxTydX1I4BQ3l=w500" loading="lazy" decoding="async"></div>
-                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1xPXLyX47aNUus9lO0blEKS22OubXrcNK=w500" loading="lazy" decoding="async"></div>
-                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1uM7aeb1O2XnOAnFjhq-uH_733QNHQxyG=w500" loading="lazy" decoding="async"></div>
-                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1PUYZVsEX19nUHfIreiHpY--UcsmusluG=w500" loading="lazy" decoding="async"></div>
-                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1y74zDoGlqPO7d9mI4rP4ssR0D1-19vq4=w500" loading="lazy" decoding="async"></div>
-                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1b-4Q2P6pkWV9YeEfmOxBpmQqKowrt_rX=w500" loading="lazy" decoding="async"></div>
-                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1s_trrwMrJzxeb_Ze2Z4OcKkLveacLWHO=w500" loading="lazy" decoding="async"></div>
-                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1S4SwVvVa4fcsdPNXEgYOIjsDojw3XiuI=w500" loading="lazy" decoding="async"></div>
-                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1RoTOcpLlqvWZOd_DN0sW_DJl1sT-J1aV=w500" loading="lazy" decoding="async"></div>
+                        <div class="image-marquee-item"><img src="https://static.wixstatic.com/media/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg/v1/fill/w_400,h_200,al_c,q_80/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1FAwb4Q6bGfn8LfGYl7bzxTydX1I4BQ3l=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1xPXLyX47aNUus9lO0blEKS22OubXrcNK=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1uM7aeb1O2XnOAnFjhq-uH_733QNHQxyG=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1PUYZVsEX19nUHfIreiHpY--UcsmusluG=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1y74zDoGlqPO7d9mI4rP4ssR0D1-19vq4=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1b-4Q2P6pkWV9YeEfmOxBpmQqKowrt_rX=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1s_trrwMrJzxeb_Ze2Z4OcKkLveacLWHO=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1S4SwVvVa4fcsdPNXEgYOIjsDojw3XiuI=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1RoTOcpLlqvWZOd_DN0sW_DJl1sT-J1aV=w500" loading="lazy"></div>
                         
-                        <div class="image-marquee-item"><img src="https://static.wixstatic.com/media/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg/v1/fill/w_400,h_200,al_c,q_80/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg" loading="lazy" decoding="async"></div>
-                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1FAwb4Q6bGfn8LfGYl7bzxTydX1I4BQ3l=w500" loading="lazy" decoding="async"></div>
-                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1xPXLyX47aNUus9lO0blEKS22OubXrcNK=w500" loading="lazy" decoding="async"></div>
-                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1uM7aeb1O2XnOAnFjhq-uH_733QNHQxyG=w500" loading="lazy" decoding="async"></div>
-                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1PUYZVsEX19nUHfIreiHpY--UcsmusluG=w500" loading="lazy" decoding="async"></div>
-                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1y74zDoGlqPO7d9mI4rP4ssR0D1-19vq4=w500" loading="lazy" decoding="async"></div>
-                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1b-4Q2P6pkWV9YeEfmOxBpmQqKowrt_rX=w500" loading="lazy" decoding="async"></div>
-                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1s_trrwMrJzxeb_Ze2Z4OcKkLveacLWHO=w500" loading="lazy" decoding="async"></div>
-                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1S4SwVvVa4fcsdPNXEgYOIjsDojw3XiuI=w500" loading="lazy" decoding="async"></div>
-                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1RoTOcpLlqvWZOd_DN0sW_DJl1sT-J1aV=w500" loading="lazy" decoding="async"></div>
+                        <div class="image-marquee-item"><img src="https://static.wixstatic.com/media/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg/v1/fill/w_400,h_200,al_c,q_80/0ad737_7b00ea9d76d34155bcae1a8b21a720bdf000.jpg" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1FAwb4Q6bGfn8LfGYl7bzxTydX1I4BQ3l=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1xPXLyX47aNUus9lO0blEKS22OubXrcNK=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1uM7aeb1O2XnOAnFjhq-uH_733QNHQxyG=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1PUYZVsEX19nUHfIreiHpY--UcsmusluG=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1y74zDoGlqPO7d9mI4rP4ssR0D1-19vq4=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1b-4Q2P6pkWV9YeEfmOxBpmQqKowrt_rX=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1s_trrwMrJzxeb_Ze2Z4OcKkLveacLWHO=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1S4SwVvVa4fcsdPNXEgYOIjsDojw3XiuI=w500" loading="lazy"></div>
+                        <div class="image-marquee-item"><img src="https://lh3.googleusercontent.com/d/1RoTOcpLlqvWZOd_DN0sW_DJl1sT-J1aV=w500" loading="lazy"></div>
                     </div>
                 </div>
                 <div style="text-align: center;"><a href="/Gallery/" class="cta-btn">VIEW GALLERY</a></div>
@@ -656,14 +718,20 @@
 
     gsap.registerPlugin(ScrollTrigger);
     
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 950;
+    // --- PRELOADER LOGIC ---
+    window.addEventListener('load', () => {
+        const preloader = document.getElementById('preloader');
+        if (preloader) {
+            preloader.classList.add('preloader-hidden');
+            setTimeout(() => { preloader.style.display = 'none'; }, 800);
+        }
+    });
 
-    // Optimization: Increase step (decrease density) on mobile to speed up loops
-    const PARTICLE_STEP = isMobile ? 12 : 8; 
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 950;
 
     const CONFIG = { 
         LOGO_PATH: 'logo.png', 
-        PARTICLE_DENSITY: PARTICLE_STEP, 
+        PARTICLE_DENSITY: isMobile ? 12 : 8, 
         LOGO_SCALE: isMobile ? 5 : 12, 
         LOGO_Y_OFFSET: isMobile ? 2 : 0.5 
     };
@@ -686,9 +754,7 @@
 
     function loadAndProcessLogo(url) { 
         return new Promise((resolve, reject) => { 
-            const img = new Image(); 
-            img.crossOrigin = "Anonymous"; 
-            img.src = url; 
+            const img = new Image(); img.crossOrigin = "Anonymous"; img.src = url; 
             
             img.onload = () => { 
                 const textureW = 1024, textureH = 1024;
@@ -700,11 +766,9 @@
                 solidTexture.minFilter = THREE.LinearFilter;
                 solidTexture.colorSpace = THREE.SRGBColorSpace;
 
-                // Optimization: Downscale canvas for particle analysis on mobile
-                const particleW = isMobile ? 256 : 1024; 
-                const particleH = isMobile ? 256 : 1024;
+                const particleW = isMobile ? 300 : 1024; 
+                const particleH = isMobile ? 300 : 1024;
                 const particleCanvas = (particleW === textureW) ? textureCanvas : document.createElement('canvas');
-                
                 if (particleW !== textureW) {
                     particleCanvas.width = particleW; particleCanvas.height = particleH;
                     particleCanvas.getContext('2d').drawImage(img, 0, 0, particleW, particleH);
@@ -712,12 +776,8 @@
                 
                 const pixels = particleCanvas.getContext('2d').getImageData(0, 0, particleW, particleH).data;
                 const points = []; 
-                
-                // Optimized Loop
-                const step = isMobile ? 4 : CONFIG.PARTICLE_DENSITY; 
-                
-                for (let y = 0; y < particleH; y += step) { 
-                    for (let x = 0; x < particleW; x += step) { 
+                for (let y = 0; y < particleH; y += CONFIG.PARTICLE_DENSITY) { 
+                    for (let x = 0; x < particleW; x += CONFIG.PARTICLE_DENSITY) { 
                         if (pixels[(y * particleW + x) * 4 + 3] > 128) {
                             points.push( (x / particleW - 0.5) * CONFIG.LOGO_SCALE, (-(y / particleH - 0.5) * CONFIG.LOGO_SCALE) + CONFIG.LOGO_Y_OFFSET, 0 ); 
                         }
@@ -736,55 +796,13 @@
         }); 
     }
 
-    // MAIN EXECUTION FLOW
     loadAndProcessLogo(CONFIG.LOGO_PATH).then((data) => { 
         const particles = createParticles(data.points.length / 3, data.points);
         const solidLogo = createSolidLogo(data.solidTexture); 
         const bird = createBird();
         setupLights();
         
-        // --- SYNCHRONIZATION FIX START ---
-        // 1. Remove Preloader
-        const preloader = document.getElementById('preloader');
-        preloader.style.opacity = '0';
-        setTimeout(() => preloader.remove(), 500);
-
-        // 2. Show Main Content container
-        const main = document.getElementById('smooth-wrapper');
-        main.style.opacity = '1';
-
-        // 3. Trigger Animations (Both Text and Particles start together)
-        const pMat = particles.material;
-        const sMat = solidLogo.material;
-        
-        const introTl = gsap.timeline({
-            onComplete: () => { gsap.to(".hero-countdown", {opacity:1, duration:1}); }
-        });
-
-        // Particle Formation
-        introTl.to(pMat.uniforms.uProgress, { value: 1.0, duration: 4.0, ease: "power2.inOut" }, 0);
-        
-        // Text Animation (Syncs with particles)
-        // Note: stagger starts immediately
-        introTl.fromTo(gsap.utils.toArray('.hero-title .letter'), 
-            { opacity: 0, rotationX: -95, scaleY: 0, transformOrigin: "50% 100%" }, 
-            { opacity: 1, rotationX: 0, scaleY: 1, duration: 1.5, ease: "elastic.out(1, 0.6)", stagger: 0.04 }, 
-            0.5 // small delay to let particles start forming
-        );
-
-        introTl.fromTo(gsap.utils.toArray('.hero-date .date-char'), 
-            { opacity: 0, rotationX: 95, scaleY: 0, transformOrigin: "50% 0%" }, 
-            { opacity: 1, rotationX: 0, scaleY: 1, duration: 1.2, ease: "back.out(1.7)", stagger: 0.03 }, 
-            1.5
-        );
-
-        // Solid Logo Fade in near end of formation
-        introTl.to(pMat.uniforms.uParticleOpacity, { value: 0, duration: 0.8 }, 3.0);
-        introTl.to(sMat, { opacity: 1, duration: 0.8 }, "<"); 
-
-        // --- SYNCHRONIZATION FIX END ---
-        
-        setupScrollAnimations(particles, solidLogo, bird);
+        setupAnimations(particles, solidLogo, bird);
         setupEventListeners();
         setupInteractiveElements();
         init3DCarousel(); 
@@ -845,9 +863,17 @@
         const rimLight = new THREE.DirectionalLight(0x4D8F48, 1.5); rimLight.position.set(-5, 0, -5); scene.add(rimLight);
     }
 
-    function setupScrollAnimations(particles, solidLogo, bird) {
+    function setupAnimations(particles, solidLogo, bird) {
         const pMat = particles.material; const sMat = solidLogo.material;
+        gsap.fromTo('main', { opacity: 0 }, { opacity: 1, duration: 2, ease: "power2.out", delay: 0.5 });
+        const introTl = gsap.timeline({delay: 0.5, onComplete: () => {gsap.to(".hero-countdown", {opacity:1, duration:1})} });
         
+        introTl.to(pMat.uniforms.uProgress, { value: 1.0, duration: 4.0, ease: "power2.inOut" })
+               .to(pMat.uniforms.uParticleOpacity, { value: 0, duration: 0.8 }, "-=1.0")
+               .to(sMat, { opacity: 1, duration: 0.8 }, "<") 
+               .fromTo(gsap.utils.toArray('.hero-title .letter'), { opacity: 0, rotationX: -95, scaleY: 0, transformOrigin: "50% 100%" }, { opacity: 1, rotationX: 0, scaleY: 1, duration: 1.5, ease: "elastic.out(1, 0.6)", stagger: 0.04 }, "<+0.2")
+               .fromTo(gsap.utils.toArray('.hero-date .date-char'), { opacity: 0, rotationX: 95, scaleY: 0, transformOrigin: "50% 0%" }, { opacity: 1, rotationX: 0, scaleY: 1, duration: 1.2, ease: "back.out(1.7)", stagger: 0.03 }, "<+0.1");
+
         const heroTl = gsap.timeline({ scrollTrigger: { trigger: "#hero", start: "top top", end: "bottom top", scrub: 1 }});
         heroTl.to(sMat, { opacity: 0, duration: 0.1 }) 
               .to(pMat.uniforms.uParticleOpacity, { value: 1, duration: 0.1 }, "<")
@@ -902,7 +928,6 @@
 
         eventsData.forEach((item, index) => {
             const card = document.createElement('div');
-            // 'glass-panel' is removed here to improve FPS, styling handled in CSS with transparency
             card.className = 'carousel-card-3d'; 
             card.innerHTML = `
                 <img src="${item.img}" class="card-bg-img" alt="${item.title}" loading="lazy" decoding="async">
@@ -932,34 +957,40 @@
                 const offset = index - activeIndex;
                 const absOffset = Math.abs(offset);
                 
-                // Hide off-screen cards to save resources
-                if (absOffset > 3) {
-                    gsap.to(card, { opacity: 0, duration: 0.3, pointerEvents: 'none', overwrite: 'auto' });
+                // Hide off-screen cards completely to save rendering resources (Major Fix)
+                if (absOffset > 2) {
+                    card.style.visibility = 'hidden'; 
+                    card.style.opacity = '0';
+                    card.style.pointerEvents = 'none';
+                    return; 
                 } else {
-                    const zIndex = 100 - absOffset;
-                    const scale = 1 - (absOffset * scaleIntensity);
-                    const rotateY = offset * -rotationIntensity; 
-                    const translateX = offset * xDistance; 
-                    const translateZ = -absOffset * depthIntensity;
-                    const opacity = 1 - (absOffset * 0.3);
-
-                    if (offset === 0) card.classList.add('active-card');
-                    else card.classList.remove('active-card');
-
-                    // ADDED: overwrite: 'auto' to prevent animation conflict lag
-                    gsap.to(card, { 
-                        x: translateX, 
-                        z: translateZ, 
-                        rotateY: rotateY, 
-                        scale: scale, 
-                        opacity: opacity, 
-                        zIndex: zIndex, 
-                        duration: 0.8, 
-                        ease: "power2.out", 
-                        pointerEvents: 'auto',
-                        overwrite: 'auto' 
-                    });
+                    card.style.visibility = 'visible';
                 }
+
+                const zIndex = 100 - absOffset;
+                const scale = 1 - (absOffset * scaleIntensity);
+                const rotateY = offset * -rotationIntensity; 
+                const translateX = offset * xDistance; 
+                const translateZ = -absOffset * depthIntensity;
+                const opacity = 1 - (absOffset * 0.3);
+
+                if (offset === 0) card.classList.add('active-card');
+                else card.classList.remove('active-card');
+                
+                // Set Z-index immediately to prevent fighting during animation
+                card.style.zIndex = zIndex;
+
+                gsap.to(card, { 
+                    x: translateX, 
+                    z: translateZ, 
+                    rotateY: rotateY, 
+                    scale: scale, 
+                    opacity: opacity, 
+                    duration: 0.6, // Slightly faster for responsiveness
+                    ease: "power2.out", 
+                    pointerEvents: 'auto',
+                    overwrite: 'auto' 
+                });
             });
         }
 
