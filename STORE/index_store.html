@@ -66,7 +66,7 @@
             position: fixed; top: 0; width: 100%; height: var(--header-h); z-index: 100;
             background: rgba(6, 6, 6, 0.95); backdrop-filter: blur(8px);
             border-bottom: 1px solid var(--olive);
-            display: flex; align-items: center; justify-content: center; /* Center Title */
+            display: flex; align-items: center; justify-content: center; 
             padding: 0 20px;
         }
         
@@ -80,19 +80,11 @@
             letter-spacing: 6px; margin-top: 2px;
         }
         
-        /* --- MOVED CART BTN TO BOTTOM RIGHT --- */
+        /* --- CART BTN --- */
         .cart-btn {
-            position: fixed; 
-            right: 20px; 
-            bottom: 20px; 
-            z-index: 10001; /* Above modal overlay/content but below modal itself */
-            background: var(--gold); /* Bright Gold */
-            color: #000; /* High Contrast */
-            border: 2px solid #fff;
-            padding: 15px 25px; 
-            font-family: var(--font-mono); 
-            font-weight: bold; 
-            font-size: 1rem;
+            position: fixed; right: 20px; bottom: 20px; z-index: 10001; 
+            background: var(--gold); color: #000; border: 2px solid #fff;
+            padding: 15px 25px; font-family: var(--font-mono); font-weight: bold; font-size: 1rem;
             cursor: pointer;
             clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
             transition: 0.3s;
@@ -107,11 +99,33 @@
             100% { box-shadow: 0 0 0 0 rgba(214, 194, 106, 0); }
         }
 
-        /* --- GRID LAYOUT --- */
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; padding-bottom: 100px; /* Space for cart btn */ }
-        .grid { 
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 25px; 
+        /* --- PROSHOW SECTION --- */
+        .proshow-section {
+            background: repeating-linear-gradient(45deg, #181C10, #181C10 10px, #0e110a 10px, #0e110a 20px);
+            border: 1px solid var(--gold);
+            padding: 40px;
+            margin-top: 60px; /* Spacing from grid */
+            margin-bottom: 40px;
+            text-align: center;
+            position: relative;
+            clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
         }
+        /* Removed the Restricted Access pseudo-element */
+        
+        .proshow-title {
+            font-size: 2rem; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.3);
+            margin-bottom: 10px; text-transform: uppercase;
+        }
+        .proshow-sub {
+            font-family: var(--font-mono); color: var(--gold); font-size: 1.2rem;
+            animation: blink 2s infinite;
+        }
+        @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.5;} }
+
+
+        /* --- GRID LAYOUT --- */
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; padding-bottom: 100px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 25px; }
 
         /* --- CARD DESIGN --- */
         .card {
@@ -125,19 +139,49 @@
             box-shadow: 0 5px 20px rgba(0,0,0,0.5);
         }
 
+        /* --- UPDATED IMAGE WRAPPER FOR SLIDESHOW --- */
         .card-img-wrap { 
             width: 100%; height: 220px; background: #000; padding: 5px; position: relative; overflow: hidden;
+            user-select: none;
         }
         .card-img { 
-            width: 100%; height: 100%; object-fit: cover; opacity: 0.8; transition: 0.4s;
-            filter: grayscale(40%); cursor: zoom-in;
+            width: 100%; height: 100%; object-fit: cover; opacity: 0.8; transition: opacity 0.4s ease;
+            filter: grayscale(40%); cursor: zoom-in; display: block;
         }
-        .card:hover .card-img { opacity: 1; filter: grayscale(0%); transform: scale(1.05); }
+        .card:hover .card-img { opacity: 1; filter: grayscale(0%); }
+
+        /* Navigation Arrows */
+        .nav-arrow {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            background: rgba(0,0,0,0.6); color: var(--gold);
+            border: 1px solid var(--olive);
+            width: 30px; height: 30px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 10; font-family: var(--font-mono); font-weight: bold;
+            transition: 0.2s; opacity: 0;
+        }
+        .card-img-wrap:hover .nav-arrow { opacity: 1; }
+        .nav-arrow:hover { background: var(--gold); color: #000; }
+        .nav-prev { left: 5px; clip-path: polygon(10px 0, 100% 0, 100% 100%, 10px 100%, 0 50%); }
+        .nav-next { right: 5px; clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 0 100%); }
+        /* Image Counter */
+        .img-counter {
+            position: absolute; bottom: 10px; right: 10px;
+            font-size: 0.6rem; color: #fff; background: rgba(0,0,0,0.7);
+            padding: 2px 4px; font-family: var(--font-mono); pointer-events: none;
+        }
 
         .card-info { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; }
         .cat-tag { font-family: var(--font-mono); font-size: 0.65rem; background: var(--gold); padding: 2px 6px; display: inline-block; margin-bottom: 5px; color: #000; font-weight: bold;}
         
         .card h3 { font-size: 1.1rem; margin-bottom: 5px; color: #fff; line-height: 1.2; }
+        /* DESCRIPTION STYLE */
+        .card-desc { 
+            font-size: 0.8rem; color: #888; margin-bottom: 10px; 
+            font-family: var(--font-mono); line-height: 1.4;
+            display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+        }
+
         .card-price { color: var(--green); font-family: var(--font-mono); font-size: 1.1rem; margin-bottom: 10px; display: block; }
 
         .controls { display: flex; gap: 5px; margin-top: auto; }
@@ -189,7 +233,6 @@
 
         .modal-body { padding: 20px; overflow-y: auto; }
         
-        /* Form Styling */
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; color: var(--gold); font-size: 0.8rem; margin-bottom: 5px; font-family: var(--font-mono); }
         .input-box {
@@ -198,18 +241,15 @@
         }
         .input-box:focus { border-color: var(--green); }
 
-        /* Cart List */
         .cart-item {
             display: flex; justify-content: space-between; padding: 10px;
             background: #000; border-left: 2px solid var(--olive); margin-bottom: 8px;
         }
         .cart-remove { color: #d64a4a; cursor: pointer; font-size: 0.8rem; font-weight: bold; }
 
-        /* Summary */
         .summary-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed var(--olive); font-family: var(--font-mono); font-size: 0.9rem; }
         .total-row { border-top: 2px solid var(--green); border-bottom: none; padding-top: 15px; font-size: 1.2rem; color: var(--gold); font-weight: bold; margin-top: 10px;}
 
-        /* Buttons */
         .btn-row { display: flex; gap: 10px; margin-top: 20px; }
         .btn { flex: 1; padding: 12px; border: none; font-weight: bold; cursor: pointer; font-family: var(--font-head); text-transform: uppercase; }
         .btn-primary { background: var(--green); color: #000; }
@@ -236,6 +276,7 @@
             .card-img-wrap { height: 160px; }
             .brand { font-size: 1.4rem; }
             .cart-btn { padding: 12px 20px; font-size: 0.9rem; bottom: 15px; right: 15px; }
+            .proshow-title { font-size: 1.5rem; }
         }
     </style>
 </head>
@@ -324,17 +365,25 @@
     <!-- HEADER -->
     <header>
         <div class="brand">ISHYA -26 <span>STORE</span></div>
-        <!-- Removed Cart Button from Header -->
     </header>
 
     <div class="container">
+        
+        <!-- PRODUCT GRID (MOVED UP) -->
         <div class="grid" id="productGrid"></div>
+
+        <!-- PROSHOW SECTION (MOVED DOWN) -->
+        <div class="proshow-section">
+            <h2 class="proshow-title">PROSHOW TICKETS</h2>
+            <div class="proshow-sub">// COMING SOON //</div>
+        </div>
+
     </div>
 
-    <!-- FLOATING CART BUTTON (Moved here) -->
+    <!-- FLOATING CART BUTTON -->
     <button class="cart-btn" onclick="openCart()">CART [<span id="cartCount">0</span>]</button>
 
-    <!-- UPDATED POP UP MESSAGE -->
+    <!-- TOAST -->
     <div id="toast" class="toast">
         <span class="toast-msg">ITEM ADDED TO CART</span>
         <span class="toast-sub">CHECKOUT THE CART TO FINALISE THE PURCHASE.</span>
@@ -367,6 +416,9 @@
         let cart = [];
         let userDetails = {};
         
+        // Product Image State: { productId: { currentIdx: 0, images: [], timer: null } }
+        let productImageRegistry = {}; 
+
         // ================= INITIALIZATION =================
         window.onload = () => {
             initCanvas();
@@ -391,22 +443,47 @@
             } catch (e) { console.error("Data Fetch Error:", e); }
         }
 
-        // --- UPDATED RENDER FUNCTION (Btn Text Changed) ---
+        // ================= PRODUCT & SLIDESHOW LOGIC =================
+
         function renderProducts() {
             const grid = document.getElementById('productGrid');
-            grid.innerHTML = products.map(p => `
+            
+            // Clear existing
+            grid.innerHTML = "";
+            productImageRegistry = {};
+
+            grid.innerHTML = products.map(p => {
+                // Parse images (comma separated)
+                const imgList = p.images ? p.images.split(',').map(s => s.trim()) : ['https://via.placeholder.com/300x300/181C10/4D8F48?text=NO+IMAGE'];
+                
+                // Register state
+                productImageRegistry[p.id] = { currentIdx: 0, images: imgList, timer: null };
+
+                // Buttons HTML (only if > 1 image)
+                const navHtml = imgList.length > 1 ? `
+                    <div class="nav-arrow nav-prev" onclick="navigateImage('${p.id}', -1, event)">&lt;</div>
+                    <div class="nav-arrow nav-next" onclick="navigateImage('${p.id}', 1, event)">&gt;</div>
+                    <div class="img-counter" id="cnt-${p.id}">1/${imgList.length}</div>
+                ` : '';
+
+                return `
                 <div class="card">
-                    <div class="card-img-wrap">
+                    <div class="card-img-wrap" 
+                         onmouseenter="pauseSlide('${p.id}')" 
+                         onmouseleave="resumeSlide('${p.id}')">
+                        ${navHtml}
                         <img 
-                            src="${p.images?.split(',')[0] || ''}" 
+                            id="img-${p.id}"
+                            src="${imgList[0]}" 
                             class="card-img" 
                             onclick="openImageModal(this.src)" 
-                            onerror="this.src='https://via.placeholder.com/300x300/181C10/4D8F48?text=NO+IMAGE'"
+                            onerror="this.src='https://via.placeholder.com/300x300/181C10/4D8F48?text=ERROR'"
                         >
                     </div>
                     <div class="card-info">
                         <span class="cat-tag">${p.category}</span>
                         <h3>${p.name}</h3>
+                        <p class="card-desc">${p.description || ''}</p>
                         <span class="card-price">₹${p.price}</span>
                         <div class="controls">
                             <select id="size-${p.id}" style="flex:1">
@@ -417,7 +494,62 @@
                         <button class="add-btn" onclick="addToCart('${p.id}')">ADD TO CART</button>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
+
+            // Start global auto-play
+            initSlideshows();
+        }
+
+        // --- SLIDESHOW FUNCTIONS ---
+
+        function navigateImage(pid, dir, event) {
+            if(event) event.stopPropagation(); // Prevent modal opening
+
+            const state = productImageRegistry[pid];
+            if(!state || state.images.length <= 1) return;
+
+            let newIdx = state.currentIdx + dir;
+            if (newIdx >= state.images.length) newIdx = 0;
+            if (newIdx < 0) newIdx = state.images.length - 1;
+
+            state.currentIdx = newIdx;
+            updateCardImage(pid);
+        }
+
+        function updateCardImage(pid) {
+            const state = productImageRegistry[pid];
+            const imgEl = document.getElementById(`img-${pid}`);
+            const cntEl = document.getElementById(`cnt-${pid}`);
+            
+            if(imgEl) {
+                imgEl.style.opacity = '0.5';
+                setTimeout(() => {
+                    imgEl.src = state.images[state.currentIdx];
+                    imgEl.onload = () => { imgEl.style.opacity = '1'; }; // Fade in
+                }, 150);
+            }
+            if(cntEl) cntEl.innerText = `${state.currentIdx + 1}/${state.images.length}`;
+        }
+
+        function initSlideshows() {
+            // Check every 3.5 seconds
+            setInterval(() => {
+                for(let pid in productImageRegistry) {
+                    const state = productImageRegistry[pid];
+                    // Only auto-advance if not paused and has multiple images
+                    if(state.images.length > 1 && !state.paused) {
+                        navigateImage(pid, 1, null);
+                    }
+                }
+            }, 3500);
+        }
+
+        function pauseSlide(pid) {
+            if(productImageRegistry[pid]) productImageRegistry[pid].paused = true;
+        }
+
+        function resumeSlide(pid) {
+            if(productImageRegistry[pid]) productImageRegistry[pid].paused = false;
         }
 
         // --- IMAGE MODAL LOGIC ---
@@ -437,8 +569,11 @@
             const qty = parseInt(document.getElementById(`qty-${pid}`).value);
             if(qty <= 0) return;
             
+            // Use the main image for cart thumbnail
+            const mainImg = p.images ? p.images.split(',')[0] : '';
+            
             const ex = cart.find(i => i.id === p.id && i.size === size);
-            if(ex) ex.qty += qty; else cart.push({ ...p, size, qty });
+            if(ex) ex.qty += qty; else cart.push({ ...p, size, qty, mainImg });
             
             updateCartCount();
             showToast();
@@ -458,7 +593,7 @@
         function showToast() {
             const t = document.getElementById('toast');
             t.classList.add('show');
-            setTimeout(() => t.classList.remove('show'), 3500); // Increased duration to read text
+            setTimeout(() => t.classList.remove('show'), 3500);
         }
 
         // ================= MODAL & STEPS =================
