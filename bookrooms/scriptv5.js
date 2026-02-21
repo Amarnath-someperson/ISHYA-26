@@ -1,7 +1,7 @@
 // script.js - VERSION 5.2 COMPLETE
 // --- CONFIGURATION ---
 const GOOGLE_CLIENT_ID = '750824340469-nrqmioc1jgoe6rjnuaqjdu9mh0b4or2o.apps.googleusercontent.com'; 
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw1XrdUXi2-om8eA7zFmHKbghbbK-iMSEWZAMSVX-gozNTWw5aeU11IYYMt0AKTSbjEGQ/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzOAvuNOPaiLuBKseVGhTheTggmpIQU_N-7uVd1c3FO277ZTcOyn3AFu_arTtS0IO4Eqg/exec';
 
 
 let currentUser = null, rooms = [], selectedRoom = null, selectedDate = new Date(), selectedSlots = [], currentMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
