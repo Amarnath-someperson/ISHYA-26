@@ -95,7 +95,7 @@
     <div style="height: 75px;"></div>
     <div class="scanline"></div>
     <canvas id="bg-canvas"></canvas>
-    <div id="loader-wrapper"><h2 style="color:var(--gold); font-family:var(--font-mono)">OPENING SHOPK</h2><div class="loader-bar"></div></div>
+    <div id="loader-wrapper"><h2 style="color:var(--gold); font-family:var(--font-mono)">ESTABLISHING LINK</h2><div class="loader-bar"></div></div>
 
     <header><div class="brand">ISHYA -26 <span>STORE & TICKETS</span></div></header>
 
@@ -133,15 +133,12 @@
     <div id="img-view-modal" onclick="closeImageModal()"><img id="img-view-content" src="" alt="Zoomed"></div>
 
     <script>
-        // ========================================================
-        // 🚨 CONFIGURATION 🚨
-        // ========================================================
         const MERCH_API = "https://script.google.com/macros/s/AKfycbyld8a111hLb9SydZmH6K2dTAlAMG8a0HPdJ-oxoy8jjq01pkCLGwV5NInelko4QJpj5A/exec";
         
-        // YOUR EXACT PROSHOW URL IS HARDCODED HERE
-        const PROSHOW_API = "https://script.google.com/macros/s/AKfycbyBIFffhtNwkifEn3_2o93cSZFHNLJnDPfYLmNJ9AEVn5Pyc4tUbKfUwR4DAgXMzFOr_g/exec"; 
+        // YOUR CORRECTED PROSHOW URL
+        const PROSHOW_API = "https://script.google.com/macros/s/AKfycbyH_4J6Jc67PdSDPamwF0x1kM_OC1NbrIQOFGuerLZat2E9veGz-Cqje-6VIJGsjUZSmQ/exec"; 
         
-        const TICKET_PRICES = { "Student": 300, "Faculty": 300, "External": 300 };
+        const TICKET_PRICES = { "Student": 300, "Faculty": 500, "External": 800 };
         let BATCH_UPI_MAP_MERCH = {}, BATCH_UPI_MAP_PROSHOW = {}, products = [], cart = [], userDetails = {}, psDetails = {}, productImageRegistry = {}; 
 
         window.onload = () => { initCanvas(); fetchMerchData(); fetchProshowData(); };
@@ -194,7 +191,6 @@
             return options;
         }
 
-        // ================= AGGRESSIVE IMAGE COMPRESSOR (FIXED) =================
         function compressImage(file, callback) {
             const reader = new FileReader();
             reader.readAsDataURL(file);
@@ -309,19 +305,21 @@
             const btn = document.getElementById('btnPsSubmit'); 
             btn.innerText = "GENERATING TICKET..."; btn.disabled = true;
             
-            // 1. AGGRESSIVE COMPRESSION
+            // 1. AGGRESSIVE COMPRESSION (Fixes Network Error)
             compressImage(fileInput.files[0], async (base64Img) => {
                 try {
                     const payload = { ...psDetails, receiptImage: base64Img, webAppUrl: PROSHOW_API };
                     
-                    // 2. HEADERLESS REQUEST TO FIX CORS NETWORK ERROR
+                    // 2. TEXT HEADER + FETCH (Fixes Success showing as Error)
+                    // We treat response as text first, then parse manually
                     const res = await fetch(PROSHOW_API, { 
                         method: "POST", 
                         body: JSON.stringify(payload), 
-                        headers: { "Content-Type": "text/plain;charset=utf-8" } 
+                        headers: { "Content-Type": "text/plain" } 
                     });
                     
-                    const result = await res.json();
+                    const textResponse = await res.text(); // Get raw text
+                    const result = JSON.parse(textResponse); // Parse it manually
                     
                     if(result.status === 'success') { 
                         psTitle.innerText = "TICKET ISSUED";
