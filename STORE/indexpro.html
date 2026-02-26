@@ -4,10 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ISHYA -26 STORE & TICKETS</title>
-    
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
     <style>
         :root { --bg-deep: #060606; --bg-panel: #181C10; --gold: #D6C26A; --olive: #3D4324; --green: #4D8F48; --text-main: #e0e5e0; --font-head: 'Chakra Petch', sans-serif; --font-mono: 'JetBrains Mono', monospace; }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -17,7 +15,6 @@
         #loader-wrapper { position: fixed; inset: 0; background: var(--bg-deep); z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.5s ease; }
         .loader-bar { width: 200px; height: 4px; background: var(--olive); margin-top: 15px; position: relative; overflow: hidden; }
         .loader-bar::after { content:''; position: absolute; top: 0; left: 0; width: 50%; height: 100%; background: var(--green); animation: loadAnim 1s infinite ease-in-out; }
-        @keyframes loadAnim { 0% { left: -50%; } 100% { left: 100%; } }
         body.loaded #loader-wrapper { opacity: 0; visibility: hidden; }
         header { position: relative; width: 100%; z-index: 10; display: flex; align-items: center; justify-content: center; padding: 40px 20px 10px 20px; }
         .brand { font-size: 2.2rem; font-weight: 700; color: var(--gold); letter-spacing: 2px; text-transform: uppercase; text-align: center; line-height: 1; }
@@ -98,7 +95,7 @@
     <div style="height: 75px;"></div>
     <div class="scanline"></div>
     <canvas id="bg-canvas"></canvas>
-    <div id="loader-wrapper"><h2 style="color:var(--gold); font-family:var(--font-mono)">OPENING SHOP</h2><div class="loader-bar"></div></div>
+    <div id="loader-wrapper"><h2 style="color:var(--gold); font-family:var(--font-mono)">OPENING SHOPK</h2><div class="loader-bar"></div></div>
 
     <header><div class="brand">ISHYA -26 <span>STORE & TICKETS</span></div></header>
 
@@ -140,9 +137,11 @@
         // 🚨 CONFIGURATION 🚨
         // ========================================================
         const MERCH_API = "https://script.google.com/macros/s/AKfycbyld8a111hLb9SydZmH6K2dTAlAMG8a0HPdJ-oxoy8jjq01pkCLGwV5NInelko4QJpj5A/exec";
-        const PROSHOW_API = "https://script.google.com/macros/s/AKfycbxKasVMl9hqaXuVjQf0cQHJJd6FYyF9Kq77fJCku6GfAXsViQixIYUl2ERkRZqBYXNkpw/exec"; 
         
-        const TICKET_PRICES = { "Student": 300, "Faculty": 500, "External": 800 };
+        // YOUR EXACT PROSHOW URL IS HARDCODED HERE
+        const PROSHOW_API = "https://script.google.com/macros/s/AKfycbyBIFffhtNwkifEn3_2o93cSZFHNLJnDPfYLmNJ9AEVn5Pyc4tUbKfUwR4DAgXMzFOr_g/exec"; 
+        
+        const TICKET_PRICES = { "Student": 300, "Faculty": 300, "External": 300 };
         let BATCH_UPI_MAP_MERCH = {}, BATCH_UPI_MAP_PROSHOW = {}, products = [], cart = [], userDetails = {}, psDetails = {}, productImageRegistry = {}; 
 
         window.onload = () => { initCanvas(); fetchMerchData(); fetchProshowData(); };
@@ -158,7 +157,6 @@
         }
 
         async function fetchProshowData() {
-            if(PROSHOW_API.includes("YOUR_PROSHOW")) return;
             try {
                 const res = await fetch(PROSHOW_API);
                 const json = await res.json();
@@ -196,7 +194,7 @@
             return options;
         }
 
-        // ================= IMAGE COMPRESSOR (THE FIX FOR NETWORK ERRORS) =================
+        // ================= AGGRESSIVE IMAGE COMPRESSOR (FIXED) =================
         function compressImage(file, callback) {
             const reader = new FileReader();
             reader.readAsDataURL(file);
@@ -207,9 +205,9 @@
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d');
                     
-                    // Max dimension
-                    const MAX_WIDTH = 1024;
-                    const MAX_HEIGHT = 1024;
+                    // AGGRESSIVE DOWNSIZING (600px Max)
+                    const MAX_WIDTH = 600;
+                    const MAX_HEIGHT = 600;
                     let width = img.width;
                     let height = img.height;
 
@@ -223,8 +221,8 @@
                     canvas.height = height;
                     ctx.drawImage(img, 0, 0, width, height);
                     
-                    // Compress to JPEG 0.7 quality
-                    const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                    // COMPRESS TO 0.5 QUALITY JPEG
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.5);
                     callback(dataUrl);
                 };
             };
@@ -265,8 +263,6 @@
         async function submitFinalOrder() {
             const fileInput = document.getElementById('receiptFile'); if(!fileInput.files[0]) return alert("Screenshot required.");
             const btn = document.getElementById('btnSubmit'); btn.innerText = "TRANSMITTING..."; btn.disabled = true;
-            
-            // Use Compression
             compressImage(fileInput.files[0], async (base64Img) => {
                 try {
                     const total = cart.reduce((a,b) => a + (b.price*b.qty), 0);
@@ -309,21 +305,20 @@
         async function submitProshowOrder() {
             const fileInput = document.getElementById('psReceiptFile');
             if(!fileInput.files[0]) return alert("Screenshot is mandatory.");
-            if(PROSHOW_API.includes("YOUR_PROSHOW")) return alert("Developer Error: Proshow API endpoint is not set.");
             
             const btn = document.getElementById('btnPsSubmit'); 
             btn.innerText = "GENERATING TICKET..."; btn.disabled = true;
             
-            // 🚨 USE IMAGE COMPRESSION BEFORE UPLOADING
+            // 1. AGGRESSIVE COMPRESSION
             compressImage(fileInput.files[0], async (base64Img) => {
                 try {
                     const payload = { ...psDetails, receiptImage: base64Img, webAppUrl: PROSHOW_API };
                     
-                    // 🚨 CORS Fix + Compression
+                    // 2. HEADERLESS REQUEST TO FIX CORS NETWORK ERROR
                     const res = await fetch(PROSHOW_API, { 
                         method: "POST", 
                         body: JSON.stringify(payload), 
-                        headers: { "Content-Type": "text/plain" } 
+                        headers: { "Content-Type": "text/plain;charset=utf-8" } 
                     });
                     
                     const result = await res.json();
