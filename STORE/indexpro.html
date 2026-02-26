@@ -98,7 +98,7 @@
     <div style="height: 75px;"></div>
     <div class="scanline"></div>
     <canvas id="bg-canvas"></canvas>
-    <div id="loader-wrapper"><h2 style="color:var(--gold); font-family:var(--font-mono)">OPENING SHOP</h2><div class="loader-bar"></div></div>
+    <div id="loader-wrapper"><h2 style="color:var(--gold); font-family:var(--font-mono)">ESTABLISHING LINK</h2><div class="loader-bar"></div></div>
 
     <header><div class="brand">ISHYA -26 <span>STORE & TICKETS</span></div></header>
 
@@ -137,7 +137,7 @@
 
     <script>
         // ========================================================
-        // 🚨 PASTE YOUR URLs HERE
+        // 🚨 CONFIGURATION 🚨
         // ========================================================
         const MERCH_API = "https://script.google.com/macros/s/AKfycbyld8a111hLb9SydZmH6K2dTAlAMG8a0HPdJ-oxoy8jjq01pkCLGwV5NInelko4QJpj5A/exec";
         const PROSHOW_API = "https://script.google.com/macros/s/AKfycbwOU1Ts7NylTK2sCcHCm294DK69SgrhKQVycXniV2GI2pdQzxmdQ6z2LgCJsaITUtcrIA/exec"; 
@@ -166,7 +166,6 @@
             } catch (e) { console.error("Proshow Fetch Error:", e); }
         }
 
-        // ================= PRODUCT & SLIDESHOW =================
         function renderProducts() {
             const grid = document.getElementById('productGrid');
             grid.innerHTML = ""; productImageRegistry = {};
@@ -195,6 +194,40 @@
             if (Object.keys(mapToUse).length === 0) options += `<option value="OTHERS">General Fund (Default)</option>`;
             else for (const key in mapToUse) { const sel = (selectedValue === key) ? 'selected' : ''; options += `<option value="${key}" ${sel}>${key}</option>`; }
             return options;
+        }
+
+        // ================= IMAGE COMPRESSOR (THE FIX FOR NETWORK ERRORS) =================
+        function compressImage(file, callback) {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function(event) {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    // Max dimension
+                    const MAX_WIDTH = 1024;
+                    const MAX_HEIGHT = 1024;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+                    } else {
+                        if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    // Compress to JPEG 0.7 quality
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                    callback(dataUrl);
+                };
+            };
         }
 
         // ================= MERCH LOGIC =================
@@ -232,16 +265,17 @@
         async function submitFinalOrder() {
             const fileInput = document.getElementById('receiptFile'); if(!fileInput.files[0]) return alert("Screenshot required.");
             const btn = document.getElementById('btnSubmit'); btn.innerText = "TRANSMITTING..."; btn.disabled = true;
-            const reader = new FileReader(); reader.readAsDataURL(fileInput.files[0]);
-            reader.onload = async () => {
+            
+            // Use Compression
+            compressImage(fileInput.files[0], async (base64Img) => {
                 try {
                     const total = cart.reduce((a,b) => a + (b.price*b.qty), 0);
-                    const payload = { orderId: "ORD-" + Math.floor(100000 + Math.random() * 900000), customerName: userDetails.name, customerEmail: userDetails.email, customerPhone: userDetails.phone, rollNumber: userDetails.roll || "N/A", batch: userDetails.batch, address: userDetails.address || "N/A", totalPrice: total, cart: cart, receiptImage: reader.result };
-                    const res = await fetch(MERCH_API, { method: "POST", body: JSON.stringify(payload) });
+                    const payload = { orderId: "ORD-" + Math.floor(100000 + Math.random() * 900000), customerName: userDetails.name, customerEmail: userDetails.email, customerPhone: userDetails.phone, rollNumber: userDetails.roll || "N/A", batch: userDetails.batch, address: userDetails.address || "N/A", totalPrice: total, cart: cart, receiptImage: base64Img };
+                    const res = await fetch(MERCH_API, { method: "POST", body: JSON.stringify(payload), headers: {"Content-Type": "text/plain"} });
                     const result = await res.json();
                     if(result.status === 'success') { mBody.innerHTML = `<div style="text-align:center; padding:30px;"><h2 style="color:var(--green)">ORDER SECURED</h2><button class="btn btn-primary" onclick="window.location.reload()" style="margin-top:20px;">DISMISS</button></div>`; cart = []; updateCartCount(); } else throw new Error(result.message);
                 } catch (e) { alert("Failed: " + e.message); btn.innerText = "RETRY"; btn.disabled = false; }
-            };
+            });
         }
 
         // ================= PROSHOW LOGIC =================
@@ -274,19 +308,24 @@
 
         async function submitProshowOrder() {
             const fileInput = document.getElementById('psReceiptFile');
-            if(!fileInput.files[0]) return alert("Screenshot is mandatory to generate your E-Ticket.");
+            if(!fileInput.files[0]) return alert("Screenshot is mandatory.");
             if(PROSHOW_API.includes("YOUR_PROSHOW")) return alert("Developer Error: Proshow API endpoint is not set.");
-            if(fileInput.files[0].size > 4 * 1024 * 1024) return alert("File is too large. Please use a screenshot smaller than 4MB.");
-
+            
             const btn = document.getElementById('btnPsSubmit'); 
             btn.innerText = "GENERATING TICKET..."; btn.disabled = true;
             
-            const reader = new FileReader(); reader.readAsDataURL(fileInput.files[0]);
-            reader.onload = async () => {
+            // 🚨 USE IMAGE COMPRESSION BEFORE UPLOADING
+            compressImage(fileInput.files[0], async (base64Img) => {
                 try {
-                    const payload = { ...psDetails, receiptImage: reader.result, webAppUrl: PROSHOW_API };
-                    // 🚨 MAGIC FIX: CORS bypass via text/plain
-                    const res = await fetch(PROSHOW_API, { method: "POST", body: JSON.stringify(payload), headers: { "Content-Type": "text/plain" } });
+                    const payload = { ...psDetails, receiptImage: base64Img, webAppUrl: PROSHOW_API };
+                    
+                    // 🚨 CORS Fix + Compression
+                    const res = await fetch(PROSHOW_API, { 
+                        method: "POST", 
+                        body: JSON.stringify(payload), 
+                        headers: { "Content-Type": "text/plain" } 
+                    });
+                    
                     const result = await res.json();
                     
                     if(result.status === 'success') { 
@@ -294,7 +333,7 @@
                         psContent.innerHTML = `<div style="text-align:center; padding:30px;"><h2 style="color:var(--green); font-size: 2rem; margin-bottom: 10px;">SUCCESS</h2><div style="background: #000; padding: 15px; border: 2px dashed var(--gold); display: inline-block; font-size: 1.5rem; font-family: var(--font-mono); color: #fff; margin-bottom: 20px;">${result.ticketId}</div><p style="color:#888;">Check email: <b>${psDetails.email}</b></p><button class="btn btn-primary" onclick="closeProshowModal()" style="margin-top:30px; background:var(--gold)">CLOSE</button></div>`; 
                     } else throw new Error(result.message);
                 } catch (e) { alert("Ticket Generation Failed: " + e.message); btn.innerText = "RETRY"; btn.disabled = false; }
-            };
+            });
         }
 
         function initCanvas() {
