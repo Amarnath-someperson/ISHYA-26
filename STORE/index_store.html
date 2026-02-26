@@ -19,7 +19,6 @@
             --olive: #3D4324;
             --green: #4D8F48;
             --text-main: #e0e5e0;
-            --header-h: 80px;
             --font-head: 'Chakra Petch', sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
         }
@@ -31,7 +30,7 @@
             color: var(--text-main);
             font-family: var(--font-head);
             overflow-x: hidden;
-            padding-top: var(--header-h);
+            /* Top padding handled by the nav spacer now */
         }
 
         /* --- BACKGROUND FX --- */
@@ -61,23 +60,22 @@
         @keyframes loadAnim { 0% { left: -50%; } 100% { left: 100%; } }
         body.loaded #loader-wrapper { opacity: 0; visibility: hidden; }
 
-        /* --- HEADER --- */
+        /* --- HEADER (PAGE TITLE) --- */
         header { 
-            position: fixed; top: 0; width: 100%; height: var(--header-h); z-index: 100;
-            background: rgba(6, 6, 6, 0.95); backdrop-filter: blur(8px);
-            border-bottom: 1px solid var(--olive);
+            position: relative; /* Changed from fixed so it sits below nav */
+            width: 100%; z-index: 10;
             display: flex; align-items: center; justify-content: center; 
-            padding: 0 20px;
+            padding: 40px 20px 10px 20px; /* Pushed down to clear the nav */
         }
         
         .brand { 
-            font-size: 1.8rem; font-weight: 700; color: var(--gold); 
+            font-size: 2.2rem; font-weight: 700; color: var(--gold); 
             letter-spacing: 2px; text-transform: uppercase; text-align: center;
             line-height: 1;
         }
         .brand span { 
-            color: var(--green); font-size: 0.8rem; display: block; 
-            letter-spacing: 6px; margin-top: 2px;
+            color: var(--green); font-size: 1rem; display: block; 
+            letter-spacing: 6px; margin-top: 5px;
         }
         
         /* --- CART BTN --- */
@@ -99,7 +97,14 @@
             100% { box-shadow: 0 0 0 0 rgba(214, 194, 106, 0); }
         }
 
-        /* --- PROSHOW SECTION --- */
+        /* --- SECTIONS --- */
+        .section-title {
+            font-size: 2rem; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.3);
+            margin-bottom: 25px; padding-bottom: 10px; border-bottom: 2px solid var(--olive);
+            text-transform: uppercase; font-weight: 700; margin-top: 20px;
+            text-align: center; /* CENTERED AS REQUESTED */
+        }
+
         .proshow-section {
             background: repeating-linear-gradient(45deg, #181C10, #181C10 10px, #0e110a 10px, #0e110a 20px);
             border: 1px solid var(--gold);
@@ -110,7 +115,6 @@
             position: relative;
             clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
         }
-        /* Removed the Restricted Access pseudo-element */
         
         .proshow-title {
             font-size: 2rem; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.3);
@@ -190,6 +194,7 @@
             padding: 8px; font-family: var(--font-mono); font-size: 0.8rem; outline: none;
         }
         .controls input { width: 50px; text-align: center; }
+        .controls select:disabled, .controls input:disabled { opacity: 0.5; cursor: not-allowed; }
         
         .add-btn {
             width: 100%; margin-top: 10px; padding: 10px;
@@ -198,20 +203,20 @@
             clip-path: polygon(10px 0, 100% 0, 100% 100%, 0 100%, 0 10px);
             transition: 0.2s;
         }
-        .add-btn:hover { background: var(--gold); }
+        .add-btn:hover:not(:disabled) { background: var(--gold); }
 
-        /* --- TOAST --- */
+        /* --- CORNER TOAST NOTIFICATION --- */
         .toast {
-            position: fixed; bottom: 50%; left: 50%; transform: translate(-50%, 50%) scale(0.8);
+            position: fixed; bottom: 20px; left: 20px; transform: translateY(50px);
             background: var(--bg-panel); color: var(--gold); border: 2px solid var(--gold);
-            padding: 20px 30px; text-align: center; box-shadow: 0 0 50px rgba(0,0,0,0.8);
-            font-weight: bold; opacity: 0; transition: 0.3s; z-index: 10002; pointer-events: none;
+            padding: 15px 20px; text-align: left; box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            font-weight: bold; opacity: 0; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 10002; pointer-events: none;
             clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
-            width: 80%; max-width: 400px;
+            width: auto; min-width: 250px; max-width: 80%;
         }
-        .toast.show { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        .toast.show { transform: translateY(0); opacity: 1; }
         .toast-msg { display: block; margin-bottom: 5px; color: #fff; font-size: 1.1rem; }
-        .toast-sub { display: block; font-family: var(--font-mono); font-size: 0.8rem; color: var(--green); }
+        .toast-sub { display: block; font-family: var(--font-mono); font-size: 0.75rem; color: var(--green); }
 
         /* --- MODAL SYSTEM --- */
         .modal-overlay {
@@ -274,9 +279,10 @@
         @media(max-width: 600px) {
             .grid { grid-template-columns: 1fr 1fr; gap: 10px; }
             .card-img-wrap { height: 160px; }
-            .brand { font-size: 1.4rem; }
+            .brand { font-size: 1.8rem; }
             .cart-btn { padding: 12px 20px; font-size: 0.9rem; bottom: 15px; right: 15px; }
             .proshow-title { font-size: 1.5rem; }
+            .toast { bottom: 80px; left: 15px; /* adjust positioning on small phones */ } 
         }
     </style>
 </head>
@@ -362,17 +368,18 @@
         <div class="loader-bar"></div>
     </div>
 
-    <!-- HEADER -->
+    <!-- MAIN PAGE TITLE -->
     <header>
         <div class="brand">ISHYA -26 <span>STORE</span></div>
     </header>
 
     <div class="container">
         
-        <!-- PRODUCT GRID (MOVED UP) -->
+        <!-- MERCHANDISE SECTION -->
+        <h2 class="section-title">MERCHANDISE</h2>
         <div class="grid" id="productGrid"></div>
 
-        <!-- PROSHOW SECTION (MOVED DOWN) -->
+        <!-- PROSHOW SECTION -->
         <div class="proshow-section">
             <h2 class="proshow-title">PROSHOW TICKETS</h2>
             <div class="proshow-sub">// COMING SOON //</div>
@@ -383,10 +390,10 @@
     <!-- FLOATING CART BUTTON -->
     <button class="cart-btn" onclick="openCart()">CART [<span id="cartCount">0</span>]</button>
 
-    <!-- TOAST -->
+    <!-- CORNER TOAST NOTIFICATION -->
     <div id="toast" class="toast">
         <span class="toast-msg">ITEM ADDED TO CART</span>
-        <span class="toast-sub">CHECKOUT THE CART TO FINALISE THE PURCHASE.</span>
+        <span class="toast-sub">CHECK YOUR CART TO CHECKOUT</span>
     </div>
 
     <!-- MODAL WRAPPER -->
@@ -459,6 +466,23 @@
                 // Register state
                 productImageRegistry[p.id] = { currentIdx: 0, images: imgList, timer: null };
 
+                // Evaluate Stock Status
+                const stockStatus = (p.stock || "").toString().toLowerCase().trim();
+                const isOutOfStock = stockStatus === "not-available" || stockStatus === "unavailable" || stockStatus === "out of stock";
+                
+                // Controls disabled logic
+                const disabledAttr = isOutOfStock ? 'disabled' : '';
+
+                // Out of stock overlay badge
+                const oosBadge = isOutOfStock 
+                    ? `<div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%) rotate(-10deg); background:rgba(0,0,0,0.8); border:2px solid #d64a4a; color:#d64a4a; padding:10px 15px; font-weight:bold; z-index:20; font-family:var(--font-mono); white-space:nowrap; pointer-events:none; letter-spacing: 2px;">OUT OF STOCK</div>` 
+                    : '';
+
+                // Button Logic
+                const btnHtml = isOutOfStock
+                    ? `<button class="add-btn" disabled style="background:#222; color:#555; cursor:not-allowed; border:1px solid #444;">OUT OF STOCK</button>`
+                    : `<button class="add-btn" onclick="addToCart('${p.id}')">ADD TO CART</button>`;
+
                 // Buttons HTML (only if > 1 image)
                 const navHtml = imgList.length > 1 ? `
                     <div class="nav-arrow nav-prev" onclick="navigateImage('${p.id}', -1, event)">&lt;</div>
@@ -472,6 +496,7 @@
                          onmouseenter="pauseSlide('${p.id}')" 
                          onmouseleave="resumeSlide('${p.id}')">
                         ${navHtml}
+                        ${oosBadge}
                         <img 
                             id="img-${p.id}"
                             src="${imgList[0]}" 
@@ -486,12 +511,12 @@
                         <p class="card-desc">${p.description || ''}</p>
                         <span class="card-price">₹${p.price}</span>
                         <div class="controls">
-                            <select id="size-${p.id}" style="flex:1">
+                            <select id="size-${p.id}" style="flex:1" ${disabledAttr}>
                                 ${(p.sizes || 'One Size').split(',').map(s=>`<option>${s.trim()}</option>`).join('')}
                             </select>
-                            <input type="number" id="qty-${p.id}" value="1" min="1">
+                            <input type="number" id="qty-${p.id}" value="1" min="1" ${disabledAttr}>
                         </div>
-                        <button class="add-btn" onclick="addToCart('${p.id}')">ADD TO CART</button>
+                        ${btnHtml}
                     </div>
                 </div>
             `}).join('');
@@ -593,7 +618,8 @@
         function showToast() {
             const t = document.getElementById('toast');
             t.classList.add('show');
-            setTimeout(() => t.classList.remove('show'), 3500);
+            // Remove after 3 seconds
+            setTimeout(() => t.classList.remove('show'), 3000);
         }
 
         // ================= MODAL & STEPS =================
@@ -738,7 +764,8 @@
                     <div id="qr-container" style="background:#fff; padding:10px; display:inline-block; border:4px solid var(--gold);"></div>
                     
                     <div style="margin:20px 0;">
-                        <a href="${upiLink}" class="btn btn-primary" style="display:block; text-decoration:none; padding:15px;">OPEN UPI APP</a>
+                        <!-- UPDATED PAYMENT BUTTON TEXT -->
+                        <a href="${upiLink}" class="btn btn-primary" style="display:block; text-decoration:none; padding:15px;">PAY TO ${payName}, CLICK HERE TO PAY</a>
                     </div>
 
                     <div class="form-group" style="text-align:left; margin-top:20px; border-top:1px solid var(--olive); padding-top:15px;">
