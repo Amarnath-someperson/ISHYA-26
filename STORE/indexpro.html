@@ -5,69 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ISHYA -26 STORE & TICKETS</title>
     
-    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <!-- QRCode Lib -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
-        /* --- THEME: TACTICAL BIO-DIGITAL --- */
-        :root {
-            --bg-deep: #060606;
-            --bg-panel: #181C10;
-            --gold: #D6C26A;
-            --olive: #3D4324;
-            --green: #4D8F48;
-            --text-main: #e0e5e0;
-            --font-head: 'Chakra Petch', sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
-        }
-
+        :root { --bg-deep: #060606; --bg-panel: #181C10; --gold: #D6C26A; --olive: #3D4324; --green: #4D8F48; --text-main: #e0e5e0; --font-head: 'Chakra Petch', sans-serif; --font-mono: 'JetBrains Mono', monospace; }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-        body {
-            background-color: var(--bg-deep);
-            color: var(--text-main);
-            font-family: var(--font-head);
-            overflow-x: hidden;
-        }
-
-        /* --- BACKGROUND FX --- */
+        body { background-color: var(--bg-deep); color: var(--text-main); font-family: var(--font-head); overflow-x: hidden; }
         #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at center, #11150e 0%, #060606 100%); }
         .scanline { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9000; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%); background-size: 100% 4px; }
-
-        /* --- LOADER --- */
-        #loader-wrapper {
-            position: fixed; inset: 0; background: var(--bg-deep); z-index: 99999;
-            display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.5s ease;
-        }
+        #loader-wrapper { position: fixed; inset: 0; background: var(--bg-deep); z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.5s ease; }
         .loader-bar { width: 200px; height: 4px; background: var(--olive); margin-top: 15px; position: relative; overflow: hidden; }
         .loader-bar::after { content:''; position: absolute; top: 0; left: 0; width: 50%; height: 100%; background: var(--green); animation: loadAnim 1s infinite ease-in-out; }
         @keyframes loadAnim { 0% { left: -50%; } 100% { left: 100%; } }
         body.loaded #loader-wrapper { opacity: 0; visibility: hidden; }
-
-        /* --- HEADER --- */
         header { position: relative; width: 100%; z-index: 10; display: flex; align-items: center; justify-content: center; padding: 40px 20px 10px 20px; }
         .brand { font-size: 2.2rem; font-weight: 700; color: var(--gold); letter-spacing: 2px; text-transform: uppercase; text-align: center; line-height: 1; }
         .brand span { color: var(--green); font-size: 1rem; display: block; letter-spacing: 6px; margin-top: 5px; }
-        
-        /* --- CART BTN --- */
-        .cart-btn {
-            position: fixed; right: 20px; bottom: 20px; z-index: 10001; 
-            background: var(--gold); color: #000; border: 2px solid #fff; padding: 15px 25px; 
-            font-family: var(--font-mono); font-weight: bold; font-size: 1rem; cursor: pointer;
-            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
-            transition: 0.3s; box-shadow: 0 0 20px rgba(214, 194, 106, 0.5); animation: pulseBtn 3s infinite;
-        }
-        .cart-btn:hover { background: #fff; transform: scale(1.05); box-shadow: 0 0 30px rgba(255,255,255,0.8); }
+        .cart-btn { position: fixed; right: 20px; bottom: 20px; z-index: 10001; background: var(--gold); color: #000; border: 2px solid #fff; padding: 15px 25px; font-family: var(--font-mono); font-weight: bold; font-size: 1rem; cursor: pointer; clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px); transition: 0.3s; box-shadow: 0 0 20px rgba(214, 194, 106, 0.5); animation: pulseBtn 3s infinite; }
+        .cart-btn:hover { background: #fff; transform: scale(1.05); }
         @keyframes pulseBtn { 0% { box-shadow: 0 0 0 0 rgba(214, 194, 106, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(214, 194, 106, 0); } 100% { box-shadow: 0 0 0 0 rgba(214, 194, 106, 0); } }
-
-        /* --- SECTIONS --- */
         .section-title { font-size: 2rem; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.3); margin-bottom: 25px; padding-bottom: 10px; border-bottom: 2px solid var(--olive); text-transform: uppercase; font-weight: 700; margin-top: 20px; text-align: center; }
-
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; padding-bottom: 100px; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 25px; }
-
         .card { background: var(--bg-panel); border: 1px solid var(--olive); clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px); transition: 0.3s ease; position: relative; display: flex; flex-direction: column; }
         .card:hover { border-color: var(--gold); transform: translateY(-3px); box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
         .card-img-wrap { width: 100%; height: 220px; background: #000; padding: 5px; position: relative; overflow: hidden; user-select: none; }
@@ -88,72 +48,44 @@
         .controls select, .controls input { background: #000; border: 1px solid var(--olive); color: #fff; padding: 8px; font-family: var(--font-mono); font-size: 0.8rem; outline: none; }
         .controls input { width: 50px; text-align: center; }
         .controls select:disabled, .controls input:disabled { opacity: 0.5; cursor: not-allowed; }
-        
         .add-btn { width: 100%; margin-top: 10px; padding: 10px; background: var(--green); color: #000; border: none; font-family: var(--font-head); font-weight: 700; cursor: pointer; clip-path: polygon(10px 0, 100% 0, 100% 100%, 0 100%, 0 10px); transition: 0.2s; }
         .add-btn:hover:not(:disabled) { background: var(--gold); }
-
-        /* --- PROSHOW BANNER SECTION --- */
-        .proshow-section {
-            background: repeating-linear-gradient(45deg, #181C10, #181C10 10px, #0e110a 10px, #0e110a 20px);
-            border: 1px solid var(--gold); padding: 40px; margin-top: 60px; margin-bottom: 40px; text-align: center;
-            position: relative; clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
-        }
+        .proshow-section { background: repeating-linear-gradient(45deg, #181C10, #181C10 10px, #0e110a 10px, #0e110a 20px); border: 1px solid var(--gold); padding: 40px; margin-top: 60px; margin-bottom: 40px; text-align: center; position: relative; clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px); }
         .proshow-title { font-size: 2rem; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.3); margin-bottom: 20px; text-transform: uppercase; }
         .proshow-banner { width: 100%; max-width: 800px; border: 2px solid var(--olive); border-radius: 8px; margin-bottom: 20px; transition: 0.3s; }
         .proshow-banner:hover { border-color: var(--gold); box-shadow: 0 0 30px rgba(214, 194, 106, 0.2); }
         .btn-large { font-size: 1.2rem; padding: 15px; max-width: 300px; margin: 0 auto; display: block; }
-
-        /* --- TOAST --- */
         .toast { position: fixed; bottom: 20px; left: 20px; transform: translateY(50px); background: var(--bg-panel); color: var(--gold); border: 2px solid var(--gold); padding: 15px 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.5); font-weight: bold; opacity: 0; transition: 0.4s; z-index: 10002; pointer-events: none; clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px); }
         .toast.show { transform: translateY(0); opacity: 1; }
         .toast-msg { display: block; margin-bottom: 5px; color: #fff; font-size: 1.1rem; }
         .toast-sub { display: block; font-family: var(--font-mono); font-size: 0.75rem; color: var(--green); }
-
-        /* --- MODALS --- */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); z-index: 10005; display: none; align-items: center; justify-content: center; }
         .modal { background: var(--bg-panel); width: 95%; max-width: 500px; border: 1px solid var(--green); box-shadow: 0 0 30px rgba(77, 143, 72, 0.2); display: flex; flex-direction: column; max-height: 90vh; }
-        
-        /* FULL PAGE MODAL FOR PROSHOW */
-        #proshow-modal-overlay {
-            position: fixed; inset: 0; background: var(--bg-deep); z-index: 10010;
-            display: none; flex-direction: column; overflow-y: auto; padding: 30px 15px;
-        }
-        .proshow-container {
-            width: 100%; max-width: 600px; background: var(--bg-panel); margin: 0 auto;
-            border: 1px solid var(--gold); box-shadow: 0 0 40px rgba(214, 194, 106, 0.15);
-            display: flex; flex-direction: column;
-        }
-
+        #proshow-modal-overlay { position: fixed; inset: 0; background: var(--bg-deep); z-index: 10010; display: none; flex-direction: column; overflow-y: auto; padding: 30px 15px; }
+        .proshow-container { width: 100%; max-width: 600px; background: var(--bg-panel); margin: 0 auto; border: 1px solid var(--gold); box-shadow: 0 0 40px rgba(214, 194, 106, 0.15); display: flex; flex-direction: column; }
         .modal-header { padding: 15px 20px; background: rgba(77, 143, 72, 0.1); border-bottom: 1px solid var(--olive); display: flex; justify-content: space-between; align-items: center; }
         .modal-header.gold-bg { background: rgba(214, 194, 106, 0.1); border-color: var(--gold); }
         .modal-title { color: var(--green); font-size: 1.2rem; text-transform: uppercase; }
         .modal-title.gold { color: var(--gold); }
         .close-icon { cursor: pointer; font-size: 1.5rem; color: var(--gold); transition: 0.2s;}
         .close-icon:hover { color: #fff; }
-
         .modal-body { padding: 20px; overflow-y: auto; }
-        
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; color: var(--gold); font-size: 0.8rem; margin-bottom: 5px; font-family: var(--font-mono); }
         .input-box { width: 100%; padding: 12px; background: #0a0e0a; border: 1px solid var(--olive); color: #fff; font-family: var(--font-mono); outline: none; transition: 0.3s; }
         .input-box:focus { border-color: var(--green); }
-
         .btn-row { display: flex; gap: 10px; margin-top: 20px; }
         .btn { flex: 1; padding: 12px; border: none; font-weight: bold; cursor: pointer; font-family: var(--font-head); text-transform: uppercase; }
         .btn-primary { background: var(--green); color: #000; }
         .btn-primary:hover { background: var(--gold); }
         .btn-sec { background: transparent; border: 1px solid var(--olive); color: #888; }
         .btn-sec:hover { color: #fff; border-color: #fff; }
-
         .cart-item { display: flex; justify-content: space-between; padding: 10px; background: #000; border-left: 2px solid var(--olive); margin-bottom: 8px; }
         .cart-remove { color: #d64a4a; cursor: pointer; font-size: 0.8rem; font-weight: bold; }
         .summary-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed var(--olive); font-family: var(--font-mono); font-size: 0.9rem; }
         .total-row { border-top: 2px solid var(--green); border-bottom: none; padding-top: 15px; font-size: 1.2rem; color: var(--gold); font-weight: bold; margin-top: 10px;}
-
-        /* --- IMAGE PREVIEW MODAL --- */
         #img-view-modal { position: fixed; inset: 0; z-index: 11000; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); display: none; justify-content: center; align-items: center; cursor: pointer; }
         #img-view-content { max-width: 95%; max-height: 90%; border: 2px solid var(--gold); box-shadow: 0 0 50px rgba(214, 194, 106, 0.2); object-fit: contain; }
-
         @media(max-width: 600px) {
             .grid { grid-template-columns: 1fr 1fr; gap: 10px; }
             .card-img-wrap { height: 160px; }
@@ -163,107 +95,57 @@
     </style>
 </head>
 <body>
-    <!-- YOUR NAV BAR SPACER -->
     <div style="height: 75px;"></div>
-
     <div class="scanline"></div>
     <canvas id="bg-canvas"></canvas>
+    <div id="loader-wrapper"><h2 style="color:var(--gold); font-family:var(--font-mono)">OPENING SHOP</h2><div class="loader-bar"></div></div>
 
-    <div id="loader-wrapper">
-        <h2 style="color:var(--gold); font-family:var(--font-mono)">OPENING SHOP</h2>
-        <div class="loader-bar"></div>
-    </div>
-
-    <!-- MAIN PAGE TITLE -->
-    <header>
-        <div class="brand">ISHYA -26 <span>STORE & TICKETS</span></div>
-    </header>
+    <header><div class="brand">ISHYA -26 <span>STORE & TICKETS</span></div></header>
 
     <div class="container">
-        
         <!-- PROSHOW SECTION -->
         <div class="proshow-section">
             <h2 class="proshow-title">PROSHOW TICKETS</h2>
             <img src="https://via.placeholder.com/800x300/181C10/D6C26A?text=PROSHOW+BANNER" alt="Proshow Banner" class="proshow-banner">
             <button class="add-btn btn-large" onclick="openProshowModal()">BUY TICKETS NOW</button>
         </div>
-
         <!-- MERCHANDISE SECTION -->
         <h2 class="section-title">MERCHANDISE</h2>
         <div class="grid" id="productGrid"></div>
-
     </div>
 
-    <!-- FLOATING CART BUTTON -->
     <button class="cart-btn" onclick="openCart()">CART [<span id="cartCount">0</span>]</button>
-
-    <!-- CORNER TOAST -->
-    <div id="toast" class="toast">
-        <span class="toast-msg">ITEM ADDED</span>
-        <span class="toast-sub">CHECK CART TO CHECKOUT</span>
-    </div>
+    <div id="toast" class="toast"><span class="toast-msg">ITEM ADDED</span><span class="toast-sub">CHECK CART TO CHECKOUT</span></div>
 
     <!-- MERCHANDISE MODAL -->
     <div class="modal-overlay" id="mainModal">
         <div class="modal">
-            <div class="modal-header">
-                <span class="modal-title" id="modalTitle">CART</span>
-                <span class="close-icon" onclick="closeModal()">&times;</span>
-            </div>
+            <div class="modal-header"><span class="modal-title" id="modalTitle">CART</span><span class="close-icon" onclick="closeModal()">&times;</span></div>
             <div class="modal-body" id="modalContent"></div>
         </div>
     </div>
 
-    <!-- PROSHOW FULL PAGE MODAL -->
+    <!-- PROSHOW MODAL -->
     <div id="proshow-modal-overlay">
         <div class="proshow-container">
-            <div class="modal-header gold-bg">
-                <span class="modal-title gold" id="psTitle">PROSHOW REGISTRATION</span>
-                <span class="close-icon" onclick="closeProshowModal()">&times;</span>
-            </div>
+            <div class="modal-header gold-bg"><span class="modal-title gold" id="psTitle">PROSHOW REGISTRATION</span><span class="close-icon" onclick="closeProshowModal()">&times;</span></div>
             <div class="modal-body" id="psContent"></div>
         </div>
     </div>
 
-    <!-- IMAGE PREVIEW MODAL -->
     <div id="img-view-modal" onclick="closeImageModal()"><img id="img-view-content" src="" alt="Zoomed"></div>
 
     <script>
         // ========================================================
-        // 🚨 CONFIGURATION - PASTE YOUR URLs HERE 🚨
+        // 🚨 PASTE YOUR URLs HERE
         // ========================================================
-        
-        // 1. Merchandise API URL
         const MERCH_API = "https://script.google.com/macros/s/AKfycbyld8a111hLb9SydZmH6K2dTAlAMG8a0HPdJ-oxoy8jjq01pkCLGwV5NInelko4QJpj5A/exec";
+        const PROSHOW_API = "https://script.google.com/macros/s/AKfycbwOU1Ts7NylTK2sCcHCm294DK69SgrhKQVycXniV2GI2pdQzxmdQ6z2LgCJsaITUtcrIA/exec"; 
         
-        // 2. Proshow API URL (Paste the one you got from Deploy -> New Version)
-        // IMPORTANT: Must end in /exec
-        const PROSHOW_API = "https://script.google.com/macros/s/AKfycbwnkna9dFLdK7jvQ94nMlWEZ2lLHEPSJIjaXOiy2ONso2bQ2N8uOQSEkGujYChOa--L1g/exec"; 
-        
-        // Ticket Prices
-        const TICKET_PRICES = {
-            "Student": 300,
-            "Faculty": 300,
-            "External": 300
-        };
+        const TICKET_PRICES = { "Student": 300, "Faculty": 500, "External": 800 };
+        let BATCH_UPI_MAP_MERCH = {}, BATCH_UPI_MAP_PROSHOW = {}, products = [], cart = [], userDetails = {}, psDetails = {}, productImageRegistry = {}; 
 
-        // ================= STATE =================
-        let BATCH_UPI_MAP_MERCH = {};
-        let BATCH_UPI_MAP_PROSHOW = {};
-        
-        let products = [];
-        let cart = [];
-        let userDetails = {}; // For Merch
-        let psDetails = {}; // For Proshow
-        
-        let productImageRegistry = {}; 
-
-        // ================= INITIALIZATION =================
-        window.onload = () => { 
-            initCanvas(); 
-            fetchMerchData(); 
-            fetchProshowData(); 
-        };
+        window.onload = () => { initCanvas(); fetchMerchData(); fetchProshowData(); };
 
         async function fetchMerchData() {
             try {
@@ -288,39 +170,18 @@
         function renderProducts() {
             const grid = document.getElementById('productGrid');
             grid.innerHTML = ""; productImageRegistry = {};
-            
             grid.innerHTML = products.map(p => {
                 const imgList = p.images ? p.images.split(',').map(s => s.trim()) : ['https://via.placeholder.com/300x300/181C10/4D8F48?text=NO+IMAGE'];
                 productImageRegistry[p.id] = { currentIdx: 0, images: imgList, timer: null };
-                
                 const isOutOfStock = (p.stock || "").toString().toLowerCase().trim() === "out of stock";
                 const disabledAttr = isOutOfStock ? 'disabled' : '';
                 const oosBadge = isOutOfStock ? `<div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%) rotate(-10deg); background:rgba(0,0,0,0.8); border:2px solid #d64a4a; color:#d64a4a; padding:10px 15px; font-weight:bold; z-index:20; font-family:var(--font-mono); white-space:nowrap; pointer-events:none; letter-spacing: 2px;">OUT OF STOCK</div>` : '';
                 const btnHtml = isOutOfStock ? `<button class="add-btn" disabled style="background:#222; color:#555; cursor:not-allowed;">OUT OF STOCK</button>` : `<button class="add-btn" onclick="addToCart('${p.id}')">ADD TO CART</button>`;
                 const navHtml = imgList.length > 1 ? `<div class="nav-arrow nav-prev" onclick="navigateImage('${p.id}', -1, event)">&lt;</div><div class="nav-arrow nav-next" onclick="navigateImage('${p.id}', 1, event)">&gt;</div><div class="img-counter" id="cnt-${p.id}">1/${imgList.length}</div>` : '';
 
-                return `
-                <div class="card">
-                    <div class="card-img-wrap" onmouseenter="pauseSlide('${p.id}')" onmouseleave="resumeSlide('${p.id}')">
-                        ${navHtml}${oosBadge}
-                        <img id="img-${p.id}" src="${imgList[0]}" class="card-img" onclick="openImageModal(this.src)" onerror="this.src='https://via.placeholder.com/300x300/181C10/4D8F48?text=ERROR'">
-                    </div>
-                    <div class="card-info">
-                        <span class="cat-tag">${p.category}</span>
-                        <h3>${p.name}</h3>
-                        <p class="card-desc">${p.description || ''}</p>
-                        <span class="card-price">₹${p.price}</span>
-                        <div class="controls">
-                            <select id="size-${p.id}" style="flex:1" ${disabledAttr}>${(p.sizes || 'One Size').split(',').map(s=>`<option>${s.trim()}</option>`).join('')}</select>
-                            <input type="number" id="qty-${p.id}" value="1" min="1" ${disabledAttr}>
-                        </div>
-                        ${btnHtml}
-                    </div>
-                </div>`
-            }).join('');
+                return `<div class="card"><div class="card-img-wrap" onmouseenter="pauseSlide('${p.id}')" onmouseleave="resumeSlide('${p.id}')">${navHtml}${oosBadge}<img id="img-${p.id}" src="${imgList[0]}" class="card-img" onclick="openImageModal(this.src)" onerror="this.src='https://via.placeholder.com/300x300/181C10/4D8F48?text=ERROR'"></div><div class="card-info"><span class="cat-tag">${p.category}</span><h3>${p.name}</h3><p class="card-desc">${p.description || ''}</p><span class="card-price">₹${p.price}</span><div class="controls"><select id="size-${p.id}" style="flex:1" ${disabledAttr}>${(p.sizes || 'One Size').split(',').map(s=>`<option>${s.trim()}</option>`).join('')}</select><input type="number" id="qty-${p.id}" value="1" min="1" ${disabledAttr}></div>${btnHtml}</div></div>`}).join('');
             initSlideshows();
         }
-
         function navigateImage(pid, dir, event) { if(event) event.stopPropagation(); const state = productImageRegistry[pid]; if(!state || state.images.length <= 1) return; let newIdx = state.currentIdx + dir; if (newIdx >= state.images.length) newIdx = 0; if (newIdx < 0) newIdx = state.images.length - 1; state.currentIdx = newIdx; updateCardImage(pid); }
         function updateCardImage(pid) { const state = productImageRegistry[pid], imgEl = document.getElementById(`img-${pid}`), cntEl = document.getElementById(`cnt-${pid}`); if(imgEl) { imgEl.style.opacity = '0.5'; setTimeout(() => { imgEl.src = state.images[state.currentIdx]; imgEl.onload = () => { imgEl.style.opacity = '1'; }; }, 150); } if(cntEl) cntEl.innerText = `${state.currentIdx + 1}/${state.images.length}`; }
         function initSlideshows() { setInterval(() => { for(let pid in productImageRegistry) { const state = productImageRegistry[pid]; if(state.images.length > 1 && !state.paused) navigateImage(pid, 1, null); } }, 3500); }
@@ -328,8 +189,6 @@
         function resumeSlide(pid) { if(productImageRegistry[pid]) productImageRegistry[pid].paused = false; }
         function openImageModal(src) { document.getElementById('img-view-content').src = src; document.getElementById('img-view-modal').style.display = 'flex'; }
         function closeImageModal() { document.getElementById('img-view-modal').style.display = 'none'; }
-
-        // ================= HELPER =================
         function getBatchOptions(selectedValue, mapType) {
             let options = `<option value="">-- SELECT BATCH --</option>`;
             let mapToUse = (mapType === 'PROSHOW') ? BATCH_UPI_MAP_PROSHOW : BATCH_UPI_MAP_MERCH;
@@ -338,93 +197,54 @@
             return options;
         }
 
-        // ================= MERCH CART LOGIC =================
+        // ================= MERCH LOGIC =================
         function addToCart(pid) { const p = products.find(x => String(x.id) === String(pid)), size = document.getElementById(`size-${pid}`).value, qty = parseInt(document.getElementById(`qty-${pid}`).value); if(qty <= 0) return; const ex = cart.find(i => i.id === p.id && i.size === size); if(ex) ex.qty += qty; else cart.push({ ...p, size, qty }); updateCartCount(); showToast(); }
         function updateCartCount() { document.getElementById('cartCount').innerText = cart.reduce((a, b) => a + b.qty, 0); }
         function removeFromCart(idx) { cart.splice(idx, 1); updateCartCount(); renderCartStep(); }
         function showToast() { const t = document.getElementById('toast'); t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
-
         const modal = document.getElementById('mainModal'), mTitle = document.getElementById('modalTitle'), mBody = document.getElementById('modalContent');
         function closeModal() { modal.style.display = 'none'; }
         function openCart() { modal.style.display = 'flex'; renderCartStep(); }
-
         function renderCartStep() {
             mTitle.innerText = "INVENTORY CHECK";
             if(cart.length === 0) { mBody.innerHTML = `<p style="text-align:center; color:#666; padding:20px;">Cart is empty.</p><button class="btn btn-sec" onclick="closeModal()">RETURN</button>`; return; }
             let total = 0; const html = cart.map((item, i) => { total += item.price * item.qty; return `<div class="cart-item"><div><div style="color:#fff; font-weight:bold">${item.name}</div><div style="color:#888; font-size:0.8rem">${item.size} x ${item.qty}</div></div><div style="text-align:right"><div style="color:var(--gold)">₹${item.price * item.qty}</div><span class="cart-remove" onclick="removeFromCart(${i})">REMOVE</span></div></div>`; }).join('');
             mBody.innerHTML = `${html}<div style="text-align:right; margin-top:15px; font-size:1.2rem; color:var(--green); font-weight:bold">TOTAL: ₹${total}</div><div class="btn-row"><button class="btn btn-sec" onclick="closeModal()">CLOSE</button><button class="btn btn-primary" onclick="renderDetailsStep()">CHECKOUT</button></div>`;
         }
-
         function renderDetailsStep() {
             mTitle.innerText = "OPERATOR DETAILS";
-            mBody.innerHTML = `
-            <form onsubmit="event.preventDefault(); userDetails={name:document.getElementById('cName').value, email:document.getElementById('cEmail').value, phone:document.getElementById('cPhone').value, roll:document.getElementById('cRoll').value, batch:document.getElementById('cBatch').value, address:document.getElementById('cAddress').value}; renderSummaryStep();">
-                <div class="form-group"><label>FULL NAME</label><input class="input-box" id="cName" required value="${userDetails.name||''}"></div>
-                <div class="form-group"><label>EMAIL</label><input class="input-box" type="email" id="cEmail" required value="${userDetails.email||''}"></div>
-                <div class="form-group"><label>PHONE</label><input class="input-box" type="tel" id="cPhone" required value="${userDetails.phone||''}"></div>
-                <div class="form-group"><label>ROLL NO</label><input class="input-box" id="cRoll" value="${userDetails.roll||''}"></div>
-                <div class="form-group"><label>BATCH (Crucial)</label><select class="input-box" id="cBatch" required>${getBatchOptions(userDetails.batch, 'MERCH')}</select></div>
-                <div class="form-group"><label>ADDRESS</label><input class="input-box" id="cAddress" value="${userDetails.address||''}"></div>
-                <div class="btn-row"><button type="button" class="btn btn-sec" onclick="renderCartStep()">BACK</button><button type="submit" class="btn btn-primary">REVIEW</button></div>
-            </form>`;
+            mBody.innerHTML = `<form onsubmit="event.preventDefault(); userDetails={name:document.getElementById('cName').value, email:document.getElementById('cEmail').value, phone:document.getElementById('cPhone').value, roll:document.getElementById('cRoll').value, batch:document.getElementById('cBatch').value, address:document.getElementById('cAddress').value}; renderSummaryStep();"><div class="form-group"><label>FULL NAME</label><input class="input-box" id="cName" required value="${userDetails.name||''}"></div><div class="form-group"><label>EMAIL</label><input class="input-box" type="email" id="cEmail" required value="${userDetails.email||''}"></div><div class="form-group"><label>PHONE</label><input class="input-box" type="tel" id="cPhone" required value="${userDetails.phone||''}"></div><div class="form-group"><label>ROLL NO</label><input class="input-box" id="cRoll" value="${userDetails.roll||''}"></div><div class="form-group"><label>BATCH (Crucial)</label><select class="input-box" id="cBatch" required>${getBatchOptions(userDetails.batch, 'MERCH')}</select></div><div class="form-group"><label>ADDRESS</label><input class="input-box" id="cAddress" value="${userDetails.address||''}"></div><div class="btn-row"><button type="button" class="btn btn-sec" onclick="renderCartStep()">BACK</button><button type="submit" class="btn btn-primary">REVIEW</button></div></form>`;
         }
-
         function renderSummaryStep() {
             mTitle.innerText = "CONFIRM MANIFEST";
             const total = cart.reduce((a,b) => a + (b.price*b.qty), 0);
             let summary = cart.map(i => `<div class="summary-row"><span>${i.name} (${i.size}) x${i.qty}</span><span>₹${i.price*i.qty}</span></div>`).join('');
             mBody.innerHTML = `<div style="background:#000; padding:15px; border:1px solid var(--olive); margin-bottom:15px;"><div class="summary-row"><span style="color:#888">NAME</span><span>${userDetails.name}</span></div><hr style="border-color:var(--olive); margin:10px 0; border-style:dashed;">${summary}<div class="summary-row total-row"><span>TOTAL</span><span>₹${total}</span></div></div><div class="btn-row"><button class="btn btn-sec" onclick="renderDetailsStep()">EDIT</button><button class="btn btn-primary" onclick="renderPaymentStep()">PAY</button></div>`;
         }
-
         function renderPaymentStep() {
             mTitle.innerText = "PAYMENT UPLINK";
             const total = cart.reduce((a,b) => a + (b.price*b.qty), 0);
             let batchInfo = BATCH_UPI_MAP_MERCH[userDetails.batch] || BATCH_UPI_MAP_MERCH["OTHERS"] || { id: "", name: "Unknown" };
             const upiLink = `upi://pay?pa=${batchInfo.upi}&pn=${encodeURIComponent(batchInfo.name)}&am=${total}&tn=MerchOrder`;
-            
-            mBody.innerHTML = `
-            <div style="text-align:center">
-                <h3 style="color:var(--green);">${batchInfo.name}</h3>
-                <div id="qr-container" style="background:#fff; padding:10px; display:inline-block; border:4px solid var(--gold); margin:10px 0;"></div>
-                <a href="${upiLink}" class="btn btn-primary" style="display:block; text-decoration:none; padding:15px;">PAY NOW VIA UPI APP</a>
-                <div class="form-group" style="text-align:left; margin-top:20px;">
-                    <label>UPLOAD SCREENSHOT</label>
-                    <input type="file" id="receiptFile" accept="image/*" class="input-box" style="padding:5px;">
-                </div>
-            </div>
-            <div class="btn-row">
-                <button class="btn btn-sec" onclick="renderSummaryStep()">BACK</button>
-                <button class="btn btn-primary" onclick="submitFinalOrder()" id="btnSubmit">CONFIRM</button>
-            </div>`;
+            mBody.innerHTML = `<div style="text-align:center"><h3 style="color:var(--green);">${batchInfo.name}</h3><div id="qr-container" style="background:#fff; padding:10px; display:inline-block; border:4px solid var(--gold); margin:10px 0;"></div><a href="${upiLink}" class="btn btn-primary" style="display:block; text-decoration:none; padding:15px;">PAY NOW VIA UPI APP</a><div class="form-group" style="text-align:left; margin-top:20px;"><label>UPLOAD SCREENSHOT</label><input type="file" id="receiptFile" accept="image/*" class="input-box" style="padding:5px;"></div></div><div class="btn-row"><button class="btn btn-sec" onclick="renderSummaryStep()">BACK</button><button class="btn btn-primary" onclick="submitFinalOrder()" id="btnSubmit">CONFIRM</button></div>`;
             setTimeout(() => new QRCode(document.getElementById("qr-container"), { text: upiLink, width: 150, height: 150 }), 100);
         }
-
         async function submitFinalOrder() {
-            const fileInput = document.getElementById('receiptFile'); 
-            if(!fileInput.files[0]) return alert("Screenshot required.");
+            const fileInput = document.getElementById('receiptFile'); if(!fileInput.files[0]) return alert("Screenshot required.");
             const btn = document.getElementById('btnSubmit'); btn.innerText = "TRANSMITTING..."; btn.disabled = true;
             const reader = new FileReader(); reader.readAsDataURL(fileInput.files[0]);
             reader.onload = async () => {
                 try {
                     const total = cart.reduce((a,b) => a + (b.price*b.qty), 0);
-                    const payload = { 
-                        orderId: "ORD-" + Math.floor(100000 + Math.random() * 900000), 
-                        customerName: userDetails.name, customerEmail: userDetails.email, 
-                        customerPhone: userDetails.phone, rollNumber: userDetails.roll || "N/A", 
-                        batch: userDetails.batch, address: userDetails.address || "N/A", 
-                        totalPrice: total, cart: cart, receiptImage: reader.result 
-                    };
+                    const payload = { orderId: "ORD-" + Math.floor(100000 + Math.random() * 900000), customerName: userDetails.name, customerEmail: userDetails.email, customerPhone: userDetails.phone, rollNumber: userDetails.roll || "N/A", batch: userDetails.batch, address: userDetails.address || "N/A", totalPrice: total, cart: cart, receiptImage: reader.result };
                     const res = await fetch(MERCH_API, { method: "POST", body: JSON.stringify(payload) });
                     const result = await res.json();
-                    if(result.status === 'success') { 
-                        mBody.innerHTML = `<div style="text-align:center; padding:30px;"><h2 style="color:var(--green)">ORDER SECURED</h2><button class="btn btn-primary" onclick="window.location.reload()" style="margin-top:20px;">DISMISS</button></div>`; 
-                        cart = []; updateCartCount(); 
-                    } else throw new Error(result.message);
+                    if(result.status === 'success') { mBody.innerHTML = `<div style="text-align:center; padding:30px;"><h2 style="color:var(--green)">ORDER SECURED</h2><button class="btn btn-primary" onclick="window.location.reload()" style="margin-top:20px;">DISMISS</button></div>`; cart = []; updateCartCount(); } else throw new Error(result.message);
                 } catch (e) { alert("Failed: " + e.message); btn.innerText = "RETRY"; btn.disabled = false; }
             };
         }
 
-        // ================= PROSHOW MODALS & LOGIC =================
+        // ================= PROSHOW LOGIC =================
         const psOverlay = document.getElementById('proshow-modal-overlay');
         const psContent = document.getElementById('psContent');
         const psTitle = document.getElementById('psTitle');
@@ -434,41 +254,11 @@
 
         function renderPsDetails() {
             psTitle.innerText = "PROSHOW REGISTRATION";
-            psContent.innerHTML = `
-                <form onsubmit="event.preventDefault(); savePsDetails();">
-                    <div class="form-group"><label>FULL NAME</label><input class="input-box" id="pName" required value="${psDetails.name||''}"></div>
-                    <div class="form-group"><label>EMAIL (For E-Ticket)</label><input class="input-box" type="email" id="pEmail" required value="${psDetails.email||''}"></div>
-                    <div class="form-group"><label>PHONE</label><input class="input-box" type="tel" id="pPhone" required value="${psDetails.phone||''}"></div>
-                    
-                    <div class="form-group" style="border-left: 3px solid var(--gold); padding-left: 10px; margin: 20px 0;">
-                        <label style="color:#fff;">TICKET CATEGORY</label>
-                        <select class="input-box" id="pType" required style="border-color: var(--gold); font-size:1.1rem; padding: 15px;">
-                            <option value="">-- SELECT --</option>
-                            <option value="Student" ${psDetails.type==='Student'?'selected':''}>STUDENT - ₹${TICKET_PRICES["Student"]}</option>
-                            <option value="Faculty" ${psDetails.type==='Faculty'?'selected':''}>FACULTY - ₹${TICKET_PRICES["Faculty"]}</option>
-                            <option value="External" ${psDetails.type==='External'?'selected':''}>EXTERNAL - ₹${TICKET_PRICES["External"]}</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group"><label>ROLL NO</label><input class="input-box" id="pRoll" value="${psDetails.roll||''}"></div>
-                    <div class="form-group"><label>BATCH (Crucial)</label><select class="input-box" id="pBatch" required>${getBatchOptions(psDetails.batch, 'PROSHOW')}</select></div>
-                    <div class="form-group"><label>AFFILIATION</label><input class="input-box" id="pAffil" value="${psDetails.affiliation||''}"></div>
-                    
-                    <div class="btn-row">
-                        <button type="button" class="btn btn-sec" onclick="closeProshowModal()">CANCEL</button>
-                        <button type="submit" class="btn btn-primary" style="background:var(--gold)">NEXT</button>
-                    </div>
-                </form>
-            `;
+            psContent.innerHTML = `<form onsubmit="event.preventDefault(); savePsDetails();"><div class="form-group"><label>FULL NAME</label><input class="input-box" id="pName" required value="${psDetails.name||''}"></div><div class="form-group"><label>EMAIL (For E-Ticket)</label><input class="input-box" type="email" id="pEmail" required value="${psDetails.email||''}"></div><div class="form-group"><label>PHONE</label><input class="input-box" type="tel" id="pPhone" required value="${psDetails.phone||''}"></div><div class="form-group" style="border-left: 3px solid var(--gold); padding-left: 10px; margin: 20px 0;"><label style="color:#fff;">TICKET CATEGORY</label><select class="input-box" id="pType" required style="border-color: var(--gold); font-size:1.1rem; padding: 15px;"><option value="">-- SELECT --</option><option value="Student" ${psDetails.type==='Student'?'selected':''}>STUDENT - ₹${TICKET_PRICES["Student"]}</option><option value="Faculty" ${psDetails.type==='Faculty'?'selected':''}>FACULTY - ₹${TICKET_PRICES["Faculty"]}</option><option value="External" ${psDetails.type==='External'?'selected':''}>EXTERNAL - ₹${TICKET_PRICES["External"]}</option></select></div><div class="form-group"><label>ROLL NO</label><input class="input-box" id="pRoll" value="${psDetails.roll||''}"></div><div class="form-group"><label>BATCH (Crucial)</label><select class="input-box" id="pBatch" required>${getBatchOptions(psDetails.batch, 'PROSHOW')}</select></div><div class="form-group"><label>AFFILIATION</label><input class="input-box" id="pAffil" value="${psDetails.affiliation||''}"></div><div class="btn-row"><button type="button" class="btn btn-sec" onclick="closeProshowModal()">CANCEL</button><button type="submit" class="btn btn-primary" style="background:var(--gold)">NEXT</button></div></form>`;
         }
 
         function savePsDetails() {
-            psDetails = { 
-                name: document.getElementById('pName').value, email: document.getElementById('pEmail').value, 
-                phone: document.getElementById('pPhone').value, type: document.getElementById('pType').value, 
-                roll: document.getElementById('pRoll').value, batch: document.getElementById('pBatch').value, 
-                affiliation: document.getElementById('pAffil').value 
-            };
+            psDetails = { name: document.getElementById('pName').value, email: document.getElementById('pEmail').value, phone: document.getElementById('pPhone').value, type: document.getElementById('pType').value, roll: document.getElementById('pRoll').value, batch: document.getElementById('pBatch').value, affiliation: document.getElementById('pAffil').value };
             renderPsPayment();
         }
 
@@ -478,27 +268,7 @@
             let batchInfo = BATCH_UPI_MAP_PROSHOW[psDetails.batch] || BATCH_UPI_MAP_PROSHOW["OTHERS"] || { id: "", name: "Unknown Receiver" };
             const upiLink = `upi://pay?pa=${batchInfo.upi}&pn=${encodeURIComponent(batchInfo.name)}&am=${price}&tn=ProshowTicket`;
 
-            psContent.innerHTML = `
-                <div style="text-align:center; background:#0a0e0a; padding: 20px; border: 1px solid var(--olive); margin-bottom: 20px;">
-                    <p style="color:#888; margin-bottom: 5px;">${psDetails.type.toUpperCase()}</p>
-                    <h2 style="color:var(--gold); font-size: 2.5rem; margin-bottom: 5px;">₹${price}</h2>
-                    <p style="font-size:0.8rem; color:#666;">PAY TO: ${batchInfo.name}</p>
-                </div>
-                
-                <div style="text-align:center">
-                    <div id="ps-qr-container" style="background:#fff; padding:10px; display:inline-block; border:4px solid var(--gold); margin-bottom:15px;"></div>
-                    <a href="${upiLink}" class="btn btn-primary" style="display:block; text-decoration:none; padding:15px; margin-bottom:20px;">OPEN UPI APP</a>
-                    
-                    <div class="form-group" style="text-align:left; border-top:1px dashed var(--olive); padding-top:15px;">
-                        <label style="color:var(--gold); font-size: 1rem;">SCREENSHOT (REQUIRED)</label>
-                        <input type="file" id="psReceiptFile" accept="image/*" class="input-box" style="padding:10px;">
-                    </div>
-                </div>
-                <div class="btn-row">
-                    <button class="btn btn-sec" onclick="renderPsDetails()">BACK</button>
-                    <button class="btn btn-primary" onclick="submitProshowOrder()" id="btnPsSubmit" style="background:var(--gold)">VERIFY & GENERATE</button>
-                </div>
-            `;
+            psContent.innerHTML = `<div style="text-align:center; background:#0a0e0a; padding: 20px; border: 1px solid var(--olive); margin-bottom: 20px;"><p style="color:#888; margin-bottom: 5px;">${psDetails.type.toUpperCase()}</p><h2 style="color:var(--gold); font-size: 2.5rem; margin-bottom: 5px;">₹${price}</h2><p style="font-size:0.8rem; color:#666;">PAY TO: ${batchInfo.name}</p></div><div style="text-align:center"><div id="ps-qr-container" style="background:#fff; padding:10px; display:inline-block; border:4px solid var(--gold); margin-bottom:15px;"></div><a href="${upiLink}" class="btn btn-primary" style="display:block; text-decoration:none; padding:15px; margin-bottom:20px;">OPEN UPI APP</a><div class="form-group" style="text-align:left; border-top:1px dashed var(--olive); padding-top:15px;"><label style="color:var(--gold); font-size: 1rem;">SCREENSHOT (REQUIRED)</label><input type="file" id="psReceiptFile" accept="image/*" class="input-box" style="padding:10px;"></div></div><div class="btn-row"><button class="btn btn-sec" onclick="renderPsDetails()">BACK</button><button class="btn btn-primary" onclick="submitProshowOrder()" id="btnPsSubmit" style="background:var(--gold)">VERIFY & GENERATE</button></div>`;
             setTimeout(() => new QRCode(document.getElementById("ps-qr-container"), { text: upiLink, width: 180, height: 180 }), 100);
         }
 
@@ -506,6 +276,7 @@
             const fileInput = document.getElementById('psReceiptFile');
             if(!fileInput.files[0]) return alert("Screenshot is mandatory to generate your E-Ticket.");
             if(PROSHOW_API.includes("YOUR_PROSHOW")) return alert("Developer Error: Proshow API endpoint is not set.");
+            if(fileInput.files[0].size > 4 * 1024 * 1024) return alert("File is too large. Please use a screenshot smaller than 4MB.");
 
             const btn = document.getElementById('btnPsSubmit'); 
             btn.innerText = "GENERATING TICKET..."; btn.disabled = true;
@@ -513,42 +284,24 @@
             const reader = new FileReader(); reader.readAsDataURL(fileInput.files[0]);
             reader.onload = async () => {
                 try {
-                    // WE SEND THE API URL TO THE BACKEND SO IT CAN MAKE THE QR CODE
-                    const payload = { 
-                        ...psDetails, 
-                        receiptImage: reader.result,
-                        webAppUrl: PROSHOW_API // <--- FIX FOR THE CHICKEN AND EGG PROBLEM
-                    };
-
-                    const res = await fetch(PROSHOW_API, { method: "POST", body: JSON.stringify(payload) });
+                    const payload = { ...psDetails, receiptImage: reader.result, webAppUrl: PROSHOW_API };
+                    // 🚨 MAGIC FIX: CORS bypass via text/plain
+                    const res = await fetch(PROSHOW_API, { method: "POST", body: JSON.stringify(payload), headers: { "Content-Type": "text/plain" } });
                     const result = await res.json();
                     
                     if(result.status === 'success') { 
                         psTitle.innerText = "TICKET ISSUED";
-                        psContent.innerHTML = `
-                        <div style="text-align:center; padding:30px;">
-                            <h2 style="color:var(--green); font-size: 2rem; margin-bottom: 10px;">SUCCESS</h2>
-                            <div style="background: #000; padding: 15px; border: 2px dashed var(--gold); display: inline-block; font-size: 1.5rem; font-family: var(--font-mono); color: #fff; margin-bottom: 20px;">
-                                ${result.ticketId}
-                            </div>
-                            <p style="color:#888;">Check email: <b>${psDetails.email}</b></p>
-                            <button class="btn btn-primary" onclick="closeProshowModal()" style="margin-top:30px; background:var(--gold)">CLOSE</button>
-                        </div>`; 
+                        psContent.innerHTML = `<div style="text-align:center; padding:30px;"><h2 style="color:var(--green); font-size: 2rem; margin-bottom: 10px;">SUCCESS</h2><div style="background: #000; padding: 15px; border: 2px dashed var(--gold); display: inline-block; font-size: 1.5rem; font-family: var(--font-mono); color: #fff; margin-bottom: 20px;">${result.ticketId}</div><p style="color:#888;">Check email: <b>${psDetails.email}</b></p><button class="btn btn-primary" onclick="closeProshowModal()" style="margin-top:30px; background:var(--gold)">CLOSE</button></div>`; 
                     } else throw new Error(result.message);
                 } catch (e) { alert("Ticket Generation Failed: " + e.message); btn.innerText = "RETRY"; btn.disabled = false; }
             };
         }
 
-        // ================= BACKGROUND CANVAS =================
         function initCanvas() {
             const canvas = document.getElementById('bg-canvas'); const ctx = canvas.getContext('2d');
             canvas.width = window.innerWidth; canvas.height = window.innerHeight;
             const particles = Array.from({length:50}, () => ({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, s: Math.random()*2, d: Math.random()*0.5 + 0.1 }));
-            function animate() {
-                ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle = '#4D8F48';
-                particles.forEach(p => { p.y -= p.d; if(p.y < 0) p.y = canvas.height; ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, Math.PI*2); ctx.fill(); });
-                requestAnimationFrame(animate);
-            } animate();
+            function animate() { ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle = '#4D8F48'; particles.forEach(p => { p.y -= p.d; if(p.y < 0) p.y = canvas.height; ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, Math.PI*2); ctx.fill(); }); requestAnimationFrame(animate); } animate();
         }
     </script>
 </body>
