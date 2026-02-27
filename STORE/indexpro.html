@@ -4,377 +4,100 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ISHYA -26 STORE & TICKETS</title>
-    
-    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <!-- QRCode Lib -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
     <style>
-        /* --- THEME: TACTICAL BIO-DIGITAL --- */
-        :root {
-            --bg-deep: #060606;
-            --bg-panel: #181C10;
-            --gold: #D6C26A;
-            --olive: #3D4324;
-            --green: #4D8F48;
-            --text-main: #e0e5e0;
-            --font-head: 'Chakra Petch', sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
-        }
-
+        :root { --bg-deep: #060606; --bg-panel: #181C10; --gold: #D6C26A; --olive: #3D4324; --green: #4D8F48; --text-main: #e0e5e0; --font-head: 'Chakra Petch', sans-serif; --font-mono: 'JetBrains Mono', monospace; }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-        body {
-            background-color: var(--bg-deep);
-            color: var(--text-main);
-            font-family: var(--font-head);
-            overflow-x: hidden;
-        }
-
-        /* --- BACKGROUND FX --- */
-        #bg-canvas {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; 
-            background: radial-gradient(circle at center, #11150e 0%, #060606 100%);
-        }
-        .scanline {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9000;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
-            background-size: 100% 4px;
-        }
-
-        /* --- LOADER --- */
-        #loader-wrapper {
-            position: fixed; inset: 0; background: var(--bg-deep); z-index: 99999;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            transition: opacity 0.5s ease;
-        }
-        .loader-bar {
-            width: 200px; height: 4px; background: var(--olive); margin-top: 15px; position: relative; overflow: hidden;
-        }
-        .loader-bar::after {
-            content:''; position: absolute; top: 0; left: 0; width: 50%; height: 100%; background: var(--green);
-            animation: loadAnim 1s infinite ease-in-out;
-        }
-        @keyframes loadAnim { 0% { left: -50%; } 100% { left: 100%; } }
+        body { background-color: var(--bg-deep); color: var(--text-main); font-family: var(--font-head); overflow-x: hidden; }
+        #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at center, #11150e 0%, #060606 100%); }
+        .scanline { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9000; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%); background-size: 100% 4px; }
+        #loader-wrapper { position: fixed; inset: 0; background: var(--bg-deep); z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.5s ease; }
+        .loader-bar { width: 200px; height: 4px; background: var(--olive); margin-top: 15px; position: relative; overflow: hidden; }
+        .loader-bar::after { content:''; position: absolute; top: 0; left: 0; width: 50%; height: 100%; background: var(--green); animation: loadAnim 1s infinite ease-in-out; }
         body.loaded #loader-wrapper { opacity: 0; visibility: hidden; }
-
-        /* --- HEADER (PAGE TITLE) --- */
-        header { 
-            position: relative; 
-            width: 100%; z-index: 10;
-            display: flex; align-items: center; justify-content: center; 
-            padding: 40px 20px 10px 20px; 
-        }
-        
-        .brand { 
-            font-size: 2.2rem; font-weight: 700; color: var(--gold); 
-            letter-spacing: 2px; text-transform: uppercase; text-align: center;
-            line-height: 1;
-        }
-        .brand span { 
-            color: var(--green); font-size: 1rem; display: block; 
-            letter-spacing: 6px; margin-top: 5px;
-        }
-        
-        /* --- CART BTN --- */
-        .cart-btn {
-            position: fixed; right: 20px; bottom: 20px; z-index: 10001; 
-            background: var(--gold); color: #000; border: 2px solid #fff;
-            padding: 15px 25px; font-family: var(--font-mono); font-weight: bold; font-size: 1rem;
-            cursor: pointer;
-            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
-            transition: 0.3s;
-            box-shadow: 0 0 20px rgba(214, 194, 106, 0.5);
-            animation: pulseBtn 3s infinite;
-        }
-        .cart-btn:hover { background: #fff; transform: scale(1.05); box-shadow: 0 0 30px rgba(255,255,255,0.8); }
-
-        @keyframes pulseBtn {
-            0% { box-shadow: 0 0 0 0 rgba(214, 194, 106, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(214, 194, 106, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(214, 194, 106, 0); }
-        }
-
-        /* --- SECTIONS --- */
-        .section-title {
-            font-size: 2rem; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.3);
-            margin-bottom: 25px; padding-bottom: 10px; border-bottom: 2px solid var(--olive);
-            text-transform: uppercase; font-weight: 700; margin-top: 20px;
-            text-align: center; 
-        }
-
-        /* --- PROSHOW BANNER SECTION --- */
-        .proshow-section {
-            background: repeating-linear-gradient(45deg, #181C10, #181C10 10px, #0e110a 10px, #0e110a 20px);
-            border: 1px solid var(--gold);
-            padding: 40px;
-            margin-top: 60px; 
-            margin-bottom: 40px;
-            text-align: center;
-            position: relative;
-            clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
-        }
-        
-        .proshow-title {
-            font-size: 2rem; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.3);
-            margin-bottom: 20px; text-transform: uppercase;
-        }
-        
-        .proshow-banner { 
-            width: 100%; max-width: 800px; border: 2px solid var(--olive); border-radius: 8px; margin-bottom: 20px; transition: 0.3s; 
-        }
-        .proshow-banner:hover { border-color: var(--gold); box-shadow: 0 0 30px rgba(214, 194, 106, 0.2); }
-        .btn-large { font-size: 1.2rem; padding: 15px; max-width: 300px; margin: 0 auto; display: block; }
-
-
-        /* --- GRID LAYOUT --- */
+        header { position: relative; width: 100%; z-index: 10; display: flex; align-items: center; justify-content: center; padding: 40px 20px 10px 20px; }
+        .brand { font-size: 2.2rem; font-weight: 700; color: var(--gold); letter-spacing: 2px; text-transform: uppercase; text-align: center; line-height: 1; }
+        .brand span { color: var(--green); font-size: 1rem; display: block; letter-spacing: 6px; margin-top: 5px; }
+        .cart-btn { position: fixed; right: 20px; bottom: 20px; z-index: 10001; background: var(--gold); color: #000; border: 2px solid #fff; padding: 15px 25px; font-family: var(--font-mono); font-weight: bold; font-size: 1rem; cursor: pointer; clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px); transition: 0.3s; box-shadow: 0 0 20px rgba(214, 194, 106, 0.5); animation: pulseBtn 3s infinite; }
+        .cart-btn:hover { background: #fff; transform: scale(1.05); }
+        @keyframes pulseBtn { 0% { box-shadow: 0 0 0 0 rgba(214, 194, 106, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(214, 194, 106, 0); } 100% { box-shadow: 0 0 0 0 rgba(214, 194, 106, 0); } }
+        .section-title { font-size: 2rem; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.3); margin-bottom: 25px; padding-bottom: 10px; border-bottom: 2px solid var(--olive); text-transform: uppercase; font-weight: 700; margin-top: 20px; text-align: center; }
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; padding-bottom: 100px; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 25px; }
-
-        /* --- CARD DESIGN --- */
-        .card {
-            background: var(--bg-panel);
-            border: 1px solid var(--olive);
-            clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
-            transition: 0.3s ease; position: relative; display: flex; flex-direction: column;
-        }
-        .card:hover { 
-            border-color: var(--gold); transform: translateY(-3px); 
-            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-        }
-
-        .card-img-wrap { 
-            width: 100%; height: 220px; background: #000; padding: 5px; position: relative; overflow: hidden;
-            user-select: none;
-        }
-        .card-img { 
-            width: 100%; height: 100%; object-fit: cover; opacity: 0.8; transition: opacity 0.4s ease;
-            filter: grayscale(40%); cursor: zoom-in; display: block;
-        }
+        .card { background: var(--bg-panel); border: 1px solid var(--olive); clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px); transition: 0.3s ease; position: relative; display: flex; flex-direction: column; }
+        .card:hover { border-color: var(--gold); transform: translateY(-3px); box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
+        .card-img-wrap { width: 100%; height: 220px; background: #000; padding: 5px; position: relative; overflow: hidden; user-select: none; }
+        .card-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; transition: opacity 0.4s ease; filter: grayscale(40%); cursor: zoom-in; display: block; }
         .card:hover .card-img { opacity: 1; filter: grayscale(0%); }
-
-        .nav-arrow {
-            position: absolute; top: 50%; transform: translateY(-50%);
-            background: rgba(0,0,0,0.6); color: var(--gold);
-            border: 1px solid var(--olive);
-            width: 30px; height: 30px;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; z-index: 10; font-family: var(--font-mono); font-weight: bold;
-            transition: 0.2s; opacity: 0;
-        }
+        .nav-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.6); color: var(--gold); border: 1px solid var(--olive); width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; font-family: var(--font-mono); font-weight: bold; transition: 0.2s; opacity: 0; }
         .card-img-wrap:hover .nav-arrow { opacity: 1; }
         .nav-arrow:hover { background: var(--gold); color: #000; }
         .nav-prev { left: 5px; clip-path: polygon(10px 0, 100% 0, 100% 100%, 10px 100%, 0 50%); }
         .nav-next { right: 5px; clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 0 100%); }
-        
-        .img-counter {
-            position: absolute; bottom: 10px; right: 10px;
-            font-size: 0.6rem; color: #fff; background: rgba(0,0,0,0.7);
-            padding: 2px 4px; font-family: var(--font-mono); pointer-events: none;
-        }
-
+        .img-counter { position: absolute; bottom: 10px; right: 10px; font-size: 0.6rem; color: #fff; background: rgba(0,0,0,0.7); padding: 2px 4px; font-family: var(--font-mono); pointer-events: none; }
         .card-info { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; }
         .cat-tag { font-family: var(--font-mono); font-size: 0.65rem; background: var(--gold); padding: 2px 6px; display: inline-block; margin-bottom: 5px; color: #000; font-weight: bold;}
-        
         .card h3 { font-size: 1.1rem; margin-bottom: 5px; color: #fff; line-height: 1.2; }
-        .card-desc { 
-            font-size: 0.8rem; color: #888; margin-bottom: 10px; 
-            font-family: var(--font-mono); line-height: 1.4;
-            display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
-        }
-
+        .card-desc { font-size: 0.8rem; color: #888; margin-bottom: 10px; font-family: var(--font-mono); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
         .card-price { color: var(--green); font-family: var(--font-mono); font-size: 1.1rem; margin-bottom: 10px; display: block; }
-
         .controls { display: flex; gap: 5px; margin-top: auto; }
-        .controls select, .controls input {
-            background: #000; border: 1px solid var(--olive); color: #fff;
-            padding: 8px; font-family: var(--font-mono); font-size: 0.8rem; outline: none;
-        }
+        .controls select, .controls input { background: #000; border: 1px solid var(--olive); color: #fff; padding: 8px; font-family: var(--font-mono); font-size: 0.8rem; outline: none; }
         .controls input { width: 50px; text-align: center; }
         .controls select:disabled, .controls input:disabled { opacity: 0.5; cursor: not-allowed; }
-        
-        .add-btn {
-            width: 100%; margin-top: 10px; padding: 10px;
-            background: var(--green); color: #000; border: none;
-            font-family: var(--font-head); font-weight: 700; cursor: pointer;
-            clip-path: polygon(10px 0, 100% 0, 100% 100%, 0 100%, 0 10px);
-            transition: 0.2s;
-        }
+        .add-btn { width: 100%; margin-top: 10px; padding: 10px; background: var(--green); color: #000; border: none; font-family: var(--font-head); font-weight: 700; cursor: pointer; clip-path: polygon(10px 0, 100% 0, 100% 100%, 0 100%, 0 10px); transition: 0.2s; }
         .add-btn:hover:not(:disabled) { background: var(--gold); }
-
-        /* --- CORNER TOAST NOTIFICATION --- */
-        .toast {
-            position: fixed; bottom: 20px; left: 20px; transform: translateY(50px);
-            background: var(--bg-panel); color: var(--gold); border: 2px solid var(--gold);
-            padding: 15px 20px; text-align: left; box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-            font-weight: bold; opacity: 0; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 10002; pointer-events: none;
-            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
-            width: auto; min-width: 250px; max-width: 80%;
-        }
+        .proshow-section { background: repeating-linear-gradient(45deg, #181C10, #181C10 10px, #0e110a 10px, #0e110a 20px); border: 1px solid var(--gold); padding: 40px; margin-top: 60px; margin-bottom: 40px; text-align: center; position: relative; clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px); }
+        .proshow-title { font-size: 2rem; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.3); margin-bottom: 20px; text-transform: uppercase; }
+        .proshow-banner { width: 100%; max-width: 800px; border: 2px solid var(--olive); border-radius: 8px; margin-bottom: 20px; transition: 0.3s; }
+        .proshow-banner:hover { border-color: var(--gold); box-shadow: 0 0 30px rgba(214, 194, 106, 0.2); }
+        .btn-large { font-size: 1.2rem; padding: 15px; max-width: 300px; margin: 0 auto; display: block; }
+        .toast { position: fixed; bottom: 20px; left: 20px; transform: translateY(50px); background: var(--bg-panel); color: var(--gold); border: 2px solid var(--gold); padding: 15px 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.5); font-weight: bold; opacity: 0; transition: 0.4s; z-index: 10002; pointer-events: none; clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px); }
         .toast.show { transform: translateY(0); opacity: 1; }
         .toast-msg { display: block; margin-bottom: 5px; color: #fff; font-size: 1.1rem; }
         .toast-sub { display: block; font-family: var(--font-mono); font-size: 0.75rem; color: var(--green); }
-
-        /* --- MODAL SYSTEM --- */
-        .modal-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
-            z-index: 10005; display: none; align-items: center; justify-content: center;
-        }
-        .modal {
-            background: var(--bg-panel); width: 95%; max-width: 500px;
-            border: 1px solid var(--green); box-shadow: 0 0 30px rgba(77, 143, 72, 0.2);
-            display: flex; flex-direction: column; max-height: 90vh;
-        }
-        
-        #proshow-modal-overlay {
-            position: fixed; inset: 0; background: var(--bg-deep); z-index: 10010;
-            display: none; flex-direction: column; overflow-y: auto; padding: 30px 15px;
-        }
-        .proshow-container {
-            width: 100%; max-width: 600px; background: var(--bg-panel); margin: 0 auto;
-            border: 1px solid var(--gold); box-shadow: 0 0 40px rgba(214, 194, 106, 0.15);
-            display: flex; flex-direction: column;
-        }
-
-        .modal-header {
-            padding: 15px 20px; background: rgba(77, 143, 72, 0.1); border-bottom: 1px solid var(--olive);
-            display: flex; justify-content: space-between; align-items: center;
-        }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); z-index: 10005; display: none; align-items: center; justify-content: center; }
+        .modal { background: var(--bg-panel); width: 95%; max-width: 500px; border: 1px solid var(--green); box-shadow: 0 0 30px rgba(77, 143, 72, 0.2); display: flex; flex-direction: column; max-height: 90vh; }
+        #proshow-modal-overlay { position: fixed; inset: 0; background: var(--bg-deep); z-index: 10010; display: none; flex-direction: column; overflow-y: auto; padding: 30px 15px; }
+        .proshow-container { width: 100%; max-width: 600px; background: var(--bg-panel); margin: 0 auto; border: 1px solid var(--gold); box-shadow: 0 0 40px rgba(214, 194, 106, 0.15); display: flex; flex-direction: column; }
+        .modal-header { padding: 15px 20px; background: rgba(77, 143, 72, 0.1); border-bottom: 1px solid var(--olive); display: flex; justify-content: space-between; align-items: center; }
         .modal-header.gold-bg { background: rgba(214, 194, 106, 0.1); border-color: var(--gold); }
-        
         .modal-title { color: var(--green); font-size: 1.2rem; text-transform: uppercase; }
         .modal-title.gold { color: var(--gold); }
-        
-        .close-icon { cursor: pointer; font-size: 1.5rem; color: var(--gold); }
-
+        .close-icon { cursor: pointer; font-size: 1.5rem; color: var(--gold); transition: 0.2s;}
+        .close-icon:hover { color: #fff; }
         .modal-body { padding: 20px; overflow-y: auto; }
-        
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; color: var(--gold); font-size: 0.8rem; margin-bottom: 5px; font-family: var(--font-mono); }
-        .input-box {
-            width: 100%; padding: 12px; background: #0a0e0a; border: 1px solid var(--olive);
-            color: #fff; font-family: var(--font-mono); outline: none; transition: 0.3s;
-        }
+        .input-box { width: 100%; padding: 12px; background: #0a0e0a; border: 1px solid var(--olive); color: #fff; font-family: var(--font-mono); outline: none; transition: 0.3s; }
         .input-box:focus { border-color: var(--green); }
-
-        .cart-item {
-            display: flex; justify-content: space-between; padding: 10px;
-            background: #000; border-left: 2px solid var(--olive); margin-bottom: 8px;
-        }
-        .cart-remove { color: #d64a4a; cursor: pointer; font-size: 0.8rem; font-weight: bold; }
-
-        .summary-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed var(--olive); font-family: var(--font-mono); font-size: 0.9rem; }
-        .total-row { border-top: 2px solid var(--green); border-bottom: none; padding-top: 15px; font-size: 1.2rem; color: var(--gold); font-weight: bold; margin-top: 10px;}
-
         .btn-row { display: flex; gap: 10px; margin-top: 20px; }
         .btn { flex: 1; padding: 12px; border: none; font-weight: bold; cursor: pointer; font-family: var(--font-head); text-transform: uppercase; }
         .btn-primary { background: var(--green); color: #000; }
         .btn-primary:hover { background: var(--gold); }
         .btn-sec { background: transparent; border: 1px solid var(--olive); color: #888; }
         .btn-sec:hover { color: #fff; border-color: #fff; }
-
-        /* --- IMAGE PREVIEW MODAL --- */
-        #img-view-modal {
-            position: fixed; inset: 0; z-index: 11000;
-            background: rgba(0,0,0,0.95); backdrop-filter: blur(10px);
-            display: none; justify-content: center; align-items: center;
-            cursor: pointer;
-        }
-        #img-view-content {
-            max-width: 95%; max-height: 90%;
-            border: 2px solid var(--gold);
-            box-shadow: 0 0 50px rgba(214, 194, 106, 0.2);
-            object-fit: contain;
-        }
-
+        .cart-item { display: flex; justify-content: space-between; padding: 10px; background: #000; border-left: 2px solid var(--olive); margin-bottom: 8px; }
+        .cart-remove { color: #d64a4a; cursor: pointer; font-size: 0.8rem; font-weight: bold; }
+        .summary-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed var(--olive); font-family: var(--font-mono); font-size: 0.9rem; }
+        .total-row { border-top: 2px solid var(--green); border-bottom: none; padding-top: 15px; font-size: 1.2rem; color: var(--gold); font-weight: bold; margin-top: 10px;}
+        #img-view-modal { position: fixed; inset: 0; z-index: 11000; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); display: none; justify-content: center; align-items: center; cursor: pointer; }
+        #img-view-content { max-width: 95%; max-height: 90%; border: 2px solid var(--gold); box-shadow: 0 0 50px rgba(214, 194, 106, 0.2); object-fit: contain; }
         @media(max-width: 600px) {
             .grid { grid-template-columns: 1fr 1fr; gap: 10px; }
             .card-img-wrap { height: 160px; }
             .brand { font-size: 1.8rem; }
             .cart-btn { padding: 12px 20px; font-size: 0.9rem; bottom: 15px; right: 15px; }
-            .proshow-title { font-size: 1.5rem; }
-            .toast { bottom: 80px; left: 15px; } 
-        }
-    </style>
-
-    <!-- ISHYA AERO HEADER STYLES -->
-    <style>
-        :root {
-            --ishya-gold: #f0d57a;
-            --ishya-green: #4ade80;
-            --ishya-peach: #ffb08e;
-            --ishya-creme: #fef9c3;
-            --ishya-white: #ffffff;
-            --ishya-dark-aero: rgba(5, 8, 15, 0.6);
-            --ishya-glass-bright: rgba(255, 255, 255, 0.12);
-            --anim-fluid: cubic-bezier(0.16, 1, 0.3, 1);
-            --bar-height: 75px; 
-        }
-        .ishya-header-spacer { display: block; width: 100%; height: var(--bar-height); }
-        .ishya-nav-backdrop { position: fixed; top: 0; left: 0; width: 100%; height: var(--bar-height); background: var(--ishya-dark-aero); backdrop-filter: blur(35px) saturate(160%); -webkit-backdrop-filter: blur(35px) saturate(160%); border-bottom: 1px solid rgba(255, 255, 255, 0.1); z-index: 9997; overflow: hidden; }
-        .ishya-fluid-layer { position: absolute; inset: -30%; z-index: -1; opacity: 0.2; filter: blur(60px); background: radial-gradient(circle at 15% 25%, var(--ishya-green) 0%, transparent 40%), radial-gradient(circle at 85% 75%, var(--ishya-gold) 0%, transparent 40%), radial-gradient(circle at 50% 50%, var(--ishya-peach) 0%, transparent 35%), radial-gradient(circle at 30% 85%, var(--ishya-creme) 0%, transparent 30%); animation: fluidDrift 30s ease-in-out infinite alternate; will-change: transform; }
-        @keyframes fluidDrift { from { transform: translate(0, 0) scale(1); } to { transform: translate(4%, 3%) scale(1.15); } }
-        .ishya-nav-backdrop::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--ishya-glass-bright), transparent); z-index: 2; }
-        .ishya-nav-container { position: fixed; z-index: 9999; top: 10px; left: 50%; transform: translateX(-50%); width: 56px; height: 56px; background: rgba(255, 255, 255, 0.04); border: 1px solid var(--ishya-gold); border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); overflow: hidden; cursor: pointer; will-change: width, height, background; transition: width 0.6s var(--anim-fluid), height 0.6s var(--anim-fluid), background 0.4s ease, border-radius 0.4s ease; }
-        .ishya-logo-btn { position: absolute; top: 0; left: 0; width: 100%; height: 56px; display: flex; justify-content: center; align-items: center; transition: opacity 0.3s ease, transform 0.3s ease; }
-        .ishya-logo-btn img { height: 38px; width: auto; filter: drop-shadow(0 0 10px var(--ishya-green)); }
-        .ishya-menu-grid { display: flex; width: 100%; height: 100%; align-items: center; justify-content: space-evenly; opacity: 0; pointer-events: none; box-sizing: border-box; }
-        .ishya-link { display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; color: #fff; padding: 8px; min-width: 90px; transition: transform 0.3s var(--anim-fluid); }
-        .ishya-link svg { width: 24px; height: 24px; stroke: var(--ishya-green); fill: none; stroke-width: 1.8; margin-bottom: 5px; transition: stroke 0.3s ease, transform 0.3s ease; }
-        .ishya-link span { font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--ishya-creme); opacity: 0.8; }
-        .ishya-nav-container.expanded { width: 880px; height: 68px; border-radius: 14px; background: rgba(255, 255, 255, 0.03); border-color: rgba(255, 255, 255, 0.15); top: 4px; }
-        .ishya-nav-container.expanded .ishya-logo-btn { opacity: 0; transform: scale(0.8); pointer-events: none; }
-        .ishya-nav-container.expanded .ishya-menu-grid { opacity: 1; pointer-events: auto; }
-        .ishya-link:hover { transform: translateY(-3px); }
-        .ishya-link:hover svg { stroke: var(--ishya-gold); }
-        .ishya-link:hover span { opacity: 1; color: #fff; text-shadow: 0 0 10px var(--ishya-gold); }
-        @media screen and (max-width: 900px) {
-            .ishya-nav-container { top: 10px; width: 56px; height: 56px; }
-            .ishya-nav-container.expanded { width: 94%; height: auto; min-height: 380px; top: 10px; border-radius: 24px; background: rgba(10, 15, 20, 0.9); padding-bottom: 30px; }
-            .ishya-nav-container.expanded .ishya-menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 75px 15px 0 15px; }
-            .ishya-link { background: rgba(255,255,255,0.04); padding: 25px 10px; clip-path: polygon(0 0, 100% 0, 100% 88%, 88% 100%, 0 100%); border: 1px solid rgba(255,255,255,0.06); }
-            .ishya-nav-container.expanded .ishya-logo-btn { opacity: 1; transform: scale(1); height: 60px; border-bottom: 1px solid rgba(255,255,255,0.1); }
         }
     </style>
 </head>
 <body>
-    
-    <!-- RESTORED: ISHYA AERO HEADER -->
-    <div class="ishya-header-spacer"></div>
-    <div id="ishya-floating-nav-wrapper">
-        <div class="ishya-nav-backdrop">
-            <div class="ishya-fluid-layer"></div>
-        </div>
-        <nav class="ishya-nav-container" id="ishyaHeader">
-            <div class="ishya-logo-btn">
-                <img src="../Logo Ishya.ico" alt="ISHYA">
-            </div>
-            <div class="ishya-menu-grid">
-                <a href="../index.html" class="ishya-link"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span>Home</span></a>
-                <a href="../EVENTS/index_events.html" class="ishya-link"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18"/></svg><span>Events</span></a>
-                <a href="../STORE/index_store.html" class="ishya-link"><svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M9 6a3 3 0 1 0 6 0"/><circle cx="12" cy="13" r="3"/></svg><span>Store</span></a>
-                <a href="../SPONSOR/index_sponsor.html" class="ishya-link"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Sponsors</span></a>
-                <a href="../TEAM/index_team.html" class="ishya-link"><svg viewBox="0 0 24 24"><path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z"/></svg><span>Team</span></a>
-                <a href="../RESULTS/index_results.html" class="ishya-link"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg><span>Results</span></a>
-            </div>
-        </nav>
-    </div>
-
-    <!-- CANVAS FX -->
+    <div style="height: 75px;"></div>
     <div class="scanline"></div>
     <canvas id="bg-canvas"></canvas>
+    <div id="loader-wrapper"><h2 style="color:var(--gold); font-family:var(--font-mono)">ESTABLISHING LINK</h2><div class="loader-bar"></div></div>
 
-    <!-- LOADER -->
-    <div id="loader-wrapper">
-        <h2 style="color:var(--gold); font-family:var(--font-mono)">ESTABLISHING LINK</h2>
-        <div class="loader-bar"></div>
-    </div>
-
-    <!-- MAIN PAGE TITLE -->
-    <header>
-        <div class="brand">ISHYA -26 <span>STORE & TICKETS</span></div>
-    </header>
+    <header><div class="brand">ISHYA -26 <span>STORE & TICKETS</span></div></header>
 
     <div class="container">
         <!-- PROSHOW SECTION -->
@@ -383,89 +106,41 @@
             <img src="https://via.placeholder.com/800x300/181C10/D6C26A?text=PROSHOW+BANNER" alt="Proshow Banner" class="proshow-banner">
             <button class="add-btn btn-large" onclick="openProshowModal()">BUY TICKETS NOW</button>
         </div>
-
         <!-- MERCHANDISE SECTION -->
         <h2 class="section-title">MERCHANDISE</h2>
         <div class="grid" id="productGrid"></div>
     </div>
 
-    <!-- FLOATING CART BUTTON -->
     <button class="cart-btn" onclick="openCart()">CART [<span id="cartCount">0</span>]</button>
-
-    <!-- CORNER TOAST -->
-    <div id="toast" class="toast">
-        <span class="toast-msg">ITEM ADDED</span>
-        <span class="toast-sub">CHECK CART TO CHECKOUT</span>
-    </div>
+    <div id="toast" class="toast"><span class="toast-msg">ITEM ADDED</span><span class="toast-sub">CHECK CART TO CHECKOUT</span></div>
 
     <!-- MERCHANDISE MODAL -->
     <div class="modal-overlay" id="mainModal">
         <div class="modal">
-            <div class="modal-header">
-                <span class="modal-title" id="modalTitle">CART</span>
-                <span class="close-icon" onclick="closeModal()">&times;</span>
-            </div>
+            <div class="modal-header"><span class="modal-title" id="modalTitle">CART</span><span class="close-icon" onclick="closeModal()">&times;</span></div>
             <div class="modal-body" id="modalContent"></div>
         </div>
     </div>
 
-    <!-- PROSHOW FULL PAGE MODAL -->
+    <!-- PROSHOW MODAL -->
     <div id="proshow-modal-overlay">
         <div class="proshow-container">
-            <div class="modal-header gold-bg">
-                <span class="modal-title gold" id="psTitle">PROSHOW REGISTRATION</span>
-                <span class="close-icon" onclick="closeProshowModal()">&times;</span>
-            </div>
+            <div class="modal-header gold-bg"><span class="modal-title gold" id="psTitle">PROSHOW REGISTRATION</span><span class="close-icon" onclick="closeProshowModal()">&times;</span></div>
             <div class="modal-body" id="psContent"></div>
         </div>
     </div>
 
-    <!-- IMAGE PREVIEW MODAL -->
-    <div id="img-view-modal" onclick="closeImageModal()">
-        <img id="img-view-content" src="" alt="Zoomed">
-    </div>
+    <div id="img-view-modal" onclick="closeImageModal()"><img id="img-view-content" src="" alt="Zoomed"></div>
 
     <script>
-        // ========================================================
-        // 🚨 CONFIGURATION 
-        // ========================================================
         const MERCH_API = "https://script.google.com/macros/s/AKfycbyld8a111hLb9SydZmH6K2dTAlAMG8a0HPdJ-oxoy8jjq01pkCLGwV5NInelko4QJpj5A/exec";
-        
-        // YOUR PROSHOW URL (MUST END IN /exec)
-        const PROSHOW_API = "https://script.google.com/macros/s/AKfycbx5LA5bVtrQQ-NyW824x-n6cJoSl6Y5j36gerZ3hVL0rMmNYJp_7X2aY9Nk7_-vccPHPQ/exec"; 
+        const PROSHOW_API = "https://script.google.com/macros/s/AKfycbzWeM_6c8rrpdcyqOJEaMQWFk0F9mwtEvrlXT81hzqgRbKiUguCcOk5hs6tQXWI916O7g/exec"; 
         
         const TICKET_PRICES = { "Student": 300, "Faculty": 500, "External": 800 };
-        
-        let BATCH_UPI_MAP_MERCH = {};
-        let BATCH_UPI_MAP_PROSHOW = {};
-        let products = [];
-        let cart = [];
-        let userDetails = {}; 
-        let psDetails = {}; 
-        let productImageRegistry = {}; 
+        let BATCH_UPI_MAP_MERCH = {}, BATCH_UPI_MAP_PROSHOW = {}, products = [], cart = [], userDetails = {}, psDetails = {}, productImageRegistry = {}; 
 
-        // Header Script
-        (function(){
-            const nav = document.getElementById('ishyaHeader');
-            let isExpanded = false;
-            const toggleNav = (state) => {
-                isExpanded = (state !== undefined) ? state : !isExpanded;
-                nav.classList.toggle('expanded', isExpanded);
-            };
-            nav.addEventListener('mouseenter', () => { if(window.innerWidth > 900 && !isExpanded) nav.classList.add('expanded'); });
-            nav.addEventListener('mouseleave', () => { if(window.innerWidth > 900 && !isExpanded) nav.classList.remove('expanded'); });
-            nav.addEventListener('click', (e) => { if (e.target.closest('a')) return; toggleNav(); });
-            document.addEventListener('click', (e) => { if (!nav.contains(e.target) && isExpanded) toggleNav(false); });
-        })();
+        window.onload = () => { initCanvas(); fetchMerchData(); fetchProshowData(); };
 
-        // Init
-        window.onload = () => { 
-            initCanvas(); 
-            fetchMerchData(); 
-            fetchProshowData(); 
-        };
-
-        // ================= FETCH DATA =================
         async function fetchMerchData() {
             try {
                 const res = await fetch(MERCH_API);
@@ -479,106 +154,45 @@
         async function fetchProshowData() {
             try {
                 const res = await fetch(PROSHOW_API);
-                const json = await res.json();
+                const text = await res.text();
+                const json = JSON.parse(text);
                 if(json.status === "success" && json.batches) { 
                     BATCH_UPI_MAP_PROSHOW = json.batches; 
                 }
             } catch (e) { console.error("Proshow Fetch Error:", e); }
         }
 
-        // ================= MERCH UI =================
         function renderProducts() {
             const grid = document.getElementById('productGrid');
             grid.innerHTML = ""; productImageRegistry = {};
-            
             grid.innerHTML = products.map(p => {
                 const imgList = p.images ? p.images.split(',').map(s => s.trim()) : ['https://via.placeholder.com/300x300/181C10/4D8F48?text=NO+IMAGE'];
                 productImageRegistry[p.id] = { currentIdx: 0, images: imgList, timer: null };
-                
                 const isOutOfStock = (p.stock || "").toString().toLowerCase().trim() === "out of stock";
                 const disabledAttr = isOutOfStock ? 'disabled' : '';
                 const oosBadge = isOutOfStock ? `<div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%) rotate(-10deg); background:rgba(0,0,0,0.8); border:2px solid #d64a4a; color:#d64a4a; padding:10px 15px; font-weight:bold; z-index:20; font-family:var(--font-mono); white-space:nowrap; pointer-events:none; letter-spacing: 2px;">OUT OF STOCK</div>` : '';
                 const btnHtml = isOutOfStock ? `<button class="add-btn" disabled style="background:#222; color:#555; cursor:not-allowed;">OUT OF STOCK</button>` : `<button class="add-btn" onclick="addToCart('${p.id}')">ADD TO CART</button>`;
-                
-                const navHtml = imgList.length > 1 ? `
-                    <div class="nav-arrow nav-prev" onclick="navigateImage('${p.id}', -1, event)">&lt;</div>
-                    <div class="nav-arrow nav-next" onclick="navigateImage('${p.id}', 1, event)">&gt;</div>
-                    <div class="img-counter" id="cnt-${p.id}">1/${imgList.length}</div>
-                ` : '';
+                const navHtml = imgList.length > 1 ? `<div class="nav-arrow nav-prev" onclick="navigateImage('${p.id}', -1, event)">&lt;</div><div class="nav-arrow nav-next" onclick="navigateImage('${p.id}', 1, event)">&gt;</div><div class="img-counter" id="cnt-${p.id}">1/${imgList.length}</div>` : '';
 
-                return `
-                <div class="card">
-                    <div class="card-img-wrap" onmouseenter="pauseSlide('${p.id}')" onmouseleave="resumeSlide('${p.id}')">
-                        ${navHtml}${oosBadge}
-                        <img id="img-${p.id}" src="${imgList[0]}" class="card-img" onclick="openImageModal(this.src)" onerror="this.src='https://via.placeholder.com/300x300/181C10/4D8F48?text=ERROR'">
-                    </div>
-                    <div class="card-info">
-                        <span class="cat-tag">${p.category}</span>
-                        <h3>${p.name}</h3>
-                        <p class="card-desc">${p.description || ''}</p>
-                        <span class="card-price">₹${p.price}</span>
-                        <div class="controls">
-                            <select id="size-${p.id}" style="flex:1" ${disabledAttr}>
-                                ${(p.sizes || 'One Size').split(',').map(s=>`<option>${s.trim()}</option>`).join('')}
-                            </select>
-                            <input type="number" id="qty-${p.id}" value="1" min="1" ${disabledAttr}>
-                        </div>
-                        ${btnHtml}
-                    </div>
-                </div>`
-            }).join('');
+                return `<div class="card"><div class="card-img-wrap" onmouseenter="pauseSlide('${p.id}')" onmouseleave="resumeSlide('${p.id}')">${navHtml}${oosBadge}<img id="img-${p.id}" src="${imgList[0]}" class="card-img" onclick="openImageModal(this.src)" onerror="this.src='https://via.placeholder.com/300x300/181C10/4D8F48?text=ERROR'"></div><div class="card-info"><span class="cat-tag">${p.category}</span><h3>${p.name}</h3><p class="card-desc">${p.description || ''}</p><span class="card-price">₹${p.price}</span><div class="controls"><select id="size-${p.id}" style="flex:1" ${disabledAttr}>${(p.sizes || 'One Size').split(',').map(s=>`<option>${s.trim()}</option>`).join('')}</select><input type="number" id="qty-${p.id}" value="1" min="1" ${disabledAttr}></div>${btnHtml}</div></div>`}).join('');
             initSlideshows();
         }
-
-        // ================= SLIDESHOW & PREVIEW =================
-        function navigateImage(pid, dir, event) { 
-            if(event) event.stopPropagation(); 
-            const state = productImageRegistry[pid]; 
-            if(!state || state.images.length <= 1) return; 
-            let newIdx = state.currentIdx + dir; 
-            if (newIdx >= state.images.length) newIdx = 0; 
-            if (newIdx < 0) newIdx = state.images.length - 1; 
-            state.currentIdx = newIdx; 
-            updateCardImage(pid); 
-        }
-        function updateCardImage(pid) { 
-            const state = productImageRegistry[pid], imgEl = document.getElementById(`img-${pid}`), cntEl = document.getElementById(`cnt-${pid}`); 
-            if(imgEl) { 
-                imgEl.style.opacity = '0.5'; 
-                setTimeout(() => { imgEl.src = state.images[state.currentIdx]; imgEl.onload = () => { imgEl.style.opacity = '1'; }; }, 150); 
-            } 
-            if(cntEl) cntEl.innerText = `${state.currentIdx + 1}/${state.images.length}`; 
-        }
-        function initSlideshows() { 
-            setInterval(() => { 
-                for(let pid in productImageRegistry) { 
-                    const state = productImageRegistry[pid]; 
-                    if(state.images.length > 1 && !state.paused) navigateImage(pid, 1, null); 
-                } 
-            }, 3500); 
-        }
+        function navigateImage(pid, dir, event) { if(event) event.stopPropagation(); const state = productImageRegistry[pid]; if(!state || state.images.length <= 1) return; let newIdx = state.currentIdx + dir; if (newIdx >= state.images.length) newIdx = 0; if (newIdx < 0) newIdx = state.images.length - 1; state.currentIdx = newIdx; updateCardImage(pid); }
+        function updateCardImage(pid) { const state = productImageRegistry[pid], imgEl = document.getElementById(`img-${pid}`), cntEl = document.getElementById(`cnt-${pid}`); if(imgEl) { imgEl.style.opacity = '0.5'; setTimeout(() => { imgEl.src = state.images[state.currentIdx]; imgEl.onload = () => { imgEl.style.opacity = '1'; }; }, 150); } if(cntEl) cntEl.innerText = `${state.currentIdx + 1}/${state.images.length}`; }
+        function initSlideshows() { setInterval(() => { for(let pid in productImageRegistry) { const state = productImageRegistry[pid]; if(state.images.length > 1 && !state.paused) navigateImage(pid, 1, null); } }, 3500); }
         function pauseSlide(pid) { if(productImageRegistry[pid]) productImageRegistry[pid].paused = true; }
         function resumeSlide(pid) { if(productImageRegistry[pid]) productImageRegistry[pid].paused = false; }
         function openImageModal(src) { document.getElementById('img-view-content').src = src; document.getElementById('img-view-modal').style.display = 'flex'; }
         function closeImageModal() { document.getElementById('img-view-modal').style.display = 'none'; }
-
-        // ================= BATCH HELPERS =================
+        
         function getBatchOptions(selectedValue, mapType) {
             let options = `<option value="">-- SELECT BATCH --</option>`;
             let mapToUse = (mapType === 'PROSHOW') ? BATCH_UPI_MAP_PROSHOW : BATCH_UPI_MAP_MERCH;
-            
-            if (Object.keys(mapToUse).length === 0) {
-                options += `<option value="OTHERS">General Fund (Default)</option>`;
-            } else {
-                for (const key in mapToUse) { 
-                    const sel = (selectedValue === key) ? 'selected' : ''; 
-                    options += `<option value="${key}" ${sel}>${key}</option>`; 
-                }
-            }
+            if (Object.keys(mapToUse).length === 0) options += `<option value="OTHERS">General Fund (Default)</option>`;
+            else for (const key in mapToUse) { const sel = (selectedValue === key) ? 'selected' : ''; options += `<option value="${key}" ${sel}>${key}</option>`; }
             return options;
         }
 
-        // ================= AGGRESSIVE IMAGE COMPRESSION =================
         function compressImage(file, callback) {
             const reader = new FileReader();
             reader.readAsDataURL(file);
@@ -588,253 +202,77 @@
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d');
-                    
-                    const MAX_WIDTH = 600;
-                    const MAX_HEIGHT = 600;
-                    let width = img.width;
-                    let height = img.height;
-
-                    if (width > height) {
-                        if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
-                    } else {
-                        if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; }
-                    }
-
-                    canvas.width = width;
-                    canvas.height = height;
-                    ctx.drawImage(img, 0, 0, width, height);
-                    
-                    const dataUrl = canvas.toDataURL('image/jpeg', 0.5);
-                    callback(dataUrl);
+                    const MAX_WIDTH = 600; const MAX_HEIGHT = 600;
+                    let width = img.width; let height = img.height;
+                    if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } } 
+                    else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } }
+                    canvas.width = width; canvas.height = height; ctx.drawImage(img, 0, 0, width, height);
+                    callback(canvas.toDataURL('image/jpeg', 0.5));
                 };
             };
         }
 
-        // ================= MERCH CART LOGIC =================
-        function addToCart(pid) { 
-            const p = products.find(x => String(x.id) === String(pid));
-            const size = document.getElementById(`size-${pid}`).value;
-            const qty = parseInt(document.getElementById(`qty-${pid}`).value); 
-            if(qty <= 0) return; 
-            
-            const ex = cart.find(i => i.id === p.id && i.size === size); 
-            if(ex) ex.qty += qty; else cart.push({ ...p, size, qty }); 
-            
-            updateCartCount(); 
-            showToast(); 
-        }
-        
-        function updateCartCount() { 
-            document.getElementById('cartCount').innerText = cart.reduce((a, b) => a + b.qty, 0); 
-        }
-        
-        function removeFromCart(idx) { 
-            cart.splice(idx, 1); 
-            updateCartCount(); 
-            renderCartStep(); 
-        }
-        
-        function showToast() { 
-            const t = document.getElementById('toast'); 
-            t.classList.add('show'); 
-            setTimeout(() => t.classList.remove('show'), 3000); 
-        }
-
-        const modal = document.getElementById('mainModal');
-        const mTitle = document.getElementById('modalTitle');
-        const mBody = document.getElementById('modalContent');
-        
+        // ================= MERCH LOGIC =================
+        function addToCart(pid) { const p = products.find(x => String(x.id) === String(pid)), size = document.getElementById(`size-${pid}`).value, qty = parseInt(document.getElementById(`qty-${pid}`).value); if(qty <= 0) return; const ex = cart.find(i => i.id === p.id && i.size === size); if(ex) ex.qty += qty; else cart.push({ ...p, size, qty }); updateCartCount(); showToast(); }
+        function updateCartCount() { document.getElementById('cartCount').innerText = cart.reduce((a, b) => a + b.qty, 0); }
+        function removeFromCart(idx) { cart.splice(idx, 1); updateCartCount(); renderCartStep(); }
+        function showToast() { const t = document.getElementById('toast'); t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
+        const modal = document.getElementById('mainModal'), mTitle = document.getElementById('modalTitle'), mBody = document.getElementById('modalContent');
         function closeModal() { modal.style.display = 'none'; }
         function openCart() { modal.style.display = 'flex'; renderCartStep(); }
-
         function renderCartStep() {
             mTitle.innerText = "INVENTORY CHECK";
-            if(cart.length === 0) { 
-                mBody.innerHTML = `<p style="text-align:center; color:#666; padding:20px;">Cart is empty.</p><button class="btn btn-sec" onclick="closeModal()">RETURN</button>`; 
-                return; 
-            }
-            
-            let total = 0; 
-            const html = cart.map((item, i) => { 
-                total += item.price * item.qty; 
-                return `
-                <div class="cart-item">
-                    <div>
-                        <div style="color:#fff; font-weight:bold">${item.name}</div>
-                        <div style="color:#888; font-size:0.8rem">${item.size} x ${item.qty}</div>
-                    </div>
-                    <div style="text-align:right">
-                        <div style="color:var(--gold)">₹${item.price * item.qty}</div>
-                        <span class="cart-remove" onclick="removeFromCart(${i})">REMOVE</span>
-                    </div>
-                </div>`; 
-            }).join('');
-            
-            mBody.innerHTML = `
-                ${html}
-                <div style="text-align:right; margin-top:15px; font-size:1.2rem; color:var(--green); font-weight:bold">TOTAL: ₹${total}</div>
-                <div class="btn-row">
-                    <button class="btn btn-sec" onclick="closeModal()">CLOSE</button>
-                    <button class="btn btn-primary" onclick="renderDetailsStep()">CHECKOUT</button>
-                </div>
-            `;
+            if(cart.length === 0) { mBody.innerHTML = `<p style="text-align:center; color:#666; padding:20px;">Cart is empty.</p><button class="btn btn-sec" onclick="closeModal()">RETURN</button>`; return; }
+            let total = 0; const html = cart.map((item, i) => { total += item.price * item.qty; return `<div class="cart-item"><div><div style="color:#fff; font-weight:bold">${item.name}</div><div style="color:#888; font-size:0.8rem">${item.size} x ${item.qty}</div></div><div style="text-align:right"><div style="color:var(--gold)">₹${item.price * item.qty}</div><span class="cart-remove" onclick="removeFromCart(${i})">REMOVE</span></div></div>`; }).join('');
+            mBody.innerHTML = `${html}<div style="text-align:right; margin-top:15px; font-size:1.2rem; color:var(--green); font-weight:bold">TOTAL: ₹${total}</div><div class="btn-row"><button class="btn btn-sec" onclick="closeModal()">CLOSE</button><button class="btn btn-primary" onclick="renderDetailsStep()">CHECKOUT</button></div>`;
         }
-
         function renderDetailsStep() {
             mTitle.innerText = "OPERATOR DETAILS";
-            mBody.innerHTML = `
-                <form onsubmit="event.preventDefault(); userDetails={name:document.getElementById('cName').value, email:document.getElementById('cEmail').value, phone:document.getElementById('cPhone').value, roll:document.getElementById('cRoll').value, batch:document.getElementById('cBatch').value, address:document.getElementById('cAddress').value}; renderSummaryStep();">
-                    <div class="form-group"><label>FULL NAME</label><input class="input-box" id="cName" required value="${userDetails.name||''}"></div>
-                    <div class="form-group"><label>EMAIL</label><input class="input-box" type="email" id="cEmail" required value="${userDetails.email||''}"></div>
-                    <div class="form-group"><label>PHONE</label><input class="input-box" type="tel" id="cPhone" required value="${userDetails.phone||''}"></div>
-                    <div class="form-group"><label>ROLL NO</label><input class="input-box" id="cRoll" value="${userDetails.roll||''}"></div>
-                    <div class="form-group"><label>BATCH (Crucial)</label><select class="input-box" id="cBatch" required>${getBatchOptions(userDetails.batch, 'MERCH')}</select></div>
-                    <div class="form-group"><label>ADDRESS</label><input class="input-box" id="cAddress" value="${userDetails.address||''}"></div>
-                    <div class="btn-row"><button type="button" class="btn btn-sec" onclick="renderCartStep()">BACK</button><button type="submit" class="btn btn-primary">REVIEW</button></div>
-                </form>
-            `;
+            mBody.innerHTML = `<form onsubmit="event.preventDefault(); userDetails={name:document.getElementById('cName').value, email:document.getElementById('cEmail').value, phone:document.getElementById('cPhone').value, roll:document.getElementById('cRoll').value, batch:document.getElementById('cBatch').value, address:document.getElementById('cAddress').value}; renderSummaryStep();"><div class="form-group"><label>FULL NAME</label><input class="input-box" id="cName" required value="${userDetails.name||''}"></div><div class="form-group"><label>EMAIL</label><input class="input-box" type="email" id="cEmail" required value="${userDetails.email||''}"></div><div class="form-group"><label>PHONE</label><input class="input-box" type="tel" id="cPhone" required value="${userDetails.phone||''}"></div><div class="form-group"><label>ROLL NO</label><input class="input-box" id="cRoll" value="${userDetails.roll||''}"></div><div class="form-group"><label>BATCH (Crucial)</label><select class="input-box" id="cBatch" required>${getBatchOptions(userDetails.batch, 'MERCH')}</select></div><div class="form-group"><label>ADDRESS</label><input class="input-box" id="cAddress" value="${userDetails.address||''}"></div><div class="btn-row"><button type="button" class="btn btn-sec" onclick="renderCartStep()">BACK</button><button type="submit" class="btn btn-primary">REVIEW</button></div></form>`;
         }
-
         function renderSummaryStep() {
             mTitle.innerText = "CONFIRM MANIFEST";
             const total = cart.reduce((a,b) => a + (b.price*b.qty), 0);
-            let summary = cart.map(i => `
-                <div class="summary-row"><span>${i.name} (${i.size}) x${i.qty}</span><span>₹${i.price*i.qty}</span></div>
-            `).join('');
-            
-            mBody.innerHTML = `
-                <div style="background:#000; padding:15px; border:1px solid var(--olive); margin-bottom:15px;">
-                    <div class="summary-row"><span style="color:#888">NAME</span><span>${userDetails.name}</span></div>
-                    <hr style="border-color:var(--olive); margin:10px 0; border-style:dashed;">
-                    ${summary}
-                    <div class="summary-row total-row"><span>TOTAL</span><span>₹${total}</span></div>
-                </div>
-                <div class="btn-row">
-                    <button class="btn btn-sec" onclick="renderDetailsStep()">EDIT</button>
-                    <button class="btn btn-primary" onclick="renderPaymentStep()">PAY</button>
-                </div>
-            `;
+            let summary = cart.map(i => `<div class="summary-row"><span>${i.name} (${i.size}) x${i.qty}</span><span>₹${i.price*i.qty}</span></div>`).join('');
+            mBody.innerHTML = `<div style="background:#000; padding:15px; border:1px solid var(--olive); margin-bottom:15px;"><div class="summary-row"><span style="color:#888">NAME</span><span>${userDetails.name}</span></div><hr style="border-color:var(--olive); margin:10px 0; border-style:dashed;">${summary}<div class="summary-row total-row"><span>TOTAL</span><span>₹${total}</span></div></div><div class="btn-row"><button class="btn btn-sec" onclick="renderDetailsStep()">EDIT</button><button class="btn btn-primary" onclick="renderPaymentStep()">PAY</button></div>`;
         }
-
         function renderPaymentStep() {
             mTitle.innerText = "PAYMENT UPLINK";
             const total = cart.reduce((a,b) => a + (b.price*b.qty), 0);
             let batchInfo = BATCH_UPI_MAP_MERCH[userDetails.batch] || BATCH_UPI_MAP_MERCH["OTHERS"] || { id: "", name: "Unknown" };
             const upiLink = `upi://pay?pa=${batchInfo.upi}&pn=${encodeURIComponent(batchInfo.name)}&am=${total}&tn=MerchOrder`;
-            
-            mBody.innerHTML = `
-                <div style="text-align:center">
-                    <h3 style="color:var(--green);">${batchInfo.name}</h3>
-                    <div id="qr-container" style="background:#fff; padding:10px; display:inline-block; border:4px solid var(--gold); margin:10px 0;"></div>
-                    <a href="${upiLink}" class="btn btn-primary" style="display:block; text-decoration:none; padding:15px;">PAY NOW VIA UPI APP</a>
-                    <div class="form-group" style="text-align:left; margin-top:20px;">
-                        <label>UPLOAD SCREENSHOT</label>
-                        <input type="file" id="receiptFile" accept="image/*" class="input-box" style="padding:5px;">
-                    </div>
-                </div>
-                <div class="btn-row">
-                    <button class="btn btn-sec" onclick="renderSummaryStep()">BACK</button>
-                    <button class="btn btn-primary" onclick="submitFinalOrder()" id="btnSubmit">CONFIRM</button>
-                </div>
-            `;
+            mBody.innerHTML = `<div style="text-align:center"><h3 style="color:var(--green);">${batchInfo.name}</h3><div id="qr-container" style="background:#fff; padding:10px; display:inline-block; border:4px solid var(--gold); margin:10px 0;"></div><a href="${upiLink}" class="btn btn-primary" style="display:block; text-decoration:none; padding:15px;">PAY NOW VIA UPI APP</a><div class="form-group" style="text-align:left; margin-top:20px;"><label>UPLOAD SCREENSHOT</label><input type="file" id="receiptFile" accept="image/*" class="input-box" style="padding:5px;"></div></div><div class="btn-row"><button class="btn btn-sec" onclick="renderSummaryStep()">BACK</button><button class="btn btn-primary" onclick="submitFinalOrder()" id="btnSubmit">CONFIRM</button></div>`;
             setTimeout(() => new QRCode(document.getElementById("qr-container"), { text: upiLink, width: 150, height: 150 }), 100);
         }
-
         async function submitFinalOrder() {
-            const fileInput = document.getElementById('receiptFile'); 
-            if(!fileInput.files[0]) return alert("Screenshot required.");
-            
-            const btn = document.getElementById('btnSubmit'); 
-            btn.innerText = "TRANSMITTING..."; 
-            btn.disabled = true;
-            
+            const fileInput = document.getElementById('receiptFile'); if(!fileInput.files[0]) return alert("Screenshot required.");
+            const btn = document.getElementById('btnSubmit'); btn.innerText = "TRANSMITTING..."; btn.disabled = true;
             compressImage(fileInput.files[0], async (base64Img) => {
                 try {
                     const total = cart.reduce((a,b) => a + (b.price*b.qty), 0);
-                    const payload = { 
-                        orderId: "ORD-" + Math.floor(100000 + Math.random() * 900000), 
-                        customerName: userDetails.name, customerEmail: userDetails.email, 
-                        customerPhone: userDetails.phone, rollNumber: userDetails.roll || "N/A", 
-                        batch: userDetails.batch, address: userDetails.address || "N/A", 
-                        totalPrice: total, cart: cart, receiptImage: base64Img 
-                    };
-                    
-                    const res = await fetch(MERCH_API, { 
-                        method: "POST", 
-                        body: JSON.stringify(payload), 
-                        headers: {"Content-Type": "text/plain"} 
-                    });
-                    
-                    const textResponse = await res.text();
-                    const result = JSON.parse(textResponse);
-                    
-                    if(result.status === 'success') { 
-                        mBody.innerHTML = `<div style="text-align:center; padding:30px;"><h2 style="color:var(--green)">ORDER SECURED</h2><button class="btn btn-primary" onclick="window.location.reload()" style="margin-top:20px;">DISMISS</button></div>`; 
-                        cart = []; updateCartCount(); 
-                    } else throw new Error(result.message);
-                } catch (e) { 
-                    alert("Failed: " + e.message); 
-                    btn.innerText = "RETRY"; 
-                    btn.disabled = false; 
-                }
+                    const payload = { orderId: "ORD-" + Math.floor(100000 + Math.random() * 900000), customerName: userDetails.name, customerEmail: userDetails.email, customerPhone: userDetails.phone, rollNumber: userDetails.roll || "N/A", batch: userDetails.batch, address: userDetails.address || "N/A", totalPrice: total, cart: cart, receiptImage: base64Img };
+                    const res = await fetch(MERCH_API, { method: "POST", body: JSON.stringify(payload), headers: {"Content-Type": "text/plain"} });
+                    const result = await res.json();
+                    if(result.status === 'success') { mBody.innerHTML = `<div style="text-align:center; padding:30px;"><h2 style="color:var(--green)">ORDER SECURED</h2><button class="btn btn-primary" onclick="window.location.reload()" style="margin-top:20px;">DISMISS</button></div>`; cart = []; updateCartCount(); } else throw new Error(result.message);
+                } catch (e) { alert("Failed: " + e.message); btn.innerText = "RETRY"; btn.disabled = false; }
             });
         }
 
-        // ================= PROSHOW REGISTRATION UI =================
+        // ================= PROSHOW LOGIC =================
         const psOverlay = document.getElementById('proshow-modal-overlay');
         const psContent = document.getElementById('psContent');
         const psTitle = document.getElementById('psTitle');
 
-        function openProshowModal() { 
-            psOverlay.style.display = 'flex'; 
-            renderPsDetails(); 
-            document.body.style.overflow = 'hidden'; 
-        }
-        function closeProshowModal() { 
-            psOverlay.style.display = 'none'; 
-            document.body.style.overflow = 'auto'; 
-        }
+        function openProshowModal() { psOverlay.style.display = 'flex'; renderPsDetails(); document.body.style.overflow = 'hidden'; }
+        function closeProshowModal() { psOverlay.style.display = 'none'; document.body.style.overflow = 'auto'; }
 
         function renderPsDetails() {
             psTitle.innerText = "PROSHOW REGISTRATION";
-            psContent.innerHTML = `
-                <form onsubmit="event.preventDefault(); savePsDetails();">
-                    <div class="form-group"><label>FULL NAME</label><input class="input-box" id="pName" required value="${psDetails.name||''}"></div>
-                    <div class="form-group"><label>EMAIL (For E-Ticket)</label><input class="input-box" type="email" id="pEmail" required value="${psDetails.email||''}"></div>
-                    <div class="form-group"><label>PHONE</label><input class="input-box" type="tel" id="pPhone" required value="${psDetails.phone||''}"></div>
-                    
-                    <div class="form-group" style="border-left: 3px solid var(--gold); padding-left: 10px; margin: 20px 0;">
-                        <label style="color:#fff;">TICKET CATEGORY</label>
-                        <select class="input-box" id="pType" required style="border-color: var(--gold); font-size:1.1rem; padding: 15px;">
-                            <option value="">-- SELECT --</option>
-                            <option value="Student" ${psDetails.type==='Student'?'selected':''}>STUDENT - ₹${TICKET_PRICES["Student"]}</option>
-                            <option value="Faculty" ${psDetails.type==='Faculty'?'selected':''}>FACULTY - ₹${TICKET_PRICES["Faculty"]}</option>
-                            <option value="External" ${psDetails.type==='External'?'selected':''}>EXTERNAL - ₹${TICKET_PRICES["External"]}</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group"><label>ROLL NO</label><input class="input-box" id="pRoll" value="${psDetails.roll||''}"></div>
-                    <div class="form-group"><label>BATCH (Crucial)</label><select class="input-box" id="pBatch" required>${getBatchOptions(psDetails.batch, 'PROSHOW')}</select></div>
-                    <div class="form-group"><label>AFFILIATION</label><input class="input-box" id="pAffil" value="${psDetails.affiliation||''}"></div>
-                    
-                    <div class="btn-row">
-                        <button type="button" class="btn btn-sec" onclick="closeProshowModal()">CANCEL</button>
-                        <button type="submit" class="btn btn-primary" style="background:var(--gold)">NEXT</button>
-                    </div>
-                </form>
-            `;
+            psContent.innerHTML = `<form onsubmit="event.preventDefault(); savePsDetails();"><div class="form-group"><label>FULL NAME</label><input class="input-box" id="pName" required value="${psDetails.name||''}"></div><div class="form-group"><label>EMAIL (For E-Ticket)</label><input class="input-box" type="email" id="pEmail" required value="${psDetails.email||''}"></div><div class="form-group"><label>PHONE</label><input class="input-box" type="tel" id="pPhone" required value="${psDetails.phone||''}"></div><div class="form-group" style="border-left: 3px solid var(--gold); padding-left: 10px; margin: 20px 0;"><label style="color:#fff;">TICKET CATEGORY</label><select class="input-box" id="pType" required style="border-color: var(--gold); font-size:1.1rem; padding: 15px;"><option value="">-- SELECT --</option><option value="Student" ${psDetails.type==='Student'?'selected':''}>STUDENT - ₹${TICKET_PRICES["Student"]}</option><option value="Faculty" ${psDetails.type==='Faculty'?'selected':''}>FACULTY - ₹${TICKET_PRICES["Faculty"]}</option><option value="External" ${psDetails.type==='External'?'selected':''}>EXTERNAL - ₹${TICKET_PRICES["External"]}</option></select></div><div class="form-group"><label>ROLL NO</label><input class="input-box" id="pRoll" value="${psDetails.roll||''}"></div><div class="form-group"><label>BATCH (Crucial)</label><select class="input-box" id="pBatch" required>${getBatchOptions(psDetails.batch, 'PROSHOW')}</select></div><div class="form-group"><label>AFFILIATION</label><input class="input-box" id="pAffil" value="${psDetails.affiliation||''}"></div><div class="btn-row"><button type="button" class="btn btn-sec" onclick="closeProshowModal()">CANCEL</button><button type="submit" class="btn btn-primary" style="background:var(--gold)">NEXT</button></div></form>`;
         }
 
         function savePsDetails() {
-            psDetails = { 
-                name: document.getElementById('pName').value, 
-                email: document.getElementById('pEmail').value, 
-                phone: document.getElementById('pPhone').value, 
-                type: document.getElementById('pType').value, 
-                roll: document.getElementById('pRoll').value, 
-                batch: document.getElementById('pBatch').value, 
-                affiliation: document.getElementById('pAffil').value 
-            };
+            psDetails = { name: document.getElementById('pName').value, email: document.getElementById('pEmail').value, phone: document.getElementById('pPhone').value, type: document.getElementById('pType').value, roll: document.getElementById('pRoll').value, batch: document.getElementById('pBatch').value, affiliation: document.getElementById('pAffil').value };
             renderPsPayment();
         }
 
@@ -844,25 +282,7 @@
             let batchInfo = BATCH_UPI_MAP_PROSHOW[psDetails.batch] || BATCH_UPI_MAP_PROSHOW["OTHERS"] || { id: "", name: "Unknown Receiver" };
             const upiLink = `upi://pay?pa=${batchInfo.upi}&pn=${encodeURIComponent(batchInfo.name)}&am=${price}&tn=ProshowTicket`;
 
-            psContent.innerHTML = `
-                <div style="text-align:center; background:#0a0e0a; padding: 20px; border: 1px solid var(--olive); margin-bottom: 20px;">
-                    <p style="color:#888; margin-bottom: 5px;">${psDetails.type.toUpperCase()}</p>
-                    <h2 style="color:var(--gold); font-size: 2.5rem; margin-bottom: 5px;">₹${price}</h2>
-                    <p style="font-size:0.8rem; color:#666;">PAY TO: ${batchInfo.name}</p>
-                </div>
-                <div style="text-align:center">
-                    <div id="ps-qr-container" style="background:#fff; padding:10px; display:inline-block; border:4px solid var(--gold); margin-bottom:15px;"></div>
-                    <a href="${upiLink}" class="btn btn-primary" style="display:block; text-decoration:none; padding:15px; margin-bottom:20px;">OPEN UPI APP</a>
-                    <div class="form-group" style="text-align:left; border-top:1px dashed var(--olive); padding-top:15px;">
-                        <label style="color:var(--gold); font-size: 1rem;">SCREENSHOT (REQUIRED)</label>
-                        <input type="file" id="psReceiptFile" accept="image/*" class="input-box" style="padding:10px;">
-                    </div>
-                </div>
-                <div class="btn-row">
-                    <button class="btn btn-sec" onclick="renderPsDetails()">BACK</button>
-                    <button class="btn btn-primary" onclick="submitProshowOrder()" id="btnPsSubmit" style="background:var(--gold)">VERIFY & GENERATE</button>
-                </div>
-            `;
+            psContent.innerHTML = `<div style="text-align:center; background:#0a0e0a; padding: 20px; border: 1px solid var(--olive); margin-bottom: 20px;"><p style="color:#888; margin-bottom: 5px;">${psDetails.type.toUpperCase()}</p><h2 style="color:var(--gold); font-size: 2.5rem; margin-bottom: 5px;">₹${price}</h2><p style="font-size:0.8rem; color:#666;">PAY TO: ${batchInfo.name}</p></div><div style="text-align:center"><div id="ps-qr-container" style="background:#fff; padding:10px; display:inline-block; border:4px solid var(--gold); margin-bottom:15px;"></div><a href="${upiLink}" class="btn btn-primary" style="display:block; text-decoration:none; padding:15px; margin-bottom:20px;">OPEN UPI APP</a><div class="form-group" style="text-align:left; border-top:1px dashed var(--olive); padding-top:15px;"><label style="color:var(--gold); font-size: 1rem;">SCREENSHOT (REQUIRED)</label><input type="file" id="psReceiptFile" accept="image/*" class="input-box" style="padding:10px;"></div></div><div class="btn-row"><button class="btn btn-sec" onclick="renderPsDetails()">BACK</button><button class="btn btn-primary" onclick="submitProshowOrder()" id="btnPsSubmit" style="background:var(--gold)">VERIFY & GENERATE</button></div>`;
             setTimeout(() => new QRCode(document.getElementById("ps-qr-container"), { text: upiLink, width: 180, height: 180 }), 100);
         }
 
@@ -871,79 +291,52 @@
             if(!fileInput.files[0]) return alert("Screenshot is mandatory.");
             
             const btn = document.getElementById('btnPsSubmit'); 
-            btn.innerText = "GENERATING TICKET..."; 
-            btn.disabled = true;
+            btn.innerText = "GENERATING TICKET..."; btn.disabled = true;
             
-            // 1. AGGRESSIVE COMPRESSION
             compressImage(fileInput.files[0], async (base64Img) => {
                 try {
-                    const payload = { 
-                        ...psDetails, 
-                        receiptImage: base64Img, 
-                        webAppUrl: PROSHOW_API 
-                    };
+                    const payload = { ...psDetails, receiptImage: base64Img, webAppUrl: PROSHOW_API };
                     
-                    // 2. TEXT HEADER + FETCH (Fixes Success showing as Error)
                     const res = await fetch(PROSHOW_API, { 
                         method: "POST", 
                         body: JSON.stringify(payload), 
                         headers: { "Content-Type": "text/plain" } 
                     });
                     
-                    // Manually parse the text back into JSON to prevent browser CORS block
                     const textResponse = await res.text(); 
                     const result = JSON.parse(textResponse); 
                     
                     if(result.status === 'success') { 
                         psTitle.innerText = "TICKET ISSUED";
+                        psContent.innerHTML = `<div style="text-align:center; padding:30px;"><h2 style="color:var(--green); font-size: 2rem; margin-bottom: 10px;">SUCCESS</h2><div style="background: #000; padding: 15px; border: 2px dashed var(--gold); display: inline-block; font-size: 1.5rem; font-family: var(--font-mono); color: #fff; margin-bottom: 20px;">${result.ticketId}</div><p style="color:#888;">Check email: <b>${psDetails.email}</b></p><button class="btn btn-primary" onclick="closeProshowModal()" style="margin-top:30px; background:var(--gold)">CLOSE</button></div>`; 
+                    } else throw new Error(result.message);
+                } catch (e) { 
+                    // 🚨 THE FALSE NEGATIVE BYPASS 🚨
+                    if(e.name === 'TypeError' || e.message.includes('fetch') || e.message.includes('Network')) {
+                        psTitle.innerText = "PROCESSING";
                         psContent.innerHTML = `
                             <div style="text-align:center; padding:30px;">
-                                <h2 style="color:var(--green); font-size: 2rem; margin-bottom: 10px;">SUCCESS</h2>
-                                <div style="background: #000; padding: 15px; border: 2px dashed var(--gold); display: inline-block; font-size: 1.5rem; font-family: var(--font-mono); color: #fff; margin-bottom: 20px;">
-                                    ${result.ticketId}
-                                </div>
-                                <p style="color:#888;">Check email: <b>${psDetails.email}</b></p>
-                                <button class="btn btn-primary" onclick="closeProshowModal()" style="margin-top:30px; background:var(--gold)">CLOSE</button>
+                                <h2 style="color:var(--gold); font-size: 1.8rem; margin-bottom: 10px;">ORDER TRANSMITTED</h2>
+                                <p style="color:#888;">Due to a server timeout, your Ticket ID cannot be displayed here.</p>
+                                <p style="color:#fff; font-size:1.1rem; margin: 20px 0; padding:15px; border:1px dashed var(--gold);">
+                                    Please check your email <b>${psDetails.email}</b>. If successful, your E-Ticket will arrive within 2 minutes.
+                                </p>
+                                <button class="btn btn-primary" onclick="closeProshowModal()" style="margin-top:20px; background:var(--gold)">CLOSE</button>
                             </div>
-                        `; 
+                        `;
                     } else {
-                        throw new Error(result.message);
+                        alert("Error: " + e.message); 
+                        btn.innerText = "RETRY"; btn.disabled = false; 
                     }
-                } catch (e) { 
-                    alert("Ticket Generation Failed: " + e.message); 
-                    btn.innerText = "RETRY"; 
-                    btn.disabled = false; 
                 }
             });
         }
 
-        // ================= BACKGROUND CANVAS =================
         function initCanvas() {
-            const canvas = document.getElementById('bg-canvas'); 
-            const ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth; 
-            canvas.height = window.innerHeight;
-            
-            const particles = Array.from({length:50}, () => ({ 
-                x: Math.random()*canvas.width, 
-                y: Math.random()*canvas.height, 
-                s: Math.random()*2, 
-                d: Math.random()*0.5 + 0.1 
-            }));
-            
-            function animate() { 
-                ctx.clearRect(0,0,canvas.width,canvas.height); 
-                ctx.fillStyle = '#4D8F48'; 
-                particles.forEach(p => { 
-                    p.y -= p.d; 
-                    if(p.y < 0) p.y = canvas.height; 
-                    ctx.beginPath(); 
-                    ctx.arc(p.x, p.y, p.s, 0, Math.PI*2); 
-                    ctx.fill(); 
-                }); 
-                requestAnimationFrame(animate); 
-            } 
-            animate();
+            const canvas = document.getElementById('bg-canvas'); const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+            const particles = Array.from({length:50}, () => ({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, s: Math.random()*2, d: Math.random()*0.5 + 0.1 }));
+            function animate() { ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle = '#4D8F48'; particles.forEach(p => { p.y -= p.d; if(p.y < 0) p.y = canvas.height; ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, Math.PI*2); ctx.fill(); }); requestAnimationFrame(animate); } animate();
         }
     </script>
 </body>
