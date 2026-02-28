@@ -114,11 +114,13 @@
         .btn-sec { background: transparent; border: 1px solid var(--olive); color: #888; }
         .btn-sec:hover { color: #fff; border-color: #fff; }
 
-        /* MODIFIED IMAGE VIEW MODAL CSS */
-        #img-view-modal { position: fixed; inset: 0; z-index: 11000; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); display: none; justify-content: center; align-items: center; }
-        #img-view-content { max-width: 90%; max-height: 85%; border: 2px solid var(--gold); box-shadow: 0 0 50px rgba(214, 194, 106, 0.2); object-fit: contain; }
+        /* IMAGE VIEW MODAL CSS */
+        #img-view-modal { position: fixed; inset: 0; z-index: 11000; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); display: none; justify-content: center; align-items: center; overflow: hidden; }
         
-        .modal-close-btn { position: absolute; top: 20px; right: 30px; color: var(--gold); font-size: 3rem; cursor: pointer; font-family: var(--font-mono); z-index: 11001; transition: 0.3s; line-height: 1; }
+        /* Touch action set to none so browser doesn't try to scroll/refresh on mobile, allowing our JS script to handle pinch & zoom perfectly */
+        #img-view-content { max-width: 90%; max-height: 85%; border: 2px solid var(--gold); box-shadow: 0 0 50px rgba(214, 194, 106, 0.2); object-fit: contain; touch-action: none; will-change: transform; transform-origin: center center; }
+        
+        .modal-close-btn { position: absolute; top: 20px; right: 30px; color: var(--gold); font-size: 3rem; cursor: pointer; font-family: var(--font-mono); z-index: 11001; transition: 0.3s; line-height: 1; text-shadow: 0 0 10px #000; }
         .modal-close-btn:hover { color: #fff; transform: scale(1.1); }
         
         .modal-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.6); color: var(--gold); border: 1px solid var(--olive); width: 40px; height: 50px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 11001; font-family: var(--font-mono); font-size: 1.5rem; font-weight: bold; transition: 0.2s; }
@@ -126,7 +128,7 @@
         .modal-nav.nav-prev { left: 10px; clip-path: polygon(15px 0, 100% 0, 100% 100%, 15px 100%, 0 50%); }
         .modal-nav.nav-next { right: 10px; clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 50%, calc(100% - 15px) 100%, 0 100%); }
         
-        #modal-img-counter { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); font-size: 1rem; color: #fff; background: rgba(0,0,0,0.7); padding: 5px 15px; font-family: var(--font-mono); pointer-events: none; border: 1px solid var(--olive); }
+        #modal-img-counter { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); font-size: 1rem; color: #fff; background: rgba(0,0,0,0.7); padding: 5px 15px; font-family: var(--font-mono); pointer-events: none; border: 1px solid var(--olive); z-index: 11001; }
 
         @media(max-width: 600px) {
             .grid { grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -182,7 +184,7 @@
         </div>
     </div>
 
-    <!-- MODIFIED IMAGE VIEW MODAL HTML -->
+    <!-- IMAGE VIEW MODAL -->
     <div id="img-view-modal" onclick="if(event.target === this) closeImageModal()">
         <span class="modal-close-btn" onclick="closeImageModal()">&times;</span>
         <div class="modal-nav nav-prev" onclick="navigateModalImage(-1, event)">&lt;</div>
@@ -239,7 +241,6 @@
                     <div class="img-counter" id="cnt-${p.id}">1/${imgList.length}</div>
                 ` : '';
 
-                // ---------- MULTI-SIZE PARSING LOGIC ----------
                 let sizeBlock = "";
                 let isMultiSize = p.sizes && (p.sizes.includes('|') || p.sizes.includes(':'));
 
@@ -273,13 +274,11 @@
                         </div>
                     `;
                 }
-                // ----------------------------------------------
 
                 return `
                 <div class="card">
                     <div class="card-img-wrap" onmouseenter="pauseSlide('${p.id}')" onmouseleave="resumeSlide('${p.id}')">
                         ${navHtml} ${oosBadge}
-                        <!-- MODIFIED ONCLICK TO PASS PRODUCT ID INSTEAD OF SRC -->
                         <img id="img-${p.id}" src="${imgList[0]}" class="card-img" onclick="openImageModal('${p.id}')" onerror="this.src='https://via.placeholder.com/300x300/181C10/4D8F48?text=ERROR'">
                     </div>
                     <div class="card-info">
@@ -337,11 +336,12 @@
         function pauseSlide(pid) { if(productImageRegistry[pid]) productImageRegistry[pid].paused = true; }
         function resumeSlide(pid) { if(productImageRegistry[pid]) productImageRegistry[pid].paused = false; }
         
-        // MODIFIED MODAL JS CONTROLS
+        // MODAL JS CONTROLS
         let currentModalProductId = null;
 
         function openImageModal(pid) { 
             currentModalProductId = pid;
+            resetZoom();
             updateModalView();
             document.getElementById('img-view-modal').style.display = 'flex'; 
         }
@@ -349,13 +349,13 @@
         function closeImageModal() { 
             document.getElementById('img-view-modal').style.display = 'none'; 
             currentModalProductId = null;
+            resetZoom();
         }
 
         function navigateModalImage(dir, event) {
             if(event) event.stopPropagation();
             if(!currentModalProductId) return;
-            
-            // This also keeps the underlying product card image in sync
+            resetZoom();
             navigateImage(currentModalProductId, dir, null);
             updateModalView();
         }
@@ -379,6 +379,79 @@
             }
         }
 
+        // CUSTOM PINCH/ZOOM/PAN SCRIPT FOR MOBILE
+        const imgViewEl = document.getElementById('img-view-content');
+        let scale = 1, pointX = 0, pointY = 0, startX = 0, startY = 0;
+        let panning = false, lastDist = 0, lastTap = 0;
+
+        function setTransform(smooth = false) {
+            imgViewEl.style.transition = smooth ? 'transform 0.2s ease-out' : 'none';
+            imgViewEl.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
+        }
+
+        function resetZoom() {
+            scale = 1; pointX = 0; pointY = 0;
+            setTransform(true);
+        }
+
+        imgViewEl.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) {
+                panning = true;
+                startX = e.touches[0].clientX - pointX;
+                startY = e.touches[0].clientY - pointY;
+            } else if (e.touches.length === 2) {
+                panning = false;
+                lastDist = Math.hypot(
+                    e.touches[0].clientX - e.touches[1].clientX,
+                    e.touches[0].clientY - e.touches[1].clientY
+                );
+            }
+        });
+
+        imgViewEl.addEventListener('touchmove', (e) => {
+            e.preventDefault(); // Prevents default browser scroll/refresh behavior
+            if (e.touches.length === 1 && panning && scale > 1) {
+                pointX = e.touches[0].clientX - startX;
+                pointY = e.touches[0].clientY - startY;
+                setTransform(false);
+            } else if (e.touches.length === 2) {
+                let dist = Math.hypot(
+                    e.touches[0].clientX - e.touches[1].clientX,
+                    e.touches[0].clientY - e.touches[1].clientY
+                );
+                let zoom = dist / lastDist;
+                scale = Math.min(Math.max(1, scale * zoom), 5); // Allow zoom up to 5x
+                lastDist = dist;
+                if (scale === 1) { pointX = 0; pointY = 0; }
+                setTransform(false);
+            }
+        });
+
+        imgViewEl.addEventListener('touchend', (e) => {
+            panning = false;
+            if (scale <= 1) { resetZoom(); }
+
+            // Double Tap to zoom implementation
+            let currentTime = new Date().getTime();
+            let tapLength = currentTime - lastTap;
+            if (tapLength < 300 && tapLength > 0 && e.touches.length === 0) {
+                if (scale > 1) { resetZoom(); } 
+                else { scale = 2.5; pointX = 0; pointY = 0; setTransform(true); }
+                e.preventDefault();
+            }
+            lastTap = currentTime;
+        });
+
+        // Add mouse scroll support for Desktop users too!
+        imgViewEl.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            let delta = e.deltaY > 0 ? -0.2 : 0.2;
+            scale = Math.min(Math.max(1, scale + delta), 5);
+            if (scale === 1) { pointX = 0; pointY = 0; }
+            setTransform(false);
+        });
+
+        // Cart and Checkout Logistics
         function addToCart(pid) {
             const p = products.find(x => String(x.id) === String(pid));
             const qty = parseInt(document.getElementById(`qty-${pid}`).value);
