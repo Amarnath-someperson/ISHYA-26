@@ -517,10 +517,16 @@
                         <p class="card-desc">${p.description || ''}</p>
                         <span class="card-price">₹${p.price}</span>
                         <div class="controls">
-                            <select id="size-${p.id}" style="flex:1" ${disabledAttr}>
-                                ${(p.sizes || 'One Size').split(',').map(s=>`<option>${s.trim()}</option>`).join('')}
-                            </select>
-                            <input type="number" id="qty-${p.id}" value="1" min="1" ${disabledAttr}>
+                            <div style="flex:1; display:flex; flex-direction:column;">
+                                <label style="font-family:var(--font-mono); font-size:0.7rem; color:var(--gold); margin-bottom:2px;">SIZE</label>
+                                <select id="size-${p.id}" style="width:100%" ${disabledAttr}>
+                                    ${(p.sizes || 'One Size').split(',').map(s=>`<option>${s.trim()}</option>`).join('')}
+                                </select>
+                            </div>
+                            <div style="display:flex; flex-direction:column;">
+                                <label style="font-family:var(--font-mono); font-size:0.7rem; color:var(--gold); margin-bottom:2px;">Qty</label>
+                                <input type="number" id="qty-${p.id}" value="1" min="1" ${disabledAttr}>
+                            </div>
                         </div>
                         ${btnHtml}
                     </div>
