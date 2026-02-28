@@ -46,7 +46,7 @@ class IshyaHeader extends HTMLElement {
                     <a href="/bookrooms/indexf.html" class="ishya-link"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M9 6a3 3 0 1 0 6 0"/><circle cx="12" cy="13" r="3"/></svg><span>Book Rooms</span></a>
                     <a href="/TEAM/index.html" class="ishya-link"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Team</span></a>
                     <a href="/Gallery/index.html" class="ishya-link"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Gallery</span></a>
-                </div>
+                    <a href="/STORE/index.html" class="ishya-link"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1"/><circle cx="17" cy="20" r="1"/><path d="M3 3h2l2.5 12h10l2-8H6"/></svg><span>Store</span></a>
             </nav>
         </div>
       `;
