@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ISHYA -26 STORE & TICKETS</title>
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Header/Footer System -->
+    <link rel="stylesheet" href="/global.css">
+    <script src="/layout.js" defer></script>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         :root { --bg-deep: #060606; --bg-panel: #181C10; --gold: #D6C26A; --olive: #3D4324; --green: #4D8F48; --text-main: #e0e5e0; --font-head: 'Chakra Petch', sans-serif; --font-mono: 'JetBrains Mono', monospace; }
@@ -98,6 +103,9 @@
     </style>
 </head>
 <body>
+    <!--Header-->
+    <ishya-header></ishya-header>
+
     <div style="height: 75px;"></div>
     <div class="scanline"></div>
     <canvas id="bg-canvas"></canvas>
@@ -337,5 +345,7 @@
             function animate() { ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle = '#4D8F48'; particles.forEach(p => { p.y -= p.d; if(p.y < 0) p.y = canvas.height; ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, Math.PI*2); ctx.fill(); }); requestAnimationFrame(animate); } animate();
         }
     </script>
+<!-- Ishya Footer-->
+<ishya-footer></ishya-footer>
 </body>
 </html>
