@@ -114,8 +114,19 @@
         .btn-sec { background: transparent; border: 1px solid var(--olive); color: #888; }
         .btn-sec:hover { color: #fff; border-color: #fff; }
 
-        #img-view-modal { position: fixed; inset: 0; z-index: 11000; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); display: none; justify-content: center; align-items: center; cursor: pointer; }
-        #img-view-content { max-width: 95%; max-height: 90%; border: 2px solid var(--gold); box-shadow: 0 0 50px rgba(214, 194, 106, 0.2); object-fit: contain; }
+        /* MODIFIED IMAGE VIEW MODAL CSS */
+        #img-view-modal { position: fixed; inset: 0; z-index: 11000; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); display: none; justify-content: center; align-items: center; }
+        #img-view-content { max-width: 90%; max-height: 85%; border: 2px solid var(--gold); box-shadow: 0 0 50px rgba(214, 194, 106, 0.2); object-fit: contain; }
+        
+        .modal-close-btn { position: absolute; top: 20px; right: 30px; color: var(--gold); font-size: 3rem; cursor: pointer; font-family: var(--font-mono); z-index: 11001; transition: 0.3s; line-height: 1; }
+        .modal-close-btn:hover { color: #fff; transform: scale(1.1); }
+        
+        .modal-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.6); color: var(--gold); border: 1px solid var(--olive); width: 40px; height: 50px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 11001; font-family: var(--font-mono); font-size: 1.5rem; font-weight: bold; transition: 0.2s; }
+        .modal-nav:hover { background: var(--gold); color: #000; }
+        .modal-nav.nav-prev { left: 10px; clip-path: polygon(15px 0, 100% 0, 100% 100%, 15px 100%, 0 50%); }
+        .modal-nav.nav-next { right: 10px; clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 50%, calc(100% - 15px) 100%, 0 100%); }
+        
+        #modal-img-counter { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); font-size: 1rem; color: #fff; background: rgba(0,0,0,0.7); padding: 5px 15px; font-family: var(--font-mono); pointer-events: none; border: 1px solid var(--olive); }
 
         @media(max-width: 600px) {
             .grid { grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -124,6 +135,7 @@
             .cart-btn { padding: 12px 20px; font-size: 0.9rem; bottom: 15px; right: 15px; }
             .proshow-title { font-size: 1.5rem; }
             .toast { bottom: 80px; left: 15px; } 
+            .modal-close-btn { top: 10px; right: 15px; font-size: 2.5rem; }
         }
     </style>
 </head>
@@ -170,8 +182,13 @@
         </div>
     </div>
 
-    <div id="img-view-modal" onclick="closeImageModal()">
+    <!-- MODIFIED IMAGE VIEW MODAL HTML -->
+    <div id="img-view-modal" onclick="if(event.target === this) closeImageModal()">
+        <span class="modal-close-btn" onclick="closeImageModal()">&times;</span>
+        <div class="modal-nav nav-prev" onclick="navigateModalImage(-1, event)">&lt;</div>
         <img id="img-view-content" src="" alt="Zoomed Product">
+        <div class="modal-nav nav-next" onclick="navigateModalImage(1, event)">&gt;</div>
+        <div id="modal-img-counter"></div>
     </div>
 
     <script>
@@ -227,7 +244,6 @@
                 let isMultiSize = p.sizes && (p.sizes.includes('|') || p.sizes.includes(':'));
 
                 if (isMultiSize) {
-                    // It's a combo (e.g., "Hoodie: S,M,L | T-Shirt: S,M,L")
                     let combos = p.sizes.split('|');
                     let comboSelects = combos.map(combo => {
                         let parts = combo.split(':');
@@ -247,7 +263,6 @@
                     
                     sizeBlock = `<div style="display:flex; flex-wrap:wrap; gap:5px; width:100%; margin-bottom:10px;">${comboSelects}</div>`;
                 } else {
-                    // Standard Single Item Size
                     let options = (p.sizes || 'One Size').split(',').map(s=>`<option value="${s.trim()}">${s.trim()}</option>`).join('');
                     sizeBlock = `
                         <div style="flex:1; display:flex; flex-direction:column; margin-bottom:10px;">
@@ -264,7 +279,8 @@
                 <div class="card">
                     <div class="card-img-wrap" onmouseenter="pauseSlide('${p.id}')" onmouseleave="resumeSlide('${p.id}')">
                         ${navHtml} ${oosBadge}
-                        <img id="img-${p.id}" src="${imgList[0]}" class="card-img" onclick="openImageModal(this.src)" onerror="this.src='https://via.placeholder.com/300x300/181C10/4D8F48?text=ERROR'">
+                        <!-- MODIFIED ONCLICK TO PASS PRODUCT ID INSTEAD OF SRC -->
+                        <img id="img-${p.id}" src="${imgList[0]}" class="card-img" onclick="openImageModal('${p.id}')" onerror="this.src='https://via.placeholder.com/300x300/181C10/4D8F48?text=ERROR'">
                     </div>
                     <div class="card-info">
                         <span class="cat-tag">${p.category}</span>
@@ -320,8 +336,48 @@
 
         function pauseSlide(pid) { if(productImageRegistry[pid]) productImageRegistry[pid].paused = true; }
         function resumeSlide(pid) { if(productImageRegistry[pid]) productImageRegistry[pid].paused = false; }
-        function openImageModal(src) { document.getElementById('img-view-content').src = src; document.getElementById('img-view-modal').style.display = 'flex'; }
-        function closeImageModal() { document.getElementById('img-view-modal').style.display = 'none'; }
+        
+        // MODIFIED MODAL JS CONTROLS
+        let currentModalProductId = null;
+
+        function openImageModal(pid) { 
+            currentModalProductId = pid;
+            updateModalView();
+            document.getElementById('img-view-modal').style.display = 'flex'; 
+        }
+
+        function closeImageModal() { 
+            document.getElementById('img-view-modal').style.display = 'none'; 
+            currentModalProductId = null;
+        }
+
+        function navigateModalImage(dir, event) {
+            if(event) event.stopPropagation();
+            if(!currentModalProductId) return;
+            
+            // This also keeps the underlying product card image in sync
+            navigateImage(currentModalProductId, dir, null);
+            updateModalView();
+        }
+
+        function updateModalView() {
+            if(!currentModalProductId) return;
+            const state = productImageRegistry[currentModalProductId];
+            const src = state.images[state.currentIdx];
+            document.getElementById('img-view-content').src = src;
+            
+            const counter = document.getElementById('modal-img-counter');
+            const navArrows = document.querySelectorAll('#img-view-modal .modal-nav');
+            
+            if(state.images.length > 1) {
+                counter.innerText = `${state.currentIdx + 1} / ${state.images.length}`;
+                counter.style.display = 'block';
+                navArrows.forEach(el => el.style.display = 'flex');
+            } else {
+                counter.style.display = 'none';
+                navArrows.forEach(el => el.style.display = 'none');
+            }
+        }
 
         function addToCart(pid) {
             const p = products.find(x => String(x.id) === String(pid));
@@ -331,12 +387,11 @@
             let sizeStr = "";
             let isMultiSize = p.sizes && (p.sizes.includes('|') || p.sizes.includes(':'));
             
-            // Check if combo sizes exist
             if (isMultiSize) {
                 const selects = document.querySelectorAll(`.combo-size-${pid}`);
                 let sizeArr = [];
                 selects.forEach(sel => { sizeArr.push(`${sel.dataset.itemname}: ${sel.value}`); });
-                sizeStr = sizeArr.join(' | '); // Converts to e.g., "Hoodie: M | T-Shirt: L"
+                sizeStr = sizeArr.join(' | ');
             } else {
                 const sizeEl = document.getElementById(`size-${pid}`);
                 sizeStr = sizeEl ? sizeEl.value : 'One Size';
