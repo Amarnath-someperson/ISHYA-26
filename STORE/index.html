@@ -103,8 +103,8 @@
         .card { background: var(--bg-panel); border: 1px solid var(--olive); clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px); transition: 0.3s ease; position: relative; display: flex; flex-direction: column; }
         .card:hover { border-color: var(--gold); transform: translateY(-3px); box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
         .card-img-wrap { width: 100%; height: 220px; background: #000; padding: 5px; position: relative; overflow: hidden; user-select: none; }
-        .card-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; transition: opacity 0.4s ease; filter: grayscale(40%); cursor: zoom-in; display: block; }
-        .card:hover .card-img { opacity: 1; filter: grayscale(0%); }
+        .card-img { width: 100%; height: 100%; object-fit: cover; /*opacity: 0.8;*/ transition: opacity 0.4s ease; /*filter: grayscale(40%);*/ cursor: zoom-in; display: block; }
+        /*.card:hover .card-img { opacity: 1; filter: grayscale(0%); }*/ /* The comments made in this line and the one above remove the grey scale hover effect of image*/
 
         .nav-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.6); color: var(--gold); border: 1px solid var(--olive); width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; font-family: var(--font-mono); font-weight: bold; transition: 0.2s; opacity: 0; }
         .card-img-wrap:hover .nav-arrow { opacity: 1; }
