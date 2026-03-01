@@ -33,9 +33,17 @@
         .cart-btn { position: fixed; right: 20px; bottom: 20px; z-index: 10001; background: var(--gold); color: #000; border: 2px solid #fff; padding: 15px 25px; font-family: var(--font-mono); font-weight: bold; font-size: 1rem; cursor: pointer; clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px); transition: 0.3s; box-shadow: 0 0 20px rgba(214, 194, 106, 0.5); animation: pulseBtn 3s infinite; }
         .cart-btn:hover { background: #fff; transform: scale(1.05); }
         @keyframes pulseBtn { 0% { box-shadow: 0 0 0 0 rgba(214, 194, 106, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(214, 194, 106, 0); } 100% { box-shadow: 0 0 0 0 rgba(214, 194, 106, 0); } }
+        
         .section-title { font-size: 2rem; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.3); margin-bottom: 25px; padding-bottom: 10px; border-bottom: 2px solid var(--olive); text-transform: uppercase; font-weight: 700; margin-top: 20px; text-align: center; }
+        
+        /* SIZE CHART BUTTON STYLE */
+        .size-chart-wrapper { text-align: center; margin-bottom: 35px; margin-top: -10px; position: relative; z-index: 5; }
+        .size-chart-btn { display: inline-flex; align-items: center; justify-content: center; background: rgba(6, 6, 6, 0.8); border: 1px solid var(--gold); color: var(--gold); padding: 10px 25px; font-family: var(--font-mono); font-size: 0.85rem; text-decoration: none; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s ease; clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px); cursor: pointer; }
+        .size-chart-btn:hover { background: var(--gold); color: #000; box-shadow: 0 0 15px rgba(214, 194, 106, 0.4); transform: translateY(-2px); }
+        .size-chart-btn .icon { margin-right: 10px; font-size: 1.1rem; font-weight: bold; }
+
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; padding-bottom: 100px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 25px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 25px; }
         .card { background: var(--bg-panel); border: 1px solid var(--olive); clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px); transition: 0.3s ease; position: relative; display: flex; flex-direction: column; }
         .card:hover { border-color: var(--gold); transform: translateY(-3px); box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
         .card-img-wrap { width: 100%; height: 220px; background: #000; padding: 5px; position: relative; overflow: hidden; user-select: none; }
@@ -52,11 +60,8 @@
         .card h3 { font-size: 1.1rem; margin-bottom: 5px; color: #fff; line-height: 1.2; }
         .card-desc { font-size: 0.8rem; color: #888; margin-bottom: 10px; font-family: var(--font-mono); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
         .card-price { color: var(--green); font-family: var(--font-mono); font-size: 1.1rem; margin-bottom: 10px; display: block; }
-        .controls { display: flex; gap: 5px; margin-top: auto; }
-        .controls select, .controls input { background: #000; border: 1px solid var(--olive); color: #fff; padding: 8px; font-family: var(--font-mono); font-size: 0.8rem; outline: none; }
-        .controls input { width: 50px; text-align: center; }
-        .controls select:disabled, .controls input:disabled { opacity: 0.5; cursor: not-allowed; }
-        .add-btn { width: 100%; margin-top: 10px; padding: 10px; background: var(--green); color: #000; border: none; font-family: var(--font-head); font-weight: 700; cursor: pointer; clip-path: polygon(10px 0, 100% 0, 100% 100%, 0 100%, 0 10px); transition: 0.2s; }
+        
+        .add-btn { width: 100%; margin-top: 15px; padding: 10px; background: var(--green); color: #000; border: none; font-family: var(--font-head); font-weight: 700; cursor: pointer; clip-path: polygon(10px 0, 100% 0, 100% 100%, 0 100%, 0 10px); transition: 0.2s; }
         .add-btn:hover:not(:disabled) { background: var(--gold); }
         .proshow-section { background: repeating-linear-gradient(45deg, #181C10, #181C10 10px, #0e110a 10px, #0e110a 20px); border: 1px solid var(--gold); padding: 40px; margin-top: 60px; margin-bottom: 40px; text-align: center; position: relative; clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px); }
         .proshow-title { font-size: 2rem; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.3); margin-bottom: 20px; text-transform: uppercase; }
@@ -92,13 +97,24 @@
         .cart-remove { color: #d64a4a; cursor: pointer; font-size: 0.8rem; font-weight: bold; }
         .summary-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed var(--olive); font-family: var(--font-mono); font-size: 0.9rem; }
         .total-row { border-top: 2px solid var(--green); border-bottom: none; padding-top: 15px; font-size: 1.2rem; color: var(--gold); font-weight: bold; margin-top: 10px;}
-        #img-view-modal { position: fixed; inset: 0; z-index: 11000; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); display: none; justify-content: center; align-items: center; cursor: pointer; }
-        #img-view-content { max-width: 95%; max-height: 90%; border: 2px solid var(--gold); box-shadow: 0 0 50px rgba(214, 194, 106, 0.2); object-fit: contain; }
+        
+        /* IMAGE VIEW MODAL CSS (ZOOM SUPPORT) */
+        #img-view-modal { position: fixed; inset: 0; z-index: 11000; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); display: none; justify-content: center; align-items: center; overflow: hidden; }
+        #img-view-content { max-width: 90%; max-height: 85%; border: 2px solid var(--gold); box-shadow: 0 0 50px rgba(214, 194, 106, 0.2); object-fit: contain; touch-action: none; will-change: transform; transform-origin: center center; }
+        .modal-close-btn { position: absolute; top: 20px; right: 30px; color: var(--gold); font-size: 3rem; cursor: pointer; font-family: var(--font-mono); z-index: 11001; transition: 0.3s; line-height: 1; text-shadow: 0 0 10px #000; }
+        .modal-close-btn:hover { color: #fff; transform: scale(1.1); }
+        .modal-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.6); color: var(--gold); border: 1px solid var(--olive); width: 40px; height: 50px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 11001; font-family: var(--font-mono); font-size: 1.5rem; font-weight: bold; transition: 0.2s; }
+        .modal-nav:hover { background: var(--gold); color: #000; }
+        .modal-nav.nav-prev { left: 10px; clip-path: polygon(15px 0, 100% 0, 100% 100%, 15px 100%, 0 50%); }
+        .modal-nav.nav-next { right: 10px; clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 50%, calc(100% - 15px) 100%, 0 100%); }
+        #modal-img-counter { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); font-size: 1rem; color: #fff; background: rgba(0,0,0,0.7); padding: 5px 15px; font-family: var(--font-mono); pointer-events: none; border: 1px solid var(--olive); z-index: 11001; }
+
         @media(max-width: 600px) {
             .grid { grid-template-columns: 1fr 1fr; gap: 10px; }
             .card-img-wrap { height: 160px; }
             .brand { font-size: 1.8rem; }
             .cart-btn { padding: 12px 20px; font-size: 0.9rem; bottom: 15px; right: 15px; }
+            .modal-close-btn { top: 10px; right: 15px; font-size: 2.5rem; }
         }
     </style>
 </head>
@@ -117,12 +133,20 @@
         <!-- PROSHOW SECTION -->
         <div class="proshow-section">
             <h2 class="proshow-title">PROSHOW TICKETS</h2>
-            <!-- Changed back to the placeholder image -->
             <img src="https://via.placeholder.com/800x300/181C10/D6C26A?text=PROSHOW+BANNER" alt="Proshow Banner" class="proshow-banner">
             <button class="add-btn btn-large" onclick="openProshowModal()">BUY TICKETS NOW</button>
         </div>
+        
         <!-- MERCHANDISE SECTION -->
         <h2 class="section-title">MERCHANDISE</h2>
+        
+        <!-- SIZE CHART BUTTON -->
+        <div class="size-chart-wrapper">
+            <a href="https://drive.google.com/file/d/1nXi-PNMiRNQ0zyhK65RVZxuC98sNVEOP/view?usp=sharing" class="size-chart-btn" target="_blank" download>
+                <span class="icon">⇩</span> SIZE CHART
+            </a>
+        </div>
+
         <div class="grid" id="productGrid"></div>
     </div>
 
@@ -145,7 +169,14 @@
         </div>
     </div>
 
-    <div id="img-view-modal" onclick="closeImageModal()"><img id="img-view-content" src="" alt="Zoomed"></div>
+    <!-- IMAGE VIEW MODAL -->
+    <div id="img-view-modal" onclick="if(event.target === this) closeImageModal()">
+        <span class="modal-close-btn" onclick="closeImageModal()">&times;</span>
+        <div class="modal-nav nav-prev" onclick="navigateModalImage(-1, event)">&lt;</div>
+        <img id="img-view-content" src="" alt="Zoomed Product">
+        <div class="modal-nav nav-next" onclick="navigateModalImage(1, event)">&gt;</div>
+        <div id="modal-img-counter"></div>
+    </div>
 
     <script>
         const MERCH_API = "https://script.google.com/macros/s/AKfycbyld8a111hLb9SydZmH6K2dTAlAMG8a0HPdJ-oxoy8jjq01pkCLGwV5NInelko4QJpj5A/exec";
@@ -179,26 +210,211 @@
         function renderProducts() {
             const grid = document.getElementById('productGrid');
             grid.innerHTML = ""; productImageRegistry = {};
+            
             grid.innerHTML = products.map(p => {
                 const imgList = p.images ? p.images.split(',').map(s => s.trim()) : ['https://via.placeholder.com/300x300/181C10/4D8F48?text=NO+IMAGE'];
                 productImageRegistry[p.id] = { currentIdx: 0, images: imgList, timer: null };
+                
                 const isOutOfStock = (p.stock || "").toString().toLowerCase().trim() === "out of stock";
                 const disabledAttr = isOutOfStock ? 'disabled' : '';
+                
                 const oosBadge = isOutOfStock ? `<div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%) rotate(-10deg); background:rgba(0,0,0,0.8); border:2px solid #d64a4a; color:#d64a4a; padding:10px 15px; font-weight:bold; z-index:20; font-family:var(--font-mono); white-space:nowrap; pointer-events:none; letter-spacing: 2px;">OUT OF STOCK</div>` : '';
                 const btnHtml = isOutOfStock ? `<button class="add-btn" disabled style="background:#222; color:#555; cursor:not-allowed;">OUT OF STOCK</button>` : `<button class="add-btn" onclick="addToCart('${p.id}')">ADD TO CART</button>`;
                 const navHtml = imgList.length > 1 ? `<div class="nav-arrow nav-prev" onclick="navigateImage('${p.id}', -1, event)">&lt;</div><div class="nav-arrow nav-next" onclick="navigateImage('${p.id}', 1, event)">&gt;</div><div class="img-counter" id="cnt-${p.id}">1/${imgList.length}</div>` : '';
 
-                return `<div class="card"><div class="card-img-wrap" onmouseenter="pauseSlide('${p.id}')" onmouseleave="resumeSlide('${p.id}')">${navHtml}${oosBadge}<img id="img-${p.id}" src="${imgList[0]}" class="card-img" onclick="openImageModal(this.src)" onerror="this.src='https://via.placeholder.com/300x300/181C10/4D8F48?text=ERROR'"></div><div class="card-info"><span class="cat-tag">${p.category}</span><h3>${p.name}</h3><p class="card-desc">${p.description || ''}</p><span class="card-price">₹${p.price}</span><div class="controls"><select id="size-${p.id}" style="flex:1" ${disabledAttr}>${(p.sizes || 'One Size').split(',').map(s=>`<option>${s.trim()}</option>`).join('')}</select><input type="number" id="qty-${p.id}" value="1" min="1" ${disabledAttr}></div>${btnHtml}</div></div>`}).join('');
+                // ---------- COLOR PARSING LOGIC ----------
+                let colorBlock = "";
+                if (p.colors) {
+                    let cOptions = p.colors.split(',').map(c => `<option value="${c.trim()}">${c.trim()}</option>`).join('');
+                    colorBlock = `
+                        <div style="flex:1; display:flex; flex-direction:column; margin-bottom:10px;">
+                            <label style="font-family:var(--font-mono); font-size:0.7rem; color:var(--gold); margin-bottom:2px;">COLOR</label>
+                            <select id="color-${p.id}" style="width:100%; background:#000; border:1px solid var(--olive); color:#fff; padding:8px; font-family:var(--font-mono); font-size:0.8rem; outline:none;" ${disabledAttr}>
+                                ${cOptions}
+                            </select>
+                        </div>
+                    `;
+                }
+
+                // ---------- MULTI-SIZE PARSING LOGIC ----------
+                let sizeBlock = "";
+                let isMultiSize = p.sizes && (p.sizes.includes('|') || p.sizes.includes(':'));
+
+                if (isMultiSize) {
+                    let combos = p.sizes.split('|');
+                    let comboSelects = combos.map(combo => {
+                        let parts = combo.split(':');
+                        let itemName = parts[0] ? parts[0].trim() : "Item";
+                        let itemSizes = parts[1] ? parts[1].trim() : "One Size";
+                        let options = itemSizes.split(',').map(s => `<option value="${s.trim()}">${s.trim()}</option>`).join('');
+                        
+                        return `
+                            <div style="display:flex; flex-direction:column; flex:1; min-width:45%; margin-bottom:5px;">
+                                <label style="font-family:var(--font-mono); font-size:0.65rem; color:var(--gold); margin-bottom:2px;">${itemName.toUpperCase()}</label>
+                                <select class="combo-size-${p.id}" data-itemname="${itemName}" style="width:100%; background:#000; border:1px solid var(--olive); color:#fff; padding:6px; font-family:var(--font-mono); font-size:0.75rem; outline:none;" ${disabledAttr}>
+                                    ${options}
+                                </select>
+                            </div>
+                        `;
+                    }).join('');
+                    
+                    sizeBlock = `<div style="display:flex; flex-wrap:wrap; gap:5px; width:100%; margin-bottom:10px;">${comboSelects}</div>`;
+                } else {
+                    let options = (p.sizes || 'One Size').split(',').map(s=>`<option value="${s.trim()}">${s.trim()}</option>`).join('');
+                    sizeBlock = `
+                        <div style="flex:1; display:flex; flex-direction:column; margin-bottom:10px;">
+                            <label style="font-family:var(--font-mono); font-size:0.7rem; color:var(--gold); margin-bottom:2px;">SIZE</label>
+                            <select id="size-${p.id}" style="width:100%; background:#000; border:1px solid var(--olive); color:#fff; padding:8px; font-family:var(--font-mono); font-size:0.8rem; outline:none;" ${disabledAttr}>
+                                ${options}
+                            </select>
+                        </div>
+                    `;
+                }
+
+                return `
+                <div class="card">
+                    <div class="card-img-wrap" onmouseenter="pauseSlide('${p.id}')" onmouseleave="resumeSlide('${p.id}')">
+                        ${navHtml} ${oosBadge}
+                        <img id="img-${p.id}" src="${imgList[0]}" class="card-img" onclick="openImageModal('${p.id}')" onerror="this.src='https://via.placeholder.com/300x300/181C10/4D8F48?text=ERROR'">
+                    </div>
+                    <div class="card-info">
+                        <span class="cat-tag">${p.category}</span>
+                        <h3>${p.name}</h3>
+                        <p class="card-desc">${p.description || ''}</p>
+                        <span class="card-price">₹${p.price}</span>
+                        
+                        <div class="controls-wrapper" style="display:flex; flex-direction:column; margin-top: auto;">
+                            ${colorBlock}
+                            ${sizeBlock}
+                            <div style="display:flex; align-items:center; justify-content:space-between; padding-top: 5px; border-top: 1px dashed #333;">
+                                <label style="font-family:var(--font-mono); font-size:0.75rem; color:var(--gold);">QUANTITY</label>
+                                <input type="number" id="qty-${p.id}" value="1" min="1" ${disabledAttr} style="width:60px; background:#000; border:1px solid var(--olive); color:#fff; padding:6px; text-align:center; font-family:var(--font-mono); outline:none;">
+                            </div>
+                        </div>
+                        ${btnHtml}
+                    </div>
+                </div>`;
+            }).join('');
+            
             initSlideshows();
         }
+        
         function navigateImage(pid, dir, event) { if(event) event.stopPropagation(); const state = productImageRegistry[pid]; if(!state || state.images.length <= 1) return; let newIdx = state.currentIdx + dir; if (newIdx >= state.images.length) newIdx = 0; if (newIdx < 0) newIdx = state.images.length - 1; state.currentIdx = newIdx; updateCardImage(pid); }
         function updateCardImage(pid) { const state = productImageRegistry[pid], imgEl = document.getElementById(`img-${pid}`), cntEl = document.getElementById(`cnt-${pid}`); if(imgEl) { imgEl.style.opacity = '0.5'; setTimeout(() => { imgEl.src = state.images[state.currentIdx]; imgEl.onload = () => { imgEl.style.opacity = '1'; }; }, 150); } if(cntEl) cntEl.innerText = `${state.currentIdx + 1}/${state.images.length}`; }
         function initSlideshows() { setInterval(() => { for(let pid in productImageRegistry) { const state = productImageRegistry[pid]; if(state.images.length > 1 && !state.paused) navigateImage(pid, 1, null); } }, 3500); }
         function pauseSlide(pid) { if(productImageRegistry[pid]) productImageRegistry[pid].paused = true; }
         function resumeSlide(pid) { if(productImageRegistry[pid]) productImageRegistry[pid].paused = false; }
-        function openImageModal(src) { document.getElementById('img-view-content').src = src; document.getElementById('img-view-modal').style.display = 'flex'; }
-        function closeImageModal() { document.getElementById('img-view-modal').style.display = 'none'; }
         
+        // ================= FULLSCREEN IMAGE ZOOM & MODAL LOGIC =================
+        let currentModalProductId = null;
+        function openImageModal(pid) { 
+            currentModalProductId = pid;
+            resetZoom();
+            updateModalView();
+            document.getElementById('img-view-modal').style.display = 'flex'; 
+        }
+        function closeImageModal() { 
+            document.getElementById('img-view-modal').style.display = 'none'; 
+            currentModalProductId = null;
+            resetZoom();
+        }
+        function navigateModalImage(dir, event) {
+            if(event) event.stopPropagation();
+            if(!currentModalProductId) return;
+            resetZoom();
+            navigateImage(currentModalProductId, dir, null); // Sync with background thumbnail
+            updateModalView();
+        }
+        function updateModalView() {
+            if(!currentModalProductId) return;
+            const state = productImageRegistry[currentModalProductId];
+            const src = state.images[state.currentIdx];
+            document.getElementById('img-view-content').src = src;
+            
+            const counter = document.getElementById('modal-img-counter');
+            const navArrows = document.querySelectorAll('#img-view-modal .modal-nav');
+            
+            if(state.images.length > 1) {
+                counter.innerText = `${state.currentIdx + 1} / ${state.images.length}`;
+                counter.style.display = 'block';
+                navArrows.forEach(el => el.style.display = 'flex');
+            } else {
+                counter.style.display = 'none';
+                navArrows.forEach(el => el.style.display = 'none');
+            }
+        }
+
+        // TOUCH & PAN/ZOOM LOGIC FOR IMAGE VIEW
+        const imgViewEl = document.getElementById('img-view-content');
+        let scale = 1, pointX = 0, pointY = 0, startX = 0, startY = 0;
+        let panning = false, lastDist = 0, lastTap = 0;
+
+        function setTransform(smooth = false) {
+            imgViewEl.style.transition = smooth ? 'transform 0.2s ease-out' : 'none';
+            imgViewEl.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
+        }
+        function resetZoom() {
+            scale = 1; pointX = 0; pointY = 0;
+            setTransform(true);
+        }
+
+        imgViewEl.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) {
+                panning = true;
+                startX = e.touches[0].clientX - pointX;
+                startY = e.touches[0].clientY - pointY;
+            } else if (e.touches.length === 2) {
+                panning = false;
+                lastDist = Math.hypot(
+                    e.touches[0].clientX - e.touches[1].clientX,
+                    e.touches[0].clientY - e.touches[1].clientY
+                );
+            }
+        });
+
+        imgViewEl.addEventListener('touchmove', (e) => {
+            e.preventDefault(); 
+            if (e.touches.length === 1 && panning && scale > 1) {
+                pointX = e.touches[0].clientX - startX;
+                pointY = e.touches[0].clientY - startY;
+                setTransform(false);
+            } else if (e.touches.length === 2) {
+                let dist = Math.hypot(
+                    e.touches[0].clientX - e.touches[1].clientX,
+                    e.touches[0].clientY - e.touches[1].clientY
+                );
+                let zoom = dist / lastDist;
+                scale = Math.min(Math.max(1, scale * zoom), 5); 
+                lastDist = dist;
+                if (scale === 1) { pointX = 0; pointY = 0; }
+                setTransform(false);
+            }
+        });
+
+        imgViewEl.addEventListener('touchend', (e) => {
+            panning = false;
+            if (scale <= 1) { resetZoom(); }
+
+            // Double Tap Zoom
+            let currentTime = new Date().getTime();
+            let tapLength = currentTime - lastTap;
+            if (tapLength < 300 && tapLength > 0 && e.touches.length === 0) {
+                if (scale > 1) { resetZoom(); } 
+                else { scale = 2.5; pointX = 0; pointY = 0; setTransform(true); }
+                e.preventDefault();
+            }
+            lastTap = currentTime;
+        });
+
+        imgViewEl.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            let delta = e.deltaY > 0 ? -0.2 : 0.2;
+            scale = Math.min(Math.max(1, scale + delta), 5);
+            if (scale === 1) { pointX = 0; pointY = 0; }
+            setTransform(false);
+        });
+        
+        // ================= UTILITIES =================
         function getBatchOptions(selectedValue, mapType) {
             let options = `<option value="">-- SELECT BATCH --</option>`;
             let mapToUse = (mapType === 'PROSHOW') ? BATCH_UPI_MAP_PROSHOW : BATCH_UPI_MAP_MERCH;
@@ -227,37 +443,87 @@
         }
 
         // ================= MERCH LOGIC =================
-        function addToCart(pid) { const p = products.find(x => String(x.id) === String(pid)), size = document.getElementById(`size-${pid}`).value, qty = parseInt(document.getElementById(`qty-${pid}`).value); if(qty <= 0) return; const ex = cart.find(i => i.id === p.id && i.size === size); if(ex) ex.qty += qty; else cart.push({ ...p, size, qty }); updateCartCount(); showToast(); }
+        function addToCart(pid) { 
+            const p = products.find(x => String(x.id) === String(pid));
+            const qty = parseInt(document.getElementById(`qty-${pid}`).value); 
+            if(qty <= 0) return; 
+
+            // Get Sizes
+            let sizeStr = "";
+            let isMultiSize = p.sizes && (p.sizes.includes('|') || p.sizes.includes(':'));
+            
+            if (isMultiSize) {
+                const selects = document.querySelectorAll(`.combo-size-${pid}`);
+                let sizeArr = [];
+                selects.forEach(sel => { sizeArr.push(`${sel.dataset.itemname}: ${sel.value}`); });
+                sizeStr = sizeArr.join(' | ');
+            } else {
+                const sizeEl = document.getElementById(`size-${pid}`);
+                sizeStr = sizeEl ? sizeEl.value : 'One Size';
+            }
+
+            // Get Color
+            let colorStr = "";
+            const colorEl = document.getElementById(`color-${pid}`);
+            if (colorEl) {
+                colorStr = colorEl.value;
+            }
+
+            // Combine Color & Size for Cart tracking
+            let finalVariant = sizeStr;
+            if (colorStr) {
+                finalVariant = `Color: ${colorStr} | ${sizeStr}`;
+            }
+
+            const ex = cart.find(i => i.id === p.id && i.size === finalVariant); 
+            if(ex) ex.qty += qty; 
+            else cart.push({ ...p, size: finalVariant, qty }); 
+            
+            updateCartCount(); 
+            showToast(); 
+        }
+
         function updateCartCount() { document.getElementById('cartCount').innerText = cart.reduce((a, b) => a + b.qty, 0); }
         function removeFromCart(idx) { cart.splice(idx, 1); updateCartCount(); renderCartStep(); }
         function showToast() { const t = document.getElementById('toast'); t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
+        
         const modal = document.getElementById('mainModal'), mTitle = document.getElementById('modalTitle'), mBody = document.getElementById('modalContent');
+        
         function closeModal() { modal.style.display = 'none'; }
         function openCart() { modal.style.display = 'flex'; renderCartStep(); }
+        
         function renderCartStep() {
             mTitle.innerText = "YOUR CART";
             if(cart.length === 0) { mBody.innerHTML = `<p style="text-align:center; color:#666; padding:20px;">Cart is empty.</p><button class="btn btn-sec" onclick="closeModal()">RETURN</button>`; return; }
-            let total = 0; const html = cart.map((item, i) => { total += item.price * item.qty; return `<div class="cart-item"><div><div style="color:#fff; font-weight:bold">${item.name}</div><div style="color:#888; font-size:0.8rem">${item.size} x ${item.qty}</div></div><div style="text-align:right"><div style="color:var(--gold)">₹${item.price * item.qty}</div><span class="cart-remove" onclick="removeFromCart(${i})">REMOVE</span></div></div>`; }).join('');
+            let total = 0; 
+            const html = cart.map((item, i) => { 
+                total += item.price * item.qty; 
+                return `<div class="cart-item"><div><div style="color:#fff; font-weight:bold">${item.name}</div><div style="color:#888; font-size:0.8rem">${item.size} <br><span style="color:var(--gold)">x ${item.qty}</span></div></div><div style="text-align:right"><div style="color:var(--gold)">₹${item.price * item.qty}</div><span class="cart-remove" onclick="removeFromCart(${i})">REMOVE</span></div></div>`; 
+            }).join('');
             mBody.innerHTML = `${html}<div style="text-align:right; margin-top:15px; font-size:1.2rem; color:var(--green); font-weight:bold">TOTAL: ₹${total}</div><div class="btn-row"><button class="btn btn-sec" onclick="closeModal()">CLOSE</button><button class="btn btn-primary" onclick="renderDetailsStep()">CHECKOUT</button></div>`;
         }
+        
         function renderDetailsStep() {
             mTitle.innerText = "CUSTOMER DETAILS";
-            mBody.innerHTML = `<form onsubmit="event.preventDefault(); userDetails={name:document.getElementById('cName').value, email:document.getElementById('cEmail').value, phone:document.getElementById('cPhone').value, roll:document.getElementById('cRoll').value, batch:document.getElementById('cBatch').value, address:document.getElementById('cAddress').value}; renderSummaryStep();"><div class="form-group"><label>FULL NAME</label><input class="input-box" id="cName" required value="${userDetails.name||''}"></div><div class="form-group"><label>EMAIL</label><input class="input-box" type="email" id="cEmail" required value="${userDetails.email||''}"></div><div class="form-group"><label>PHONE</label><input class="input-box" type="tel" id="cPhone" required value="${userDetails.phone||''}"></div><div class="form-group"><label>ROLL NO</label><input class="input-box" id="cRoll" value="${userDetails.roll||''}"></div><div class="form-group"><label>BATCH</label><select class="input-box" id="cBatch" required>${getBatchOptions(userDetails.batch, 'MERCH')}</select></div><div class="form-group"><label>ADDRESS</label><input class="input-box" id="cAddress" value="${userDetails.address||''}"></div><div class="btn-row"><button type="button" class="btn btn-sec" onclick="renderCartStep()">BACK</button><button type="submit" class="btn btn-primary">REVIEW</button></div></form>`;
+            mBody.innerHTML = `<form onsubmit="event.preventDefault(); userDetails={name:document.getElementById('cName').value, email:document.getElementById('cEmail').value, phone:document.getElementById('cPhone').value, roll:document.getElementById('cRoll').value, batch:document.getElementById('cBatch').value, address:document.getElementById('cAddress').value}; renderSummaryStep();"><div class="form-group"><label>FULL NAME</label><input class="input-box" id="cName" required value="${userDetails.name||''}"></div><div class="form-group"><label>EMAIL</label><input class="input-box" type="email" id="cEmail" required value="${userDetails.email||''}"></div><div class="form-group"><label>PHONE</label><input class="input-box" type="tel" id="cPhone" required value="${userDetails.phone||''}"></div><div class="form-group"><label>ROLL NO (Optional)</label><input class="input-box" id="cRoll" value="${userDetails.roll||''}"></div><div class="form-group"><label>BATCH (Crucial for Payment)</label><select class="input-box" id="cBatch" required>${getBatchOptions(userDetails.batch, 'MERCH')}</select></div><div class="form-group"><label>ADDRESS (Optional)</label><input class="input-box" id="cAddress" value="${userDetails.address||''}"></div><div class="btn-row"><button type="button" class="btn btn-sec" onclick="renderCartStep()">BACK</button><button type="submit" class="btn btn-primary">REVIEW</button></div></form>`;
         }
+        
         function renderSummaryStep() {
             mTitle.innerText = "ORDER SUMMARY";
             const total = cart.reduce((a,b) => a + (b.price*b.qty), 0);
             let summary = cart.map(i => `<div class="summary-row"><span>${i.name} (${i.size}) x${i.qty}</span><span>₹${i.price*i.qty}</span></div>`).join('');
             mBody.innerHTML = `<div style="background:#000; padding:15px; border:1px solid var(--olive); margin-bottom:15px;"><div class="summary-row"><span style="color:#888">NAME</span><span>${userDetails.name}</span></div><hr style="border-color:var(--olive); margin:10px 0; border-style:dashed;">${summary}<div class="summary-row total-row"><span>TOTAL</span><span>₹${total}</span></div></div><div class="btn-row"><button class="btn btn-sec" onclick="renderDetailsStep()">EDIT</button><button class="btn btn-primary" onclick="renderPaymentStep()">PAY</button></div>`;
         }
+        
         function renderPaymentStep() {
             mTitle.innerText = "PAYMENT";
             const total = cart.reduce((a,b) => a + (b.price*b.qty), 0);
             let batchInfo = BATCH_UPI_MAP_MERCH[userDetails.batch] || BATCH_UPI_MAP_MERCH["OTHERS"] || { id: "", name: "Unknown" };
             const upiLink = `upi://pay?pa=${batchInfo.upi}&pn=${encodeURIComponent(batchInfo.name)}&am=${total}&tn=MerchOrder`;
-            mBody.innerHTML = `<div style="text-align:center"><h3 style="color:var(--green);">${batchInfo.name}</h3><div id="qr-container" style="background:#fff; padding:10px; display:inline-block; border:4px solid var(--gold); margin:10px 0;"></div><a href="${upiLink}" class="btn btn-primary" style="display:block; text-decoration:none; padding:15px;">PAY NOW VIA UPI APP</a><div class="form-group" style="text-align:left; margin-top:20px;"><label>UPLOAD SCREENSHOT</label><input type="file" id="receiptFile" accept="image/*" class="input-box" style="padding:5px;"></div></div><div class="btn-row"><button class="btn btn-sec" onclick="renderSummaryStep()">BACK</button><button class="btn btn-primary" onclick="submitFinalOrder()" id="btnSubmit">CONFIRM</button></div>`;
+            mBody.innerHTML = `<div style="text-align:center"><p style="color:#888; font-size:0.9rem">PAYING TO ISHYA:</p><h3 style="color:var(--green);">${batchInfo.name}</h3><div id="qr-container" style="background:#fff; padding:10px; display:inline-block; border:4px solid var(--gold); margin:10px 0;"></div><a href="${upiLink}" class="btn btn-primary" style="display:block; text-decoration:none; padding:15px;">PAY NOW VIA UPI APP</a><div class="form-group" style="text-align:left; margin-top:20px;"><label>UPLOAD SCREENSHOT</label><input type="file" id="receiptFile" accept="image/*" class="input-box" style="padding:5px;"></div></div><div class="btn-row"><button class="btn btn-sec" onclick="renderSummaryStep()">BACK</button><button class="btn btn-primary" onclick="submitFinalOrder()" id="btnSubmit">CONFIRM</button></div>`;
             setTimeout(() => new QRCode(document.getElementById("qr-container"), { text: upiLink, width: 150, height: 150 }), 100);
         }
+        
         async function submitFinalOrder() {
             const fileInput = document.getElementById('receiptFile'); if(!fileInput.files[0]) return alert("Screenshot required.");
             const btn = document.getElementById('btnSubmit'); btn.innerText = "PROCESSING..."; btn.disabled = true;
@@ -267,7 +533,7 @@
                     const payload = { orderId: "ORD-" + Math.floor(100000 + Math.random() * 900000), customerName: userDetails.name, customerEmail: userDetails.email, customerPhone: userDetails.phone, rollNumber: userDetails.roll || "N/A", batch: userDetails.batch, address: userDetails.address || "N/A", totalPrice: total, cart: cart, receiptImage: base64Img };
                     const res = await fetch(MERCH_API, { method: "POST", body: JSON.stringify(payload), headers: {"Content-Type": "text/plain"} });
                     const result = await res.json();
-                    if(result.status === 'success') { mBody.innerHTML = `<div style="text-align:center; padding:30px;"><h2 style="color:var(--green)">ORDER COMPLETED</h2><button class="btn btn-primary" onclick="window.location.reload()" style="margin-top:20px;">CLOSE</button></div>`; cart = []; updateCartCount(); } else throw new Error(result.message);
+                    if(result.status === 'success') { mBody.innerHTML = `<div style="text-align:center; padding:30px;"><h2 style="color:var(--green)">ORDER SECURED</h2><p style="color:#888;">Confirmation sent to email.</p><button class="btn btn-primary" onclick="window.location.reload()" style="margin-top:20px;">CLOSE</button></div>`; cart = []; updateCartCount(); } else throw new Error(result.message);
                 } catch (e) { alert("Failed: " + e.message); btn.innerText = "RETRY"; btn.disabled = false; }
             });
         }
