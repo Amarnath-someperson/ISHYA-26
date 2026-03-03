@@ -1,1 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ISHYA '26 | Sponsors & Partners</title>
 
+    <!-- GLOBAL THEME -->
+    <link rel="stylesheet" href="/global.css">
+    <link rel="shortcut icon" type="image/x-icon" href="../Logo Ishya.ico">
+
+    <!-- FONTS & ICONS (kept for safety even though global.css imports them) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Foldit:wght@400;600;800;900&family=Syncopate:wght@400;700&family=Space+Grotesk:wght@300;500;700&family=Cormorant+Garamond:ital,wght@1,300;1,600&family:Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- SHARED LAYOUT / HEADER-FOOTER -->
+    <script src="/layout.js" defer></script>
+    <script async src="https://tally.so/widgets/embed.js"></script>
+
+    <style>
+        :root {
+            /* fallback if global.css fails to load */
+            --bg-dark: #051408;
+            --accent-gold: #D6C26A;
+            --accent-olive: #6B7540;
+            --accent-green: #4D8F48;
+            --text-light: #e0e0e0;
+            --font-display: 'Syncopate', sans-serif;
+            --font-fold: 'Foldit', display;
+            --font-body: 'Space Grotesk', sans-serif;
+            --font-tech: 'Share Tech Mono', monospace;
+            --font-serif: 'Cormorant Garamond', serif;
+            --bar-height: 75px;
+            --header-h: 75px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html, body {
+            background: transparent;
+            color: var(--text-light);
+            font-family: var(--font-body);
+            overflow-x: hidden;
+            width: 100vw;
+            min-height: 100vh;
+        }
+
+        /* LAYERS */
+        #animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -10;
+            background-color: var(--bg-dark);
+            pointer-events: none;
+        }
+
+        #bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, transparent 0%, rgba(5, 20, 8, 0.9) 100%);
+            z-index: -5;
+            pointer-events: none;
+        }
+
+        main {
+            position: relative;
+            z-index: 10;
+        }
+
+        section {
+            min-height: calc(100vh - var(--header-h));
+            padding: calc(var(--header-h) + 40px) 5vw 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .section-layout {
+            width: 100%;
+            max-width: 1400px;
+            display: flex;
+            align-items: stretch;
+            justify-content: space-between;
+            gap: 40px;
+        }
+
+        .layout-two-column {
+            flex-direction: row;
+        }
+
+        .layout-two-column-reverse {
+            flex-direction: row-reverse;
+        }
+
+        .perch-zone {
+            width: 40%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .content-zone {
+            width: 60%;
+        }
+
+        .perch-title {
+            font-family: var(--font-fold), var(--font-display), sans-serif;
+            font-size: clamp(3rem, 5vw, 4.5rem);
+            color: var(--accent-gold);
+            opacity: 0.95;
+            text-shadow: 0 0 24px rgba(0, 0, 0, 0.8);
+            line-height: 1;
+            margin-bottom: 12px;
+        }
+
+        .perch-subtitle {
+            font-family: var(--font-tech);
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            padding: 6px 12px;
+            display: inline-block;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid var(--accent-olive);
+            color: var(--accent-green);
+            text-transform: uppercase;
+        }
+
+        .perch-body {
+            margin-top: 20px;
+            font-size: 1.05rem;
+            line-height: 1.7;
+            max-width: 32rem;
+            color: rgba(240,240,240,0.9);
+        }
+
+        .hero-kpi-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+            margin-top: 28px;
+        }
+
+        .hero-kpi {
+            flex: 1 1 150px;
+            padding: 14px 18px;
+            border-radius: 14px;
+            border: 1px solid rgba(214, 194, 106, 0.25);
+            background: rgba(10, 15, 6, 0.7);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+        }
+
+        .hero-kpi-label {
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            font-family: var(--font-tech);
+            text-transform: uppercase;
+            color: rgba(226, 232, 240, 0.75);
+        }
+
+        .hero-kpi-value {
+            margin-top: 6px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+        }
+
+        /* Shared glass button */
+        .cta-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 30px;
+            padding: 14px 32px;
+            background: rgba(24, 28, 16, 0.7);
+            border: 1px solid var(--accent-green);
+            color: var(--accent-gold);
+            font-family: var(--font-display);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-btn i {
+            font-size: 0.95rem;
+        }
+
+        .cta-btn:hover {
+            color: #ffffff;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 22px rgba(77, 143, 72, 0.4);
+            background: rgba(77, 143, 72, 0.2);
+        }
+
+        .cta-secondary {
+            margin-left: 16px;
+            border-color: rgba(214, 194, 106, 0.4);
+            background: rgba(5, 10, 6, 0.85);
+        }
+
+        .cta-secondary:hover {
+            background: rgba(24, 28, 16, 0.95);
+        }
+
+        /* SPONSORSHIP TIERS */
+        .tiers-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 26px;
+        }
+
+        .tier-card {
+            position: relative;
+            padding: 24px 22px 26px;
+            border-radius: 18px;
+            background: radial-gradient(circle at top left, rgba(214, 194, 106, 0.18), rgba(5, 8, 6, 0.95));
+            border: 1px solid rgba(214, 194, 106, 0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.7);
+            overflow: hidden;
+        }
+
+        .tier-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(214, 194, 106, 0.4);
+            background: rgba(0,0,0,0.6);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-family: var(--font-tech);
+            color: var(--accent-gold);
+        }
+
+        .tier-title {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            margin-top: 14px;
+            color: #fefce8;
+        }
+
+        .tier-tagline {
+            font-size: 0.9rem;
+            margin-top: 6px;
+            color: rgba(226, 232, 240, 0.8);
+        }
+
+        .tier-benefits {
+            margin-top: 16px;
+            list-style: none;
+            padding-left: 0;
+            font-size: 0.95rem;
+        }
+
+        .tier-benefits li {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 8px;
+            color: rgba(229, 231, 235, 0.9);
+        }
+
+        .tier-benefits li i {
+            font-size: 0.7rem;
+            margin-top: 4px;
+            color: var(--accent-green);
+        }
+
+        .tier-footer-text {
+            margin-top: 14px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-family: var(--font-tech);
+            color: rgba(209, 213, 219, 0.95);
+        }
+
+        .tier-accent-orbit {
+            position: absolute;
+            inset: -40%;
+            opacity: 0.22;
+            background:
+                radial-gradient(circle at 20% 0%, rgba(234, 179, 8, 0.5), transparent 55%),
+                radial-gradient(circle at 100% 80%, rgba(74, 222, 128, 0.35), transparent 55%),
+                radial-gradient(circle at 0% 100%, rgba(15, 118, 110, 0.35), transparent 55%);
+            mix-blend-mode: screen;
+            pointer-events: none;
+        }
+
+        .tier-card:nth-child(2) {
+            border-color: rgba(234, 179, 8, 0.8);
+            background: radial-gradient(circle at top, rgba(248, 250, 252, 0.06), rgba(5, 8, 6, 0.98));
+        }
+
+        /* WHY SPONSOR */
+        .reason-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 26px;
+        }
+
+        .reason-card {
+            padding: 22px 22px 24px;
+            border-radius: 18px;
+            border: 1px solid rgba(148, 163, 184, 0.4);
+            background: rgba(10, 15, 12, 0.9);
+            box-shadow: 0 16px 36px rgba(0,0,0,0.7);
+        }
+
+        .reason-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 999px;
+            border: 1px solid rgba(148, 163, 184, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-gold);
+            margin-bottom: 12px;
+        }
+
+        .reason-title {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            margin-bottom: 6px;
+        }
+
+        .reason-body {
+            font-size: 0.95rem;
+            color: rgba(229, 231, 235, 0.9);
+            line-height: 1.6;
+        }
+
+        /* LOGOS GRID */
+        .logos-wrapper {
+            border-radius: 24px;
+            border: 1px solid rgba(148, 163, 184, 0.5);
+            background: radial-gradient(circle at top left, rgba(148, 163, 184, 0.18), rgba(5, 10, 8, 0.96));
+            padding: 26px 24px 24px;
+            box-shadow: 0 18px 40px rgba(0,0,0,0.8);
+        }
+
+        /* Scrollable list variant for the hero section */
+        .logos-wrapper--scroll {
+            max-height: 360px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(148,163,184,0.8) rgba(15,23,42,0.9);
+        }
+        .logos-wrapper--scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .logos-wrapper--scroll::-webkit-scrollbar-track {
+            background: rgba(15,23,42,0.95);
+        }
+        .logos-wrapper--scroll::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, rgba(234,179,8,0.8), rgba(59,130,246,0.7));
+            border-radius: 999px;
+        }
+
+        .logos-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .logos-badge {
+            font-family: var(--font-tech);
+            font-size: 0.75rem;
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
+            padding: 6px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(148, 163, 184, 0.5);
+            color: rgba(226, 232, 240, 0.9);
+        }
+
+        .logos-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .logo-chip {
+            border-radius: 16px;
+            border: 1px dashed rgba(148, 163, 184, 0.65);
+            background: rgba(15, 23, 42, 0.85);
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 10px;
+            font-size: 0.85rem;
+            color: rgba(226, 232, 240, 0.9);
+        }
+
+        /* Prominent chips for title sponsors */
+        .title-sponsor-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .logo-chip--title {
+            border-style: solid;
+            border-color: rgba(234, 179, 8, 0.9);
+            background: radial-gradient(circle at top, rgba(250, 204, 21, 0.35), rgba(15, 23, 42, 0.98));
+            color: #fefce8;
+            height: 110px;
+            font-size: 1rem;
+            box-shadow: 0 20px 45px rgba(0,0,0,0.9);
+        }
+
+        /* Secondary grids below title sponsors */
+        .logos-grid--secondary {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        /* CONTACT SECTION */
+        .contact-card {
+            border-radius: 22px;
+            border: 1px solid rgba(148, 163, 184, 0.6);
+            background: radial-gradient(circle at top left, rgba(129, 230, 217, 0.18), rgba(5, 10, 10, 0.98));
+            padding: 26px 22px 24px;
+            box-shadow: 0 18px 40px rgba(0,0,0,0.9);
+        }
+
+        .contact-detail-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+            margin-top: 16px;
+        }
+
+        .contact-pill {
+            flex: 1 1 220px;
+            padding: 10px 14px;
+            border-radius: 999px;
+            border: 1px solid rgba(148, 163, 184, 0.7);
+            background: rgba(15, 23, 42, 0.9);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .contact-pill i {
+            color: var(--accent-gold);
+        }
+
+        .contact-note {
+            margin-top: 14px;
+            font-size: 0.85rem;
+            color: rgba(209, 213, 219, 0.9);
+        }
+
+        .tally-launch {
+            margin-top: 18px;
+        }
+
+        .tally-launch button {
+            all: unset;
+            cursor: pointer;
+        }
+
+        .tally-launch .cta-btn {
+            margin-top: 0;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            .section-layout {
+                flex-direction: column;
+            }
+
+            .perch-zone,
+            .content-zone {
+                width: 100%;
+            }
+
+            .perch-zone {
+                align-items: center;
+                text-align: center;
+            }
+
+            .perch-body {
+                max-width: none;
+            }
+
+            .tiers-grid,
+            .reason-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .logos-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            section {
+                padding: calc(var(--header-h) + 20px) 5vw 50px;
+            }
+
+            .tiers-grid,
+            .reason-grid {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .logos-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .hero-kpi-row {
+                flex-direction: column;
+            }
+
+            .cta-secondary {
+                margin-left: 0;
+                margin-top: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- STORE-STYLE SCANLINE + HEADER WRAPPER -->
+    <div class="scanline"></div>
+
+    <!-- BACKGROUND LAYERS -->
+    <canvas id="animated-bg"></canvas>
+    <div id="bg-overlay"></div>
+
+    <!-- SIMPLE PAGE HEADER (MATCHING STORE'S TITLE STYLE) -->
+    <header style="position: relative; width: 100%; z-index: 10; display: flex; align-items: center; justify-content: center; padding: 40px 20px 10px 20px;">
+        <div class="brand" style="font-size: 2.2rem; font-weight: 700; color: var(--accent-gold); letter-spacing: 2px; text-transform: uppercase; text-align: center; line-height: 1;">
+            ISHYA '26 <span style="color: var(--accent-green); font-size: 1rem; display: block; letter-spacing: 6px; margin-top: 5px;">SPONSORS</span>
+        </div>
+    </header>
+
+    <main>
+        <!-- SIMPLE TITLE -->
+        <section id="sponsor-title">
+            <div class="section-layout layout-two-column">
+                <div class="perch-zone">
+                    <h1 class="perch-title">PARTNERS<br>&amp; SPONSORS</h1>
+                    <div class="perch-subtitle">ISHYA '26 • PLACEHOLDER LAYOUT</div>
+                    <p class="perch-body">
+                        This page mirrors typical college fest sponsorship sections (title, powered by, associate,
+                        category and ecosystem partners). Every card is intentionally a <strong>placeholder</strong>:
+                        drop in logos or names as they are finalised.
+                    </p>
+                </div>
+                <div class="content-zone">
+                    <div class="logos-wrapper logos-wrapper--scroll">
+                        <div class="logos-header-row">
+                            <div style="font-size: 0.95rem; font-family: var(--font-display);">
+                                Sample sponsor stack (scrollable)
+                            </div>
+                            <div class="logos-badge">
+                                Quick‑edit placeholders
+                            </div>
+                        </div>
+                        <div class="title-sponsor-row">
+                            <div class="logo-chip logo-chip--title">Title Sponsor &mdash; Placeholder</div>
+                            <div class="logo-chip logo-chip--title">Powered By &mdash; Placeholder</div>
+                        </div>
+                        <div class="logos-grid logos-grid--secondary">
+                            <div class="logo-chip">Co‑Sponsor &mdash; Placeholder</div>
+                            <div class="logo-chip">Fest Partner &mdash; Placeholder</div>
+                            <div class="logo-chip">Associate Partner 01 &mdash; Placeholder</div>
+                            <div class="logo-chip">Associate Partner 02 &mdash; Placeholder</div>
+                            <div class="logo-chip">Category Partner &mdash; Placeholder</div>
+                            <div class="logo-chip">Food Partner &mdash; Placeholder</div>
+                            <div class="logo-chip">Mobility Partner &mdash; Placeholder</div>
+                            <div class="logo-chip">Banking Partner &mdash; Placeholder</div>
+                            <div class="logo-chip">Merch Partner &mdash; Placeholder</div>
+                            <div class="logo-chip">Education Partner &mdash; Placeholder</div>
+                            <div class="logo-chip">Media Partner &mdash; Placeholder</div>
+                            <div class="logo-chip">Radio Partner &mdash; Placeholder</div>
+                            <div class="logo-chip">Digital Outreach Partner &mdash; Placeholder</div>
+                            <div class="logo-chip">Community Partner &mdash; Placeholder</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TITLE / POWERED BY -->
+        <section id="sponsor-logos">
+            <div class="section-layout layout-two-column-reverse">
+                <div class="perch-zone">
+                    <h2 class="perch-title">TITLE &amp;<br>POWERED BY</h2>
+                    <div class="perch-subtitle">PREMIER BRAND VISIBILITY</div>
+                    <p class="perch-body">
+                        Use this block for the primary fest title sponsor and any “powered by” or “in association with”
+                        brands, similar to IIT / IISER fest hero sections.
+                    </p>
+                </div>
+                <div class="content-zone">
+                    <div class="logos-wrapper">
+                        <div class="logos-header-row">
+                            <div style="font-size: 1rem; font-family: var(--font-display);">
+                                Festival Title &amp; Powered By
+                            </div>
+                            <div class="logos-badge">
+                                Replace with high‑res logo images
+                            </div>
+                        </div>
+                        <div class="logos-grid">
+                            <div class="logo-chip logo-chip--primary">Title Sponsor &mdash; Placeholder</div>
+                            <div class="logo-chip logo-chip--primary">Powered By &mdash; Placeholder</div>
+                            <div class="logo-chip">Co‑Presented By &mdash; Placeholder</div>
+                            <div class="logo-chip">Fest Partner &mdash; Placeholder</div>
+                        </div>
+                        <p style="font-size: 0.8rem; margin-top: 14px; color: rgba(209, 213, 219, 0.86);">
+                            To update: replace this text with sponsor names or wrap an <code>&lt;img&gt;</code> logo inside each
+                            <code>.logo-chip</code>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ASSOCIATE / EVENT PARTNERS -->
+        <section id="associate-partners">
+            <div class="section-layout layout-two-column">
+                <div class="perch-zone">
+                    <h2 class="perch-title">ASSOCIATE<br>PARTNERS</h2>
+                    <div class="perch-subtitle">EVENT &amp; TRACK PARTNERS</div>
+                    <p class="perch-body">
+                        Inspired by major college fests, this grid can hold associate sponsors for pro‑shows, flagships
+                        and core event clusters (dance, music, fashion, theatre, quizzes, etc.).
+                    </p>
+                </div>
+                <div class="content-zone">
+                    <div class="logos-wrapper">
+                        <div class="logos-header-row">
+                            <div style="font-size: 1rem; font-family: var(--font-display);">
+                                Associate &amp; Event Partners
+                            </div>
+                            <div class="logos-badge">
+                                One card per brand / event block
+                            </div>
+                        </div>
+                        <div class="logos-grid">
+                            <div class="logo-chip">Proshow Partner &mdash; Placeholder</div>
+                            <div class="logo-chip">Cultural Events Partner &mdash; Placeholder</div>
+                            <div class="logo-chip">Tech &amp; Innovation Partner &mdash; Placeholder</div>
+                            <div class="logo-chip">Workshops Partner &mdash; Placeholder</div>
+                            <div class="logo-chip">Campus Engagement Partner &mdash; Placeholder</div>
+                            <div class="logo-chip">Competition Partner &mdash; Placeholder</div>
+                            <div class="logo-chip">Night Events Partner &mdash; Placeholder</div>
+                            <div class="logo-chip">Flagship Event Partner &mdash; Placeholder</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CATEGORY / IN-KIND PARTNERS -->
+        <section id="category-partners">
+            <div class="section-layout layout-two-column-reverse">
+                <div class="perch-zone">
+                    <h2 class="perch-title">CATEGORY<br>PARTNERS</h2>
+                    <div class="perch-subtitle">BRANDS BY VERTICAL</div>
+                    <p class="perch-body">
+                        Typical buckets used by large fests: banking, mobility, F&amp;B, tech, education, merchandise,
+                        media and hospitality. Keep or rename categories as per the edition.
+                    </p>
+                </div>
+                <div class="content-zone">
+                    <div class="logos-wrapper">
+                        <div class="logos-header-row">
+                            <div style="font-size: 1rem; font-family: var(--font-display);">
+                                Category &amp; In‑Kind Collaborations
+                            </div>
+                            <div class="logos-badge">
+                                Flexible labels &mdash; edit per year
+                            </div>
+                        </div>
+                        <div class="logos-grid">
+                            <div class="logo-chip">Banking / Fintech Partner &mdash; Placeholder</div>
+                            <div class="logo-chip">Mobility / Travel Partner &mdash; Placeholder</div>
+                            <div class="logo-chip">Food &amp; Beverage Partner &mdash; Placeholder</div>
+                            <div class="logo-chip">Hospitality Partner &mdash; Placeholder</div>
+                            <div class="logo-chip">Education &amp; Career Partner &mdash; Placeholder</div>
+                            <div class="logo-chip">Merch &amp; Lifestyle Partner &mdash; Placeholder</div>
+                            <div class="logo-chip">Technology Partner &mdash; Placeholder</div>
+                            <div class="logo-chip">Sustainability Partner &mdash; Placeholder</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MEDIA / COMMUNITY PARTNERS -->
+        <section id="media-partners">
+            <div class="section-layout layout-two-column">
+                <div class="perch-zone">
+                    <h2 class="perch-title">MEDIA &amp;<br>COMMUNITY</h2>
+                    <div class="perch-subtitle">AMPLIFYING THE FEST FOOTPRINT</div>
+                    <p class="perch-body">
+                        Reserve this band for media houses, student communities, creator collectives and campus‑network
+                        collaborations that usually sit at the bottom of IIT / IISER fest sponsor pages.
+                    </p>
+                </div>
+                <div class="content-zone">
+                    <div class="logos-wrapper">
+                        <div class="logos-header-row">
+                            <div style="font-size: 1rem; font-family: var(--font-display);">
+                                Media, Outreach &amp; Community Partners
+                            </div>
+                            <div class="logos-badge">
+                                Use smaller logos / wordmarks
+                            </div>
+                        </div>
+                        <div class="logos-grid">
+                            <div class="logo-chip">Media Partner &mdash; Placeholder</div>
+                            <div class="logo-chip">Radio Partner &mdash; Placeholder</div>
+                            <div class="logo-chip">Digital Outreach Partner &mdash; Placeholder</div>
+                            <div class="logo-chip">Student Community Partner &mdash; Placeholder</div>
+                            <div class="logo-chip">Photography / Content Partner &mdash; Placeholder</div>
+                            <div class="logo-chip">Livestream Partner &mdash; Placeholder</div>
+                            <div class="logo-chip">Alumni Partner &mdash; Placeholder</div>
+                            <div class="logo-chip">Other Community Partner &mdash; Placeholder</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- BACKGROUND ANIMATION (reused from landing) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const canvas = document.getElementById('animated-bg');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let width, height;
+
+            const isMobile = window.innerWidth < 950;
+            const COLORS = {
+                bg: 'rgba(5, 20, 8, 1)',
+                trail: 'rgba(5, 20, 8, 0.08)',
+                swirlGreen: 'rgba(77, 183, 72, 0.2)',
+                swirlDark: 'rgba(30, 50, 20, 0.3)',
+                gold: 'rgba(214, 194, 106, 0.4)',
+                mandala: 'rgba(214, 194, 106, 0.15)'
+            };
+
+            const particles = [];
+            const numParticles = isMobile ? 30 : 400;
+            const noiseScale = 0.002;
+            let mandalas = [];
+
+            function resize() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+                ctx.fillStyle = COLORS.bg;
+                ctx.fillRect(0, 0, width, height);
+
+                mandalas = [
+                    new Mandala(width, 0, width * 0.3, -0.002, COLORS.mandala),
+                    new Mandala(0, height, width * 0.35, 0.0015, COLORS.mandala)
+                ];
+
+                if (particles.length === 0) {
+                    for (let i = 0; i < numParticles; i++) particles.push(new FlowParticle());
+                }
+            }
+
+            function noise(x, y) {
+                return Math.sin(x) * Math.cos(y);
+            }
+
+            class FlowParticle {
+                constructor() {
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * height;
+                    this.speed = Math.random() * 2 + 0.5;
+                    this.angle = 0;
+                    this.size = Math.random() * 2.5 + 0.5;
+                    this.color = Math.random() > 0.9
+                        ? COLORS.gold
+                        : (Math.random() > 0.6 ? COLORS.swirlGreen : COLORS.swirlDark);
+                }
+                update() {
+                    const n = noise(this.x * noiseScale, this.y * noiseScale);
+                    this.angle = n * Math.PI * 4;
+                    this.x += Math.cos(this.angle) * this.speed;
+                    this.y += Math.sin(this.angle) * this.speed;
+                    if (this.x < 0) this.x = width;
+                    if (this.x > width) this.x = 0;
+                    if (this.y < 0) this.y = height;
+                    if (this.y > height) this.y = 0;
+                }
+                draw() {
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            class Mandala {
+                constructor(x, y, radius, speed, color) {
+                    this.x = x;
+                    this.y = y;
+                    this.radius = radius;
+                    this.speed = speed;
+                    this.angle = 0;
+                    this.color = color;
+                }
+                update() {
+                    this.angle += this.speed;
+                }
+                draw() {
+                    ctx.save();
+                    ctx.translate(this.x, this.y);
+                    ctx.rotate(this.angle);
+                    ctx.strokeStyle = this.color;
+
+                    if (isMobile) {
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
+                        ctx.stroke();
+                        ctx.beginPath();
+                        ctx.arc(0, 0, this.radius * 0.8, 0, Math.PI * 2);
+                        ctx.stroke();
+                        ctx.beginPath();
+                        ctx.arc(0, 0, this.radius * 0.6, 0, Math.PI * 2);
+                        ctx.stroke();
+                    } else {
+                        ctx.lineWidth = 1.5;
+                        const petals = 12;
+                        for (let i = 0; i < petals; i++) {
+                            ctx.rotate(Math.PI * 2 / petals);
+                            ctx.beginPath();
+                            ctx.moveTo(0, 0);
+                            ctx.quadraticCurveTo(
+                                this.radius * 0.5,
+                                this.radius * 0.5,
+                                0,
+                                this.radius
+                            );
+                            ctx.quadraticCurveTo(
+                                -this.radius * 0.5,
+                                this.radius * 0.5,
+                                0,
+                                0
+                            );
+                            ctx.stroke();
+                            ctx.beginPath();
+                            ctx.arc(0, this.radius * 0.7, this.radius * 0.05, 0, Math.PI * 2);
+                            ctx.fillStyle = COLORS.gold;
+                            ctx.fill();
+                        }
+                        ctx.beginPath();
+                        ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
+                        ctx.stroke();
+                        ctx.beginPath();
+                        ctx.arc(0, 0, this.radius * 0.9, 0, Math.PI * 2);
+                        ctx.stroke();
+                    }
+                    ctx.restore();
+                }
+            }
+
+            function animate() {
+                ctx.fillStyle = COLORS.trail;
+                ctx.fillRect(0, 0, width, height);
+                mandalas.forEach(m => {
+                    m.update();
+                    m.draw();
+                });
+                particles.forEach(p => {
+                    p.update();
+                    p.draw();
+                });
+                requestAnimationFrame(animate);
+            }
+
+            window.addEventListener('resize', resize);
+            resize();
+            animate();
+        });
+    </script>
+
+    <ishya-footer></ishya-footer>
+</body>
+</html>
