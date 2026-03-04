@@ -503,9 +503,26 @@
             mBody.innerHTML = `${html}<div style="text-align:right; margin-top:15px; font-size:1.2rem; color:var(--green); font-weight:bold">TOTAL: ₹${total}</div><div class="btn-row"><button class="btn btn-sec" onclick="closeModal()">CLOSE</button><button class="btn btn-primary" onclick="renderDetailsStep()">CHECKOUT</button></div>`;
         }
         
+        function validateAndProceedMerch() {
+            const email = document.getElementById('cEmail').value;
+            if (!email.trim().toLowerCase().endsWith('@iisertvm.ac.in')) {
+                alert("Registration is restricted. Please provide your IISER email ID.");
+                return;
+            }
+            userDetails = {
+                name: document.getElementById('cName').value,
+                email: email,
+                phone: document.getElementById('cPhone').value,
+                roll: document.getElementById('cRoll').value,
+                batch: document.getElementById('cBatch').value,
+                address: document.getElementById('cAddress').value
+            };
+            renderSummaryStep();
+        }
+
         function renderDetailsStep() {
             mTitle.innerText = "CUSTOMER DETAILS";
-            mBody.innerHTML = `<form onsubmit="event.preventDefault(); userDetails={name:document.getElementById('cName').value, email:document.getElementById('cEmail').value, phone:document.getElementById('cPhone').value, roll:document.getElementById('cRoll').value, batch:document.getElementById('cBatch').value, address:document.getElementById('cAddress').value}; renderSummaryStep();"><div class="form-group"><label>FULL NAME</label><input class="input-box" id="cName" required value="${userDetails.name||''}"></div><div class="form-group"><label>EMAIL</label><input class="input-box" type="email" id="cEmail" required value="${userDetails.email||''}"></div><div class="form-group"><label>PHONE</label><input class="input-box" type="tel" id="cPhone" required value="${userDetails.phone||''}"></div><div class="form-group"><label>ROLL NO (Optional)</label><input class="input-box" id="cRoll" value="${userDetails.roll||''}"></div><div class="form-group"><label>BATCH (Crucial for Payment)</label><select class="input-box" id="cBatch" required>${getBatchOptions(userDetails.batch, 'MERCH')}</select></div><div class="form-group"><label>ADDRESS (Optional)</label><input class="input-box" id="cAddress" value="${userDetails.address||''}"></div><div class="btn-row"><button type="button" class="btn btn-sec" onclick="renderCartStep()">BACK</button><button type="submit" class="btn btn-primary">REVIEW</button></div></form>`;
+            mBody.innerHTML = `<form onsubmit="event.preventDefault(); validateAndProceedMerch();"><div class="form-group"><label>FULL NAME</label><input class="input-box" id="cName" required value="${userDetails.name||''}"></div><div class="form-group"><label>EMAIL (Provide IISER TVM mail ID)</label><input class="input-box" type="email" id="cEmail" required pattern=".*@iisertvm\\.ac\\.in$" title="Must be yourIISER TVM email address" value="${userDetails.email||''}"></div><div class="form-group"><label>PHONE</label><input class="input-box" type="tel" id="cPhone" required value="${userDetails.phone||''}"></div><div class="form-group"><label>ROLL NO (Optional)</label><input class="input-box" id="cRoll" value="${userDetails.roll||''}"></div><div class="form-group"><label>BATCH (Crucial for Payment)</label><select class="input-box" id="cBatch" required>${getBatchOptions(userDetails.batch, 'MERCH')}</select></div><div class="form-group"><label>ADDRESS (Optional)</label><input class="input-box" id="cAddress" value="${userDetails.address||''}"></div><div class="btn-row"><button type="button" class="btn btn-sec" onclick="renderCartStep()">BACK</button><button type="submit" class="btn btn-primary">REVIEW</button></div></form>`;
         }
         
         function renderSummaryStep() {
@@ -548,11 +565,16 @@
 
         function renderPsDetails() {
             psTitle.innerText = "PROSHOW REGISTRATION";
-            psContent.innerHTML = `<form onsubmit="event.preventDefault(); savePsDetails();"><div class="form-group"><label>FULL NAME</label><input class="input-box" id="pName" required value="${psDetails.name||''}"></div><div class="form-group"><label>EMAIL (For E-Ticket)</label><input class="input-box" type="email" id="pEmail" required value="${psDetails.email||''}"></div><div class="form-group"><label>PHONE</label><input class="input-box" type="tel" id="pPhone" required value="${psDetails.phone||''}"></div><div class="form-group" style="border-left: 3px solid var(--gold); padding-left: 10px; margin: 20px 0;"><label style="color:#fff;">TICKET CATEGORY</label><select class="input-box" id="pType" required style="border-color: var(--gold); font-size:1.1rem; padding: 15px;"><option value="">-- SELECT --</option><option value="Student" ${psDetails.type==='Student'?'selected':''}>STUDENT - ₹${TICKET_PRICES["Student"]}</option><option value="Faculty" ${psDetails.type==='Faculty'?'selected':''}>FACULTY - ₹${TICKET_PRICES["Faculty"]}</option><option value="External" ${psDetails.type==='External'?'selected':''}>EXTERNAL - ₹${TICKET_PRICES["External"]}</option></select></div><div class="form-group"><label>ROLL NO</label><input class="input-box" id="pRoll" value="${psDetails.roll||''}"></div><div class="form-group"><label>BATCH</label><select class="input-box" id="pBatch" required>${getBatchOptions(psDetails.batch, 'PROSHOW')}</select></div><div class="form-group"><label>AFFILIATION</label><input class="input-box" id="pAffil" value="${psDetails.affiliation||''}"></div><div class="btn-row"><button type="button" class="btn btn-sec" onclick="closeProshowModal()">CANCEL</button><button type="submit" class="btn btn-primary" style="background:var(--gold)">NEXT</button></div></form>`;
+            psContent.innerHTML = `<form onsubmit="event.preventDefault(); savePsDetails();"><div class="form-group"><label>FULL NAME</label><input class="input-box" id="pName" required value="${psDetails.name||''}"></div><div class="form-group"><label>EMAIL (Provide IISER official @iisertvm.ac.in mail ID for E-Ticket)</label><input class="input-box" type="email" id="pEmail" required pattern=".*@iisertvm\\.ac\\.in$" title="Must be your official @iisertvm.ac.in email address" value="${psDetails.email||''}"></div><div class="form-group"><label>PHONE</label><input class="input-box" type="tel" id="pPhone" required value="${psDetails.phone||''}"></div><div class="form-group" style="border-left: 3px solid var(--gold); padding-left: 10px; margin: 20px 0;"><label style="color:#fff;">TICKET CATEGORY</label><select class="input-box" id="pType" required style="border-color: var(--gold); font-size:1.1rem; padding: 15px;"><option value="">-- SELECT --</option><option value="Student" ${psDetails.type==='Student'?'selected':''}>STUDENT - ₹${TICKET_PRICES["Student"]}</option><option value="Faculty" ${psDetails.type==='Faculty'?'selected':''}>FACULTY - ₹${TICKET_PRICES["Faculty"]}</option><option value="External" ${psDetails.type==='External'?'selected':''}>EXTERNAL - ₹${TICKET_PRICES["External"]}</option></select></div><div class="form-group"><label>ROLL NO</label><input class="input-box" id="pRoll" value="${psDetails.roll||''}"></div><div class="form-group"><label>BATCH</label><select class="input-box" id="pBatch" required>${getBatchOptions(psDetails.batch, 'PROSHOW')}</select></div><div class="form-group"><label>AFFILIATION</label><input class="input-box" id="pAffil" value="${psDetails.affiliation||''}"></div><div class="btn-row"><button type="button" class="btn btn-sec" onclick="closeProshowModal()">CANCEL</button><button type="submit" class="btn btn-primary" style="background:var(--gold)">NEXT</button></div></form>`;
         }
 
         function savePsDetails() {
-            psDetails = { name: document.getElementById('pName').value, email: document.getElementById('pEmail').value, phone: document.getElementById('pPhone').value, type: document.getElementById('pType').value, roll: document.getElementById('pRoll').value, batch: document.getElementById('pBatch').value, affiliation: document.getElementById('pAffil').value };
+            const email = document.getElementById('pEmail').value;
+            if (!email.trim().toLowerCase().endsWith('@iisertvm.ac.in')) {
+                alert("Registration is restricted. Please provide your official @iisertvm.ac.in email ID.");
+                return;
+            }
+            psDetails = { name: document.getElementById('pName').value, email: email, phone: document.getElementById('pPhone').value, type: document.getElementById('pType').value, roll: document.getElementById('pRoll').value, batch: document.getElementById('pBatch').value, affiliation: document.getElementById('pAffil').value };
             renderPsPayment();
         }
 
