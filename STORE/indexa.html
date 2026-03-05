@@ -61,11 +61,10 @@
         @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.5;} }
 
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; padding-bottom: 100px; }
-        /* --- NEW: SIZE CHART BUTTON STYLE --- */
         .size-chart-wrapper {
             text-align: center;
             margin-bottom: 35px;
-            margin-top: -10px; /* Pulls it closer to the section title */
+            margin-top: -10px;
             position: relative;
             z-index: 5;
         }
@@ -97,7 +96,7 @@
             font-size: 1.1rem;
             font-weight: bold;
         }
-        /* End */
+
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 25px; }
 
         .card { background: var(--bg-panel); border: 1px solid var(--olive); clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px); transition: 0.3s ease; position: relative; display: flex; flex-direction: column; }
@@ -152,7 +151,6 @@
 
         /* IMAGE VIEW MODAL CSS */
         #img-view-modal { position: fixed; inset: 0; z-index: 11000; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); display: none; justify-content: center; align-items: center; overflow: hidden; }
-        
         #img-view-content { max-width: 90%; max-height: 85%; border: 2px solid var(--gold); box-shadow: 0 0 50px rgba(214, 194, 106, 0.2); object-fit: contain; touch-action: none; will-change: transform; transform-origin: center center; }
         
         .modal-close-btn { position: absolute; top: 20px; right: 30px; color: var(--gold); font-size: 3rem; cursor: pointer; font-family: var(--font-mono); z-index: 11001; transition: 0.3s; line-height: 1; text-shadow: 0 0 10px #000; }
@@ -207,7 +205,7 @@
         </div>
     </div>
 
-    <button class="cart-btn" onclick="openCart()">CART [<span id="cartCount">0</span>]</button>
+    <button class="cart-btn" onclick="openCart()">CART[<span id="cartCount">0</span>]</button>
 
     <div id="toast" class="toast">
         <span class="toast-msg">ITEM ADDED TO CART</span>
@@ -234,11 +232,11 @@
     </div>
 
     <script>
-        const API = "https://script.google.com/macros/s/AKfycbyld8a111hLb9SydZmH6K2dTAlAMG8a0HPdJ-oxoy8jjq01pkCLGwV5NInelko4QJpj5A/exec";
+        const API = "https://script.google.com/macros/s/AKfycbx5XvTQZLkhkMk4nMOp5heiF_3sXy-KLJWz1nxMk0Y-NqMrxmI-Ea5UfzfbOJWTKYs9Yw/exec";
         
         let BATCH_UPI_MAP = {};
         let products = [];
-        let cart = [];
+        let cart =[];
         let userDetails = {};
         let productImageRegistry = {}; 
 
@@ -265,7 +263,7 @@
             productImageRegistry = {};
 
             grid.innerHTML = products.map(p => {
-                const imgList = p.images ? p.images.split(',').map(s => s.trim()) : ['https://via.placeholder.com/300x300/181C10/4D8F48?text=NO+IMAGE'];
+                const imgList = p.images ? p.images.split(',').map(s => s.trim()) :['https://via.placeholder.com/300x300/181C10/4D8F48?text=NO+IMAGE'];
                 productImageRegistry[p.id] = { currentIdx: 0, images: imgList, timer: null };
 
                 const stockStatus = (p.stock || "").toString().toLowerCase().trim();
@@ -497,7 +495,7 @@
             
             if (isMultiSize) {
                 const selects = document.querySelectorAll(`.combo-size-${pid}`);
-                let sizeArr = [];
+                let sizeArr =[];
                 selects.forEach(sel => { sizeArr.push(`${sel.dataset.itemname}: ${sel.value}`); });
                 sizeStr = sizeArr.join(' | ');
             } else {
@@ -576,57 +574,62 @@
             mBody.innerHTML = `<div style="background:#000; padding:15px; border:1px solid var(--olive); margin-bottom:15px;"><div class="summary-row"><span style="color:#888">NAME</span><span>${userDetails.name}</span></div><div class="summary-row"><span style="color:#888">BATCH</span><span style="color:var(--gold)">${userDetails.batch}</span></div><div class="summary-row"><span style="color:#888">CONTACT</span><span>${userDetails.phone}</span></div><hr style="border-color:var(--olive); margin:10px 0; border-style:dashed;">${cartSummary}<div class="summary-row total-row"><span>PAYABLE TOTAL</span><span>₹${total}</span></div></div><div class="btn-row"><button class="btn btn-sec" onclick="renderDetailsStep()">EDIT DETAILS</button><button class="btn btn-primary" onclick="renderPaymentStep()">PROCEED TO PAY</button></div>`;
         }
 
-      function renderPaymentStep() {
-    mTitle.innerText = "PAYMENT UPLINK";
-    
-    const total = cart.reduce((a,b) => a + (b.price*b.qty), 0);
-    const formattedAmount = Number(total).toFixed(2); 
-    
-    let batchInfo = BATCH_UPI_MAP[userDetails.batch];
-    if (!batchInfo) { if(BATCH_UPI_MAP["OTHERS"]) batchInfo = BATCH_UPI_MAP["OTHERS"]; else batchInfo = { id: "", name: "Unknown Receiver" }; }
-    
-    const payId = batchInfo.upi || "error@upi";
-    const payName = batchInfo.name || userDetails.batch;
-    const trRef = "TXN" + Date.now() + Math.floor(Math.random() * 1000);
-    
-    // 1. QR CODE LINK: Kept exactly the same (Includes am= amount)
-    // Scanning a QR code is trusted by apps, so the amount will auto-fill.
-    const upiLinkQR = `upi://pay?pa=${payId}&pn=${encodeURIComponent(payName)}&tr=${trRef}&am=${formattedAmount}&cu=INR&tn=${encodeURIComponent('MerchOrder')}`;
+        function renderPaymentStep() {
+            mTitle.innerText = "PAYMENT UPLINK";
+            
+            const total = cart.reduce((a,b) => a + (b.price*b.qty), 0);
+            const formattedAmount = Number(total).toFixed(2); 
+            
+            let batchInfo = BATCH_UPI_MAP[userDetails.batch];
+            if (!batchInfo) { if(BATCH_UPI_MAP["OTHERS"]) batchInfo = BATCH_UPI_MAP["OTHERS"]; else batchInfo = { id: "", name: "Unknown Receiver", mobile: "" }; }
+            
+            const payId = batchInfo.upi || "error@upi";
+            const payName = batchInfo.name || userDetails.batch;
+            const payMobile = batchInfo.mobile ? batchInfo.mobile : "N/A";
+            const trRef = "TXN" + Date.now() + Math.floor(Math.random() * 1000);
+            
+            // 1. QR CODE LINK (Auto-fills amount for scanning)
+            const upiLinkQR = `upi://pay?pa=${payId}&pn=${encodeURIComponent(payName)}&tr=${trRef}&am=${formattedAmount}&cu=INR&tn=${encodeURIComponent('MerchOrder')}`;
 
-    // 2. CLICK TO PAY LINK: Removed 'am=' parameter
-    // Because it's a personal UPI ID, apps will block web links with amounts. 
-    // Removing the amount forces GPay/BHIM to open, and the user just types the amount manually.
-    const upiLinkClick = `upi://pay?pa=${payId}&pn=${encodeURIComponent(payName)}&tr=${trRef}&cu=INR&tn=${encodeURIComponent('MerchOrder')}`;
+            // 2. CLICK LINK (Includes amount - might fail for P2P but user wants it)
+            const upiLinkClick = `upi://pay?pa=${payId}&pn=${encodeURIComponent(payName)}&tr=${trRef}&am=${formattedAmount}&cu=INR&tn=${encodeURIComponent('MerchOrder')}`;
 
-    mBody.innerHTML = `
-        <div style="text-align:center">
-            <p style="color:#888; font-size:0.9rem">PAYING TO ISHYA:</p>
-            <h3 style="color:var(--green); margin-bottom:15px;">${payName}</h3>
-            <p style="font-size:0.7rem; color:#666;">ID: ${payId}</p>
-            
-            <div id="qr-container" style="background:#fff; padding:10px; display:inline-block; border:4px solid var(--gold);"></div>
-            
-            <div style="margin:20px 0; background: rgba(214, 74, 74, 0.1); border: 1px dashed #d64a4a; padding: 15px;">
-                <p style="color: #d64a4a; font-size: 0.85rem; margin-bottom: 10px; font-weight: bold; font-family: var(--font-mono);">
-                    ATTENTION: YOU MUST ENTER ₹${formattedAmount} MANUALLY IN YOUR UPI APP.
-                </p>
-                <a href="${upiLinkClick}" class="btn btn-primary" style="display:block; text-decoration:none; padding:15px; background: #d64a4a; color: #fff;">
-                    OPEN UPI APP (TYPE ₹${formattedAmount})
-                </a>
-            </div>
-            
-            <div class="form-group" style="text-align:left; margin-top:20px; border-top:1px solid var(--olive); padding-top:15px;">
-                <label>UPLOAD SCREENSHOT (REQUIRED)</label>
-                <input type="file" id="receiptFile" accept="image/*" class="input-box" style="padding:5px;">
-            </div>
-        </div>
-        <div class="btn-row">
-            <button class="btn btn-sec" onclick="renderSummaryStep()">BACK</button>
-            <button class="btn btn-primary" onclick="submitFinalOrder()" id="btnSubmit">CONFIRM PAYMENT</button>
-        </div>
-    `;
-    setTimeout(() => { new QRCode(document.getElementById("qr-container"), { text: upiLinkQR, width: 150, height: 150 }); }, 100);
-}
+            mBody.innerHTML = `
+                <div style="text-align:center">
+                    <p style="color:#888; font-size:0.9rem">PAYING TO ISHYA:</p>
+                    <h3 style="color:var(--green); margin-bottom:15px;">${payName}</h3>
+                    
+                    <div id="qr-container" style="background:#fff; padding:10px; display:inline-block; border:4px solid var(--gold);"></div>
+                    
+                    <div style="margin:20px 0;">
+                        <a href="${upiLinkClick}" class="btn btn-primary" style="display:block; text-decoration:none; padding:15px;">
+                            CLICK TO PAY ₹${formattedAmount}
+                        </a>
+                        
+                        <!-- NEW FALLBACK MOBILE NUMBER SECTION -->
+                        <div style="margin-top:15px; border-top:1px dashed #333; padding-top:10px;">
+                            <p style="color:#888; font-size:0.75rem;">LINK FAILED? PAY VIA NUMBER:</p>
+                            <div style="display:flex; justify-content:center; align-items:center; gap:10px; margin-top:5px;">
+                                <span style="font-size:1.1rem; color:#fff; font-weight:bold; letter-spacing:1px;">${payMobile}</span>
+                                <button class="btn-sec" style="padding:5px 10px; font-size:0.7rem;" onclick="navigator.clipboard.writeText('${payMobile}'); alert('Number Copied')">COPY</button>
+                            </div>
+                            <p style="color:#555; font-size:0.65rem; margin-top:5px;">(Copy and send manually on GPay/PhonePe)</p>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" style="text-align:left; margin-top:20px; border-top:1px solid var(--olive); padding-top:15px;">
+                        <label>UPLOAD SCREENSHOT (REQUIRED)</label>
+                        <input type="file" id="receiptFile" accept="image/*" class="input-box" style="padding:5px;">
+                    </div>
+                </div>
+                <div class="btn-row">
+                    <button class="btn btn-sec" onclick="renderSummaryStep()">BACK</button>
+                    <button class="btn btn-primary" onclick="submitFinalOrder()" id="btnSubmit">CONFIRM PAYMENT</button>
+                </div>
+            `;
+            setTimeout(() => { new QRCode(document.getElementById("qr-container"), { text: upiLinkQR, width: 150, height: 150 }); }, 100);
+        }
+
         async function submitFinalOrder() {
             const fileInput = document.getElementById('receiptFile');
             if(!fileInput.files[0]) { alert("Please upload the payment screenshot."); return; }
