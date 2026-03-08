@@ -88,8 +88,8 @@
     </div>
 
     <script>
-        // 🚨 YOUR API LINK GOES HERE
-        const PROSHOW_API = "https://script.google.com/macros/s/AKfycbyMiJ1Xrpra2UkVhAfsWUBdMbY72R_BuoUomp6QlP_8an0RZNu9phyDw6nttRTcy-LJUQ/exec; 
+        // 🚨 YOUR API LINK GOES HERE (Fixed Quote!)
+        const PROSHOW_API = "https://script.google.com/macros/s/AKfycbw8sCTjcZCGLGTgA3c8RPZWmExWceovR8abHfe66DHVvgHj14uVH0H7W2NLS4aoSliVpg/exec";
         
         let TICKET_PRICES = {}; 
         let BATCH_UPI_MAP_PROSHOW = {}, psDetails = {}; 
@@ -108,13 +108,16 @@
                     if(json.batches) BATCH_UPI_MAP_PROSHOW = json.batches; 
                     if(json.prices) TICKET_PRICES = json.prices;
 
-                    // Refresh Modal if open
+                    // ⚡ FIX: Force Update UI if user opened modal before data loaded
                     if(document.getElementById('proshow-modal-overlay').style.display === 'flex') {
-                        document.getElementById('pBatch').innerHTML = getBatchOptions(psDetails.batch);
-                        renderPsDetails(); // Re-render to update prices
+                        renderPsDetails(); 
                     }
                 }
-            } catch (e) { console.error("Proshow Fetch Error:", e); }
+            } catch (e) { 
+                console.error("Proshow Fetch Error:", e);
+                // Force load to stop infinite loop on error
+                document.body.classList.add('loaded');
+            }
         }
 
         function getBatchOptions(selectedValue) {
@@ -160,7 +163,7 @@
         function renderPsDetails() {
             psTitle.innerText = "FACULTY REGISTRATION";
             
-            // 🚀 DYNAMIC PRICES FROM SHEET (Fallback to 500)
+            // 🚀 DYNAMIC PRICES (Fallback to 500)
             const priceFaculty = TICKET_PRICES["Faculty"] || 500;
             const priceStaff = TICKET_PRICES["Staff"] || 500;
 
@@ -184,6 +187,8 @@
                             <option value="Staff">STAFF (₹${priceStaff})</option>
                         </select>
                     </div>
+
+                    <div class="form-group"><label>EMPLOYEE ID</label><input class="input-box" id="pRoll" required value="${psDetails.roll||''}"></div>
                     <div class="form-group"><label>DEPARTMENT</label><input class="input-box" id="pAffil" required value="${psDetails.affiliation||''}" placeholder="e.g. School of Physics"></div>
                     
                     <div class="form-group"><label>FUNDING ACCOUNT / BATCH</label><select class="input-box" id="pBatch" required>${getBatchOptions(psDetails.batch)}</select></div>
