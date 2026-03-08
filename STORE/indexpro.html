@@ -16,7 +16,7 @@
         #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at center, #11150e 0%, #060606 100%); }
         .scanline { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9000; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%); background-size: 100% 4px; }
         
-        #loader-wrapper { position: fixed; inset: 0; background: var(--bg-deep); z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.5s ease; }
+        #loader-wrapper { position: fixed; inset: 0; background: var(--bg-deep); z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.3s ease; }
         .loading-text { color: var(--gold); font-family: var(--font-mono); animation: pulseText 1.5s infinite; letter-spacing: 2px; }
         .loader-bar { width: 200px; height: 4px; background: var(--olive); margin-top: 15px; position: relative; overflow: hidden; border-radius: 2px; }
         .loader-bar::after { content:''; position: absolute; top: 0; left: 0; width: 50%; height: 100%; background: var(--green); animation: loadAnim 1.2s infinite ease-in-out; border-radius: 2px; }
@@ -105,14 +105,16 @@
 
     <script>
         // 🚨 YOUR API LINK GOES HERE
-        const PROSHOW_API = "https://script.google.com/macros/s/AKfycbyrz8RdKpqLj_oTHgiqOkwpOj9YVm-NmUrG0-miJmJAoVAkv99xhNwjGQwsrDGEVVIlug/exec"; 
+        const PROSHOW_API = "https://script.google.com/macros/s/AKfycbz6Qi2MnOckLPiZ0PdXKuoBPC7LDElaNk2rO6Ysg7tSjq6TCg9xqqp03SlH67LgRmSuFA/exec"; 
         
-        let TICKET_PRICES = {}; // Will be filled dynamically from the 'Price' sheet
+        let TICKET_PRICES = {}; 
         let BATCH_UPI_MAP_PROSHOW = {}, usedStudentEmails = [], psDetails = {}; 
 
         window.onload = () => { 
             initCanvas(); 
             fetchProshowData(); 
+            // ⚡ UX FIX: The loader hides instantly in 150ms instead of waiting for the API call to finish!
+            setTimeout(() => document.body.classList.add('loaded'), 150);
         };
 
         async function fetchProshowData() {
@@ -124,10 +126,8 @@
                     if(json.usedEmails) usedStudentEmails = json.usedEmails.map(e => e.toLowerCase().trim());
                     if(json.prices) TICKET_PRICES = json.prices;
                 }
-                setTimeout(() => document.body.classList.add('loaded'), 500);
             } catch (e) { 
                 console.error("Proshow Fetch Error:", e); 
-                setTimeout(() => document.body.classList.add('loaded'), 500);
             }
         }
 
@@ -136,7 +136,6 @@
             const typeSelect = document.getElementById('pType');
             const currentSelection = typeSelect.value;
             
-            // Dynamic Pricing Fallback just in case sheet fetch fails
             const priceStudent = TICKET_PRICES["Student"] || 299;
             const priceVisitor = TICKET_PRICES["Visitor"] || 499;
             const priceProject = TICKET_PRICES["Project Student"] || 499;
@@ -159,7 +158,6 @@
                     typeSelect.innerHTML += `<option value="Visitor">VISITOR TICKET (₹${priceVisitor})</option>`;
                 }
             } else {
-                // Non IISER Email gets forced to Project Student
                 typeSelect.innerHTML += `<option value="Project Student">PROJECT STUDENT (₹${priceProject}) - Personal Email</option>`;
             }
 
