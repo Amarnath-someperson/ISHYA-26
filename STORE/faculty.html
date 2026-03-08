@@ -187,8 +187,6 @@
                             <option value="Staff">STAFF (₹${priceStaff})</option>
                         </select>
                     </div>
-
-                    <div class="form-group"><label>EMPLOYEE ID</label><input class="input-box" id="pRoll" required value="${psDetails.roll||''}"></div>
                     <div class="form-group"><label>DEPARTMENT</label><input class="input-box" id="pAffil" required value="${psDetails.affiliation||''}" placeholder="e.g. School of Physics"></div>
                     
                     <div class="form-group"><label>FUNDING ACCOUNT / BATCH</label><select class="input-box" id="pBatch" required>${getBatchOptions(psDetails.batch)}</select></div>
