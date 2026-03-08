@@ -9,7 +9,6 @@
     <script src="/layout.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        /* SAME STYLES AS STUDENT PAGE FOR CONSISTENCY */
         :root { --bg-deep: #060606; --bg-panel: #181C10; --gold: #D6C26A; --olive: #3D4324; --green: #4D8F48; --text-main: #e0e5e0; --font-head: 'Chakra Petch', sans-serif; --font-mono: 'JetBrains Mono', monospace; }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { background-color: var(--bg-deep); color: var(--text-main); font-family: var(--font-head); overflow-x: hidden; }
@@ -90,7 +89,7 @@
 
     <script>
         // 🚨 YOUR API LINK GOES HERE
-        const PROSHOW_API = "https://script.google.com/macros/s/AKfycbyMiJ1Xrpra2UkVhAfsWUBdMbY72R_BuoUomp6QlP_8an0RZNu9phyDw6nttRTcy-LJUQ/exec"; 
+        const PROSHOW_API = "https://script.google.com/macros/s/AKfycbyMiJ1Xrpra2UkVhAfsWUBdMbY72R_BuoUomp6QlP_8an0RZNu9phyDw6nttRTcy-LJUQ/exec; 
         
         let TICKET_PRICES = {}; 
         let BATCH_UPI_MAP_PROSHOW = {}, psDetails = {}; 
@@ -109,9 +108,10 @@
                     if(json.batches) BATCH_UPI_MAP_PROSHOW = json.batches; 
                     if(json.prices) TICKET_PRICES = json.prices;
 
-                    // If Modal open, refresh dropdowns
+                    // Refresh Modal if open
                     if(document.getElementById('proshow-modal-overlay').style.display === 'flex') {
                         document.getElementById('pBatch').innerHTML = getBatchOptions(psDetails.batch);
+                        renderPsDetails(); // Re-render to update prices
                     }
                 }
             } catch (e) { console.error("Proshow Fetch Error:", e); }
@@ -159,7 +159,8 @@
 
         function renderPsDetails() {
             psTitle.innerText = "FACULTY REGISTRATION";
-            // Check Prices (Fallback to 500 if not set)
+            
+            // 🚀 DYNAMIC PRICES FROM SHEET (Fallback to 500)
             const priceFaculty = TICKET_PRICES["Faculty"] || 500;
             const priceStaff = TICKET_PRICES["Staff"] || 500;
 
@@ -290,7 +291,7 @@
                             <p style="color:#fff; font-size:1.1rem; margin: 20px 0; padding:15px; border:1px dashed var(--gold);">
                                 Please check your email: <br><b style="color:var(--gold)">${psDetails.email}</b>.
                                 <br><br>
-                                Your Collection E-Ticket will arrive within 2 minutes.Do check spam folders if you didn't recieve the mail.
+                                Your Collection E-Ticket will arrive within 2 minutes.
                             </p>
                             <button class="btn btn-primary" onclick="window.location.reload()" style="margin-top:20px;">DONE</button>
                         </div>
