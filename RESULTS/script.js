@@ -28,7 +28,9 @@ async function fetchResults() {
             
             const eventName = cols[0];
             const winner = cols[1] || 'TBA';
-            const runnerUp = cols[2] || 'TBA';
+            const second = cols[2] || 'TBA';
+            const third = cols[3] || 'TBA';
+
 
             if (eventName) {
                 // Stripped down HTML just to prove the data injects properly
@@ -36,7 +38,8 @@ async function fetchResults() {
                     <div class="card" style="background:white; padding:20px; margin:10px; border:1px solid black;">
                         <h2>${eventName}</h2>
                         <p><strong>Winner:</strong> ${winner}</p>
-                        <p><strong>Runner Up:</strong> ${runnerUp}</p>
+                        <p><strong>Second Place:</strong> ${second}</p>
+                        <p><strong>Third Place:</strong> ${third}</p>
                     </div>
                 `;
             }
@@ -44,7 +47,7 @@ async function fetchResults() {
     } catch (error) {
         console.error("CRITICAL FETCH ERROR:", error);
         document.getElementById('results-container').innerHTML = 
-            "Data fetch failed. Open Developer Tools (F12) and check the Console tab for the exact error.";
+            "Data fetch failed. Contact website team asap.";
     }
 }
 
