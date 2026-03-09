@@ -292,11 +292,68 @@
     .team-text p { margin-bottom: 20px; }
     .team-highlight { color: var(--accent-gold); font-style: italic; font-weight: 600; }
 
-    /* SECTION 5: PROSHOWS */
-    .proshow-container { display: flex; justify-content: center; align-items: center; width: 100%; }
-    .wait-see-wrapper { text-align: center; padding: 50px; border: 1px solid var(--accent-gold); background: rgba(0,0,0,0.3); backdrop-filter: blur(5px); transform: skewX(-10deg); }
-    .wait-see-text { font-family: var(--font-display); font-size: clamp(3rem, 8vw, 7rem); font-weight: 700; color: transparent; -webkit-text-stroke: 2px var(--accent-gold); text-shadow: 0 0 30px rgba(214, 194, 106, 0.3); transform: skewX(10deg); animation: pulseText 3s infinite ease-in-out; }
-    @keyframes pulseText { 0%, 100% { opacity: 0.6; text-shadow: 0 0 10px rgba(214, 194, 106, 0.1); } 50% { opacity: 1; text-shadow: 0 0 50px rgba(214, 194, 106, 0.6), 0 0 20px #fff; } }
+    /* SECTION 5: SPONSORS */
+    .sponsors-container { width: 100%; }
+    .sponsors-carousel-shell {
+        position: relative;
+        overflow: hidden;
+        border-radius: 18px;
+        border: 1px solid rgba(214, 194, 106, 0.25);
+        background: radial-gradient(circle at top left, rgba(214, 194, 106, 0.12), rgba(5, 10, 6, 0.9));
+        padding: 20px 50px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    }
+    .sponsors-track {
+        display: flex;
+        transition: transform 0.55s ease;
+        will-change: transform;
+    }
+    .sponsor-slide {
+        min-width: 100%;
+        display: grid;
+        place-items: center;
+        padding: 45px 18px;
+        text-align: center;
+        border-radius: 12px;
+        border: 1px solid rgba(214, 194, 106, 0.14);
+        background: rgba(0, 0, 0, 0.28);
+    }
+    .sponsor-tag {
+        font-family: var(--font-tech);
+        font-size: 0.78rem;
+        letter-spacing: 1.7px;
+        text-transform: uppercase;
+        color: var(--accent-green);
+        margin-bottom: 10px;
+    }
+    .sponsor-name {
+        font-family: var(--font-display);
+        font-size: clamp(1.5rem, 3vw, 2rem);
+        color: #fefce8;
+        line-height: 1.2;
+    }
+    .sponsor-slide.title-sponsor {
+        background: radial-gradient(circle at center, rgba(214, 194, 106, 0.24), rgba(0, 0, 0, 0.45));
+        border-color: rgba(214, 194, 106, 0.5);
+        box-shadow: inset 0 0 50px rgba(214, 194, 106, 0.18);
+    }
+    .sponsor-slide.title-sponsor .sponsor-tag {
+        color: var(--accent-gold);
+    }
+    .sponsors-controls {
+        margin-top: 16px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+    }
+    .sponsors-indicator {
+        font-family: var(--font-tech);
+        color: rgba(255,255,255,0.8);
+        letter-spacing: 1px;
+        min-width: 62px;
+        text-align: center;
+    }
 
     /* --- FOOTER --- */
     .footer-section { 
@@ -441,6 +498,10 @@
         
         .team-content-wrapper { padding: 30px 20px; text-align: center; }
         .team-text { font-size: 1rem; }
+
+        .sponsors-carousel-shell { padding: 14px; }
+        .sponsor-slide { padding: 32px 12px; }
+        .sponsor-name { font-size: 1.2rem; }
         
         .hero-countdown { gap: 10px; }
         .time-block { padding: 10px; min-width: 60px; }
@@ -591,17 +652,43 @@
         </div>
     </section>
 
-    <!-- SECTION 5: PROSHOWS -->
-    <section id="proshows">
+    <!-- SECTION 5: SPONSORS -->
+    <section id="sponsors">
         <div class="section-layout layout-content-left">
             <div class="perch-zone">
-                <h2 class="perch-title">PROSHOW</h2>
-                <div class="perch-subtitle">THE GRAND FINALE</div>
+                <h2 class="perch-title">SPONSORS</h2>
+                <div class="perch-subtitle">POWERING ISHYA 2026</div>
             </div>
             <div class="content-zone">
-                <div class="proshow-container">
-                    <div class="wait-see-wrapper">
-                        <div class="wait-see-text">COMING SOON....</div>
+                <div class="sponsors-container">
+                    <div class="sponsors-carousel-shell glass-panel">
+                        <div class="sponsors-track" id="sponsorsTrack">
+                            <div class="sponsor-slide title-sponsor">
+                                <div class="sponsor-tag">Title Sponsor</div>
+                                <div class="sponsor-name">Title Sponsor — Placeholder</div>
+                            </div>
+                            <div class="sponsor-slide title-sponsor">
+                                <div class="sponsor-tag">Powered By</div>
+                                <div class="sponsor-name">Powered By — Placeholder</div>
+                            </div>
+                            <div class="sponsor-slide">
+                                <div class="sponsor-tag">Co-Sponsor</div>
+                                <div class="sponsor-name">Co-Sponsor — Placeholder</div>
+                            </div>
+                            <div class="sponsor-slide">
+                                <div class="sponsor-tag">Associate Partner</div>
+                                <div class="sponsor-name">Associate Partner — Placeholder</div>
+                            </div>
+                            <div class="sponsor-slide">
+                                <div class="sponsor-tag">Media Partner</div>
+                                <div class="sponsor-name">Media Partner — Placeholder</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sponsors-controls">
+                        <button id="sponsorPrevBtn" class="nav-btn" aria-label="Previous sponsor"><i class="fa-solid fa-arrow-left"></i></button>
+                        <span id="sponsorsIndicator" class="sponsors-indicator">01 / 05</span>
+                        <button id="sponsorNextBtn" class="nav-btn" aria-label="Next sponsor"><i class="fa-solid fa-arrow-right"></i></button>
                     </div>
                 </div>
             </div>
@@ -727,6 +814,7 @@
         setupEventListeners();
         setupInteractiveElements();
         init3DCarousel(); 
+        initSponsorsCarousel(); 
 
         const animate = () => { 
             const t = clock.getElapsedTime(); 
@@ -823,7 +911,7 @@
                 .to(bird.group.position, { x: -5.5, y: -0.5, z: 1 }).to(bird.group.rotation, { y: -0.6, x: 0.1, z: 0 }, "<");
             gsap.timeline({ scrollTrigger: { trigger: "#team", start: "top bottom", end: "center center", scrub: 1.5 }})
                 .to(bird.group.position, { x: 6, y: 0.5, z: 1 }).to(bird.group.rotation, { y: 0.6, x: 0.1, z: 0 }, "<");
-            gsap.timeline({ scrollTrigger: { trigger: "#proshows", start: "top bottom", end: "center center", scrub: 1.5 }})
+            gsap.timeline({ scrollTrigger: { trigger: "#sponsors", start: "top bottom", end: "center center", scrub: 1.5 }})
                 .to(bird.group.position, { x: 0, y: 0, z: 3 }).to(bird.group.rotation, { y: 0, x: 0, z: 0 }, "<"); 
         }
     }
@@ -921,6 +1009,47 @@
             if (touchEndX - touchStartX > 50) prevBtn.click(); 
         }, {passive: true});
         updateCarousel();
+    }
+
+    function initSponsorsCarousel() {
+        const track = document.getElementById('sponsorsTrack');
+        const prevBtn = document.getElementById('sponsorPrevBtn');
+        const nextBtn = document.getElementById('sponsorNextBtn');
+        const indicator = document.getElementById('sponsorsIndicator');
+        if (!track || !prevBtn || !nextBtn || !indicator) return;
+
+        const slides = Array.from(track.children);
+        let activeIndex = 0;
+
+        function updateSponsors() {
+            track.style.transform = `translateX(-${activeIndex * 100}%)`;
+            indicator.textContent = `${String(activeIndex + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
+        }
+
+        prevBtn.addEventListener('click', () => {
+            activeIndex = (activeIndex - 1 + slides.length) % slides.length;
+            updateSponsors();
+        });
+
+        nextBtn.addEventListener('click', () => {
+            activeIndex = (activeIndex + 1) % slides.length;
+            updateSponsors();
+        });
+
+        let touchStartX = 0;
+        track.addEventListener('touchstart', e => touchStartX = e.changedTouches[0].screenX, { passive: true });
+        track.addEventListener('touchend', e => {
+            const touchEndX = e.changedTouches[0].screenX;
+            if (touchStartX - touchEndX > 45) nextBtn.click();
+            if (touchEndX - touchStartX > 45) prevBtn.click();
+        }, { passive: true });
+
+        setInterval(() => {
+            activeIndex = (activeIndex + 1) % slides.length;
+            updateSponsors();
+        }, 4500);
+
+        updateSponsors();
     }
 
     function setupInteractiveElements() {
