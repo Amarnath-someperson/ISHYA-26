@@ -51,4 +51,58 @@ async function fetchResults() {
     }
 }
 
+function initParticles() {
+        const canvas = document.getElementById('ashCanvas');
+        const ctx = canvas.getContext('2d');
+        let width, height, particles = [];
+        
+        const particleCount = isMobile ? 15 : 50; 
+
+        function resize() { 
+            width = canvas.width = window.innerWidth; 
+            height = canvas.height = window.innerHeight; 
+        }
+        window.addEventListener('resize', resize); 
+        resize();
+
+        class P {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = Math.random() * width; 
+                this.y = height + Math.random() * 100; 
+                this.size = Math.random() * (isMobile ? 3 : 5) + 2;
+                this.speed = Math.random() * 1 + 0.5;
+                this.color = Math.random() > 0.5 ? '#4D8F48' : '#D6C26A';
+                this.rot = Math.random() * 360;
+            }
+            update() { 
+                this.y -= this.speed; 
+                this.rot += 1; 
+                if(this.y < -50) this.reset(); 
+            }
+            draw() {
+                ctx.save(); 
+                ctx.translate(this.x, this.y); 
+                ctx.rotate(this.rot * Math.PI/180);
+                ctx.fillStyle = this.color; 
+                ctx.globalAlpha = 0.6;
+                ctx.fillRect(-this.size/2, -this.size/2, this.size, this.size);
+                ctx.restore();
+            }
+        }
+
+        for(let i=0; i<particleCount; i++) particles.push(new P());
+
+        function anim() { 
+            ctx.clearRect(0,0,width,height); 
+            for(let i=0; i<particles.length; i++) {
+                particles[i].update(); 
+                particles[i].draw();
+            }
+            requestAnimationFrame(anim); 
+        }
+        anim();
+    }
+
+
 fetchResults();
