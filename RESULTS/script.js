@@ -33,13 +33,14 @@ async function fetchResults() {
 
 
             if (eventName) {
-                // Stripped down HTML just to prove the data injects properly
                 container.innerHTML += `
-                    <div class="card" style="background:white; padding:20px; margin:10px; border:1px solid black;">
-                        <h2>${eventName}</h2>
-                        <p><strong>Winner:</strong> ${winner}</p>
-                        <p><strong>Second Place:</strong> ${second}</p>
-                        <p><strong>Third Place:</strong> ${third}</p>
+                    <div class="card-container">
+                        <div class="card-content">
+                            <div class="card-title">${eventName}</div>
+                            <p class="card-winner"><strong>Winner:</strong> ${winner}</p>
+                            <p class="card-winner"><strong>Second Place:</strong> ${second}</p>
+                            <p class="card-winner"><strong>Third Place:</strong> ${third}</p>
+                        </div>
                     </div>
                 `;
             }
