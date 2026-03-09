@@ -75,6 +75,7 @@
             max-width: 1200px;
             margin: 0 auto;
             width: 100%;
+            box-sizing: border-box;
         }
 
         .step { display: none; }
@@ -144,7 +145,7 @@
 
         /* Calendar */
         .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .calendar-header button { background: none; border: none; color: var(--accent-gold); font-size: 1.5rem; cursor: pointer; }
+        .calendar-header button { background: none; border: none; color: var(--accent-gold); font-size: 1.5rem; cursor: pointer; padding: 5px 15px;}
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; }
         .day-header { font-size: 0.8rem; color: var(--text-muted); padding-bottom: 10px; }
         .calendar-day {
@@ -220,7 +221,7 @@
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.8);
             display: flex; justify-content: center; align-items: center;
-            z-index: 1000;
+            z-index: 10000; /* Increased Z-Index */
         }
         .spinner {
             width: 50px; height: 50px;
@@ -228,7 +229,6 @@
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
         .hidden { display: none !important; }
 
         /* Modals */
@@ -236,7 +236,7 @@
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.7);
             display: flex; justify-content: center; align-items: center;
-            z-index: 500;
+            z-index: 9999; /* Increased Z-Index so it goes above headers */
             padding: 20px;
             box-sizing: border-box;
         }
@@ -250,8 +250,25 @@
             border: 1px solid #444;
             position: relative;
         }
-        .close-btn { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: var(--text-muted); }
-        .close-btn:hover { color: white; }
+        /* Enhanced Close Button */
+        .close-btn { 
+            position: absolute; 
+            top: 15px; 
+            right: 15px; 
+            font-size: 1.5rem; 
+            cursor: pointer; 
+            color: var(--text-muted);
+            background: rgba(0,0,0,0.3);
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: 0.2s;
+            z-index: 10;
+        }
+        .close-btn:hover { color: white; background: rgba(255,255,255,0.1); }
         
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 5px; font-size: 0.9rem; color: var(--text-muted); }
@@ -274,16 +291,57 @@
             align-items: center;
         }
         .booking-info { font-size: 0.9rem; }
-        .booking-status { font-weight: bold; margin-top: 5px; }
+        .booking-status { font-weight: bold; margin-top: 5px; display: inline-block; }
         .status-confirmed { color: var(--color-available); }
         .status-waitlisted { color: var(--color-waitlist); }
         .status-canceled { color: var(--color-booked); }
 
-        /* Responsive */
+        /* Responsive Mobile Optimizations */
         @media (max-width: 768px) {
-            .schedule-container { grid-template-columns: 1fr; }
-            .app-toolbar { flex-direction: column; gap: 15px; text-align: center; }
-            .booking-item { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .app-toolbar { 
+                flex-direction: column; 
+                gap: 15px; 
+                text-align: center; 
+                padding: 15px 20px;
+            }
+            main.app-content { 
+                padding: 20px 15px; 
+            }
+            .schedule-container { 
+                grid-template-columns: 1fr; 
+                gap: 20px;
+                padding: 15px;
+            }
+            .calendar-day {
+                padding: 8px 5px;
+                font-size: 0.9rem;
+            }
+            #timeslot-grid {
+                grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
+                gap: 8px;
+            }
+            .modal-content {
+                padding: 20px;
+            }
+            .booking-item { 
+                flex-direction: column; 
+                align-items: flex-start; 
+                gap: 15px; 
+            }
+            .booking-item button {
+                width: 100%;
+            }
+            .timeslot-legend {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .app-toolbar h1 { font-size: 1.25rem; }
+            #user-info { flex-direction: column; width: 100%; }
+            #user-info button { width: 100%; margin-top: 5px; margin-bottom: 0;}
+            .room-image { height: 160px; }
+            .card-container { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -800,20 +858,56 @@
                         </div>
                     `;
 
-                    // Only show cancel button if status is active (Confirmed or Waitlisted)
-                    if (b.Status !== 'Canceled') {
-                        const cancelBtn = document.createElement('button');
-                        cancelBtn.className = 'back-btn';
-                        cancelBtn.style.margin = '0';
-                        cancelBtn.innerText = 'Cancel Slot';
-                        cancelBtn.onclick = () => cancelUserBooking(b.BookingID);
-                        div.appendChild(cancelBtn);
-                    } else {
+                    // Parse Date Safely to check if the slot time has already passed
+                    let isPast = false;
+                    try {
+                        let dateStr = b.BookingDate.split('T')[0]; // Handle ISO if present
+                        // Convert DD/MM/YYYY formatting if present
+                        if(dateStr.includes('/')) {
+                            let parts = dateStr.split('/');
+                            if(parts[2] && parts[2].length === 4) {
+                                dateStr = `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`;
+                            }
+                        }
+                        
+                        let timeStr = b.StartTime.length === 5 ? b.StartTime + ':00' : b.StartTime;
+                        let slotDateTime = new Date(`${dateStr}T${timeStr}`);
+                        
+                        // Fallback parsing just in case strict ISO format fails
+                        if(isNaN(slotDateTime.getTime())) {
+                            slotDateTime = new Date(`${b.BookingDate} ${b.StartTime}`);
+                        }
+
+                        if (!isNaN(slotDateTime.getTime()) && slotDateTime < new Date()) {
+                            isPast = true;
+                        }
+                    } catch(e) { console.error("Could not parse date", e); }
+
+
+                    // Condition rendering: 
+                    // 1. If canceled -> Show Canceled badge
+                    // 2. If time passed -> Show Elapsed Badge
+                    // 3. Otherwise -> Show Cancel Button
+                    if (b.Status === 'Canceled') {
                         const closedBadge = document.createElement('span');
-                        closedBadge.style.color = '#777';
+                        closedBadge.style.color = '#ef4444';
                         closedBadge.style.fontSize = '0.85rem';
                         closedBadge.innerText = 'Canceled';
                         div.appendChild(closedBadge);
+                    } else if (isPast) {
+                        const elapsedBadge = document.createElement('span');
+                        elapsedBadge.style.color = 'var(--text-muted)';
+                        elapsedBadge.style.fontSize = '0.85rem';
+                        elapsedBadge.innerText = 'Elapsed / Completed';
+                        div.appendChild(elapsedBadge);
+                    } else {
+                        const cancelBtn = document.createElement('button');
+                        cancelBtn.className = 'back-btn';
+                        cancelBtn.style.margin = '0';
+                        cancelBtn.style.backgroundColor = 'var(--color-booked)'; // Explicit red to indicate deletion
+                        cancelBtn.innerText = 'Cancel Slot';
+                        cancelBtn.onclick = () => cancelUserBooking(b.BookingID);
+                        div.appendChild(cancelBtn);
                     }
 
                     listContainer.appendChild(div);
