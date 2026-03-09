@@ -156,10 +156,6 @@
             const emailVal = emailInput.value.trim().toLowerCase();
             const typeSelect = document.getElementById('pType');
             const currentSelection = typeSelect.value;
-            
-            const priceStudent = TICKET_PRICES["Student"] || 299;
-            const priceVisitor = TICKET_PRICES["Visitor"] || 499;
-            const priceProject = TICKET_PRICES["Project Student"] || 499;
 
             typeSelect.innerHTML = '<option value="">-- SELECT TICKET CATEGORY --</option>';
 
@@ -173,15 +169,15 @@
 
             if (isIiser) {
                 if (hasUsedStudentQuota) {
-                    typeSelect.innerHTML += `<option value="Visitor">VISITOR TICKET (₹${priceVisitor}) - Student Quota Used</option>`;
+                    typeSelect.innerHTML += `<option value="Visitor">VISITOR TICKET - Student Quota Used</option>`;
                 } else {
-                    typeSelect.innerHTML += `<option value="Student">STUDENT TICKET (₹${priceStudent}) - 1 Per Email</option>`;
-                    typeSelect.innerHTML += `<option value="Visitor">VISITOR TICKET (₹${priceVisitor})</option>`;
+                    typeSelect.innerHTML += `<option value="Student">STUDENT TICKET - 1 Per Email</option>`;
+                    typeSelect.innerHTML += `<option value="Visitor">VISITOR TICKET</option>`;
                 }
                 // Allow IISER emails to pick Project Student too
-                typeSelect.innerHTML += `<option value="Project Student">PROJECT STUDENT (₹${priceProject})</option>`;
+                typeSelect.innerHTML += `<option value="Project Student">PROJECT STUDENT</option>`;
             } else {
-                typeSelect.innerHTML += `<option value="Project Student">PROJECT STUDENT (₹${priceProject}) - Personal Email</option>`;
+                typeSelect.innerHTML += `<option value="Project Student">PROJECT STUDENT - Personal Email</option>`;
             }
 
             if (Array.from(typeSelect.options).some(opt => opt.value === currentSelection)) {
