@@ -292,11 +292,113 @@
     .team-text p { margin-bottom: 20px; }
     .team-highlight { color: var(--accent-gold); font-style: italic; font-weight: 600; }
 
-    /* SECTION 5: PROSHOWS */
-    .proshow-container { display: flex; justify-content: center; align-items: center; width: 100%; }
-    .wait-see-wrapper { text-align: center; padding: 50px; border: 1px solid var(--accent-gold); background: rgba(0,0,0,0.3); backdrop-filter: blur(5px); transform: skewX(-10deg); }
-    .wait-see-text { font-family: var(--font-display); font-size: clamp(3rem, 8vw, 7rem); font-weight: 700; color: transparent; -webkit-text-stroke: 2px var(--accent-gold); text-shadow: 0 0 30px rgba(214, 194, 106, 0.3); transform: skewX(10deg); animation: pulseText 3s infinite ease-in-out; }
-    @keyframes pulseText { 0%, 100% { opacity: 0.6; text-shadow: 0 0 10px rgba(214, 194, 106, 0.1); } 50% { opacity: 1; text-shadow: 0 0 50px rgba(214, 194, 106, 0.6), 0 0 20px #fff; } }
+    /* SECTION 5: SPONSORS */
+    .sponsors-container { width: 100%; }
+    .title-sponsors-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+        margin-bottom: 16px;
+    }
+    .title-sponsor-card {
+        position: relative;
+        padding: 20px 16px;
+        border-radius: 14px;
+        border: 1px solid rgba(214, 194, 106, 0.55);
+        background: linear-gradient(145deg, rgba(56, 45, 18, 0.96), rgba(15, 14, 8, 0.97));
+        box-shadow: 0 14px 26px rgba(0,0,0,0.55), inset 0 0 34px rgba(214, 194, 106, 0.18);
+        overflow: hidden;
+        text-align: center;
+    }
+    .title-sponsor-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at top right, rgba(214,194,106,0.22), transparent 55%);
+        pointer-events: none;
+    }
+    .title-sponsor-card .sponsor-tag {
+        color: var(--accent-gold);
+        margin-bottom: 8px;
+    }
+    .title-sponsor-card .sponsor-name {
+        font-size: clamp(1rem, 2.2vw, 1.3rem);
+    }
+    .title-sponsor-icon {
+        position: absolute;
+        top: 10px;
+        right: 12px;
+        color: rgba(214,194,106,0.85);
+        font-size: 0.82rem;
+    }
+    .sponsors-carousel-shell {
+        position: relative;
+        overflow: hidden;
+        border-radius: 18px;
+        border: 1px solid rgba(214, 194, 106, 0.25);
+        background: radial-gradient(circle at top left, rgba(214, 194, 106, 0.12), rgba(5, 10, 6, 0.9));
+        padding: 18px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    }
+    .sponsor-cards-stage {
+        position: relative;
+        height: 300px;
+        width: 100%;
+        overflow: hidden;
+        perspective: 900px;
+    }
+    .sponsor-card {
+        position: absolute;
+        width: min(82%, 430px);
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        padding: 30px 20px;
+        border-radius: 16px;
+        border: 1px solid rgba(214, 194, 106, 0.2);
+        background: linear-gradient(150deg, rgba(15, 22, 11, 0.95), rgba(4, 8, 5, 0.92));
+        text-align: center;
+        box-shadow: 0 14px 35px rgba(0,0,0,0.55);
+        transition: border-color 0.25s ease;
+        will-change: transform, opacity, filter;
+    }
+    .sponsor-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        border: 1px solid rgba(255,255,255,0.04);
+        pointer-events: none;
+    }
+    .sponsor-tag {
+        font-family: var(--font-tech);
+        font-size: 0.75rem;
+        letter-spacing: 1.8px;
+        text-transform: uppercase;
+        color: var(--accent-green);
+        margin-bottom: 12px;
+    }
+    .sponsor-name {
+        font-family: var(--font-display);
+        font-size: clamp(1.2rem, 3vw, 1.8rem);
+        color: #fefce8;
+        line-height: 1.2;
+    }
+    .sponsor-card.active { border-color: rgba(214, 194, 106, 0.7); }
+    .sponsors-controls {
+        margin-top: 16px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+    }
+    .sponsors-indicator {
+        font-family: var(--font-tech);
+        color: rgba(255,255,255,0.8);
+        letter-spacing: 1px;
+        min-width: 62px;
+        text-align: center;
+    }
 
     /* --- FOOTER --- */
     .footer-section { 
@@ -441,6 +543,13 @@
         
         .team-content-wrapper { padding: 30px 20px; text-align: center; }
         .team-text { font-size: 1rem; }
+
+        .sponsors-carousel-shell { padding: 12px; }
+        .title-sponsors-grid { grid-template-columns: 1fr; gap: 10px; }
+        .title-sponsor-card { padding: 16px 14px; }
+        .sponsor-cards-stage { height: 270px; }
+        .sponsor-card { width: 88%; padding: 24px 14px; }
+        .sponsor-name { font-size: 1.1rem; }
         
         .hero-countdown { gap: 10px; }
         .time-block { padding: 10px; min-width: 60px; }
@@ -591,17 +700,34 @@
         </div>
     </section>
 
-    <!-- SECTION 5: PROSHOWS -->
-    <section id="proshows">
+    <!-- SECTION 5: SPONSORS -->
+    <section id="sponsors">
         <div class="section-layout layout-content-left">
             <div class="perch-zone">
-                <h2 class="perch-title">PROSHOW</h2>
-                <div class="perch-subtitle">THE GRAND FINALE</div>
+                <h2 class="perch-title">SPONSORS</h2>
+                <div class="perch-subtitle">POWERING ISHYA 2026</div>
             </div>
             <div class="content-zone">
-                <div class="proshow-container">
-                    <div class="wait-see-wrapper">
-                        <div class="wait-see-text">COMING SOON....</div>
+                <div class="sponsors-container">
+                    <div class="title-sponsors-grid">
+                        <article class="title-sponsor-card glass-panel">
+                            <i class="fa-solid fa-crown title-sponsor-icon" aria-hidden="true"></i>
+                            <div class="sponsor-tag">Title Sponsor</div>
+                            <div class="sponsor-name">Title Sponsor — Placeholder</div>
+                        </article>
+                        <article class="title-sponsor-card glass-panel">
+                            <i class="fa-solid fa-gem title-sponsor-icon" aria-hidden="true"></i>
+                            <div class="sponsor-tag">Powered By</div>
+                            <div class="sponsor-name">Powered By — Placeholder</div>
+                        </article>
+                    </div>
+                    <div class="sponsors-carousel-shell glass-panel">
+                        <div class="sponsor-cards-stage" id="sponsorsCardCarousel"></div>
+                    </div>
+                    <div class="sponsors-controls">
+                        <button id="sponsorPrevBtn" class="nav-btn" aria-label="Previous sponsor"><i class="fa-solid fa-arrow-left"></i></button>
+                        <span id="sponsorsIndicator" class="sponsors-indicator">01 / 05</span>
+                        <button id="sponsorNextBtn" class="nav-btn" aria-label="Next sponsor"><i class="fa-solid fa-arrow-right"></i></button>
                     </div>
                 </div>
             </div>
@@ -727,6 +853,7 @@
         setupEventListeners();
         setupInteractiveElements();
         init3DCarousel(); 
+        initSponsorsCarousel(); 
 
         const animate = () => { 
             const t = clock.getElapsedTime(); 
@@ -823,7 +950,7 @@
                 .to(bird.group.position, { x: -5.5, y: -0.5, z: 1 }).to(bird.group.rotation, { y: -0.6, x: 0.1, z: 0 }, "<");
             gsap.timeline({ scrollTrigger: { trigger: "#team", start: "top bottom", end: "center center", scrub: 1.5 }})
                 .to(bird.group.position, { x: 6, y: 0.5, z: 1 }).to(bird.group.rotation, { y: 0.6, x: 0.1, z: 0 }, "<");
-            gsap.timeline({ scrollTrigger: { trigger: "#proshows", start: "top bottom", end: "center center", scrub: 1.5 }})
+            gsap.timeline({ scrollTrigger: { trigger: "#sponsors", start: "top bottom", end: "center center", scrub: 1.5 }})
                 .to(bird.group.position, { x: 0, y: 0, z: 3 }).to(bird.group.rotation, { y: 0, x: 0, z: 0 }, "<"); 
         }
     }
@@ -921,6 +1048,94 @@
             if (touchEndX - touchStartX > 50) prevBtn.click(); 
         }, {passive: true});
         updateCarousel();
+    }
+
+    function initSponsorsCarousel() {
+        const stage = document.getElementById('sponsorsCardCarousel');
+        const prevBtn = document.getElementById('sponsorPrevBtn');
+        const nextBtn = document.getElementById('sponsorNextBtn');
+        const indicator = document.getElementById('sponsorsIndicator');
+        if (!stage || !prevBtn || !nextBtn || !indicator) return;
+
+        const sponsorsData = [
+            { tag: 'Co-Sponsor', name: 'Co-Sponsor — Placeholder' },
+            { tag: 'Fest Partner', name: 'Fest Partner — Placeholder' },
+            { tag: 'Associate Partner', name: 'Associate Partner — Placeholder' },
+            { tag: 'Category Partner', name: 'Category Partner — Placeholder' },
+            { tag: 'Media Partner', name: 'Media Partner — Placeholder' }
+        ];
+
+        let activeIndex = 0;
+        const cardElements = sponsorsData.map((item, index) => {
+            const card = document.createElement('article');
+            card.className = 'sponsor-card';
+            card.innerHTML = `
+                <div class="sponsor-tag">${item.tag}</div>
+                <div class="sponsor-name">${item.name}</div>
+            `;
+            card.addEventListener('click', () => {
+                if (activeIndex !== index) {
+                    activeIndex = index;
+                    updateSponsors();
+                }
+            });
+            stage.appendChild(card);
+            return card;
+        });
+
+        function updateSponsors() {
+            cardElements.forEach((card, index) => {
+                const offset = index - activeIndex;
+                const abs = Math.abs(offset);
+                const clamped = Math.min(abs, 2);
+                const translateX = offset * (isMobile ? 120 : 170);
+                const scale = 1 - (clamped * 0.14);
+                const depth = -clamped * 90;
+                const opacity = abs > 3 ? 0 : 1 - (clamped * 0.24);
+                const gray = offset === 0 ? 0 : 100;
+
+                card.classList.toggle('active', offset === 0);
+
+                gsap.to(card, {
+                    x: translateX,
+                    z: depth,
+                    scale,
+                    opacity,
+                    zIndex: 100 - abs,
+                    filter: `grayscale(${gray}%)`,
+                    duration: 0.55,
+                    ease: 'power2.out',
+                    overwrite: 'auto'
+                });
+            });
+
+            indicator.textContent = `${String(activeIndex + 1).padStart(2, '0')} / ${String(cardElements.length).padStart(2, '0')}`;
+        }
+
+        prevBtn.addEventListener('click', () => {
+            activeIndex = (activeIndex - 1 + cardElements.length) % cardElements.length;
+            updateSponsors();
+        });
+
+        nextBtn.addEventListener('click', () => {
+            activeIndex = (activeIndex + 1) % cardElements.length;
+            updateSponsors();
+        });
+
+        let touchStartX = 0;
+        stage.addEventListener('touchstart', e => touchStartX = e.changedTouches[0].screenX, { passive: true });
+        stage.addEventListener('touchend', e => {
+            const touchEndX = e.changedTouches[0].screenX;
+            if (touchStartX - touchEndX > 45) nextBtn.click();
+            if (touchEndX - touchStartX > 45) prevBtn.click();
+        }, { passive: true });
+
+        setInterval(() => {
+            activeIndex = (activeIndex + 1) % cardElements.length;
+            updateSponsors();
+        }, 4500);
+
+        updateSponsors();
     }
 
     function setupInteractiveElements() {
