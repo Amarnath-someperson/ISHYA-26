@@ -4,6 +4,7 @@
     <link rel="shortcut icon" type="image/x-icon" href="../Logo Ishya.ico">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <title>Room Booking System</title>
     
     <!-- Fonts & Icons -->
@@ -11,11 +12,12 @@
     
     <!-- CSS Connection -->
     <link rel="stylesheet" href="style.css">
-
+    <link rel="stylesheet" href="/global.css"> <!--H&F #1-->
     <!-- Google Identity Services (Login) -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-
-    <!-- Custom Background Style -->
+    <script src="/layout.js" defer></script><!--H&F #2-->
+    
+    <!-- Custom Styles -->
     <style>
         body {
             /* Fallback color if image fails */
@@ -26,14 +28,35 @@
             background-repeat: no-repeat;
             min-height: 100vh;
         }
+
+        /* 24-hour notification banner style */
+        .booking-notice-banner {
+            background-color: #ffcc00;
+            color: #1a1a1a;
+            text-align: center;
+            padding: 12px 20px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 15px;
+            border-radius: 8px;
+            margin: 0 auto 20px auto;
+            max-width: 900px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border: 1px solid #e6b800;
+        }
     </style>
 </head>
 <body>
-
+    <ishya-header></ishya-header>
     <!-- Main Application Container -->
     <div id="app">
 
         <header>
+            <!-- 24-HOUR CONSTRIANT BANNER INJECTED HERE -->
+            <div class="booking-notice-banner">
+                🕒 Note: You can only book slots exactly 24 hours before the slot. All slots beyond this time will be unavailable for booking.
+            </div>
+
             <h1>Room Booking System</h1>
             <div id="auth-container">
                 <!-- Login Button injected here by JS -->
@@ -145,7 +168,7 @@
     </div>
 
     <!-- MAIN LOGIC SCRIPT -->
-    <script src="scriptv5.js"></script>
-
+    <script src="script.js"></script>
+    <ishya-footer></ishya-footer> 
 </body>
 </html>
