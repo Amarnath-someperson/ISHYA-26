@@ -1,1 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISHYA Results</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            /* Dark background matching your theme */
+            background-color: #0f0f0f;
+            background-image: radial-gradient(circle at center, #1a1a1a 0%, #050505 100%);
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 50px 20px;
+            min-height: 100vh;
+        }
+        
+        h1 {
+            text-align: center;
+            font-family: 'Cinzel', serif;
+            font-size: 3.5rem;
+            letter-spacing: 4px;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
 
+        .header-line {
+            width: 100px;
+            height: 2px;
+            background-color: #d4af37; /* Elegant gold accent */
+            margin: 0 auto 50px auto;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .result-card {
+            background-color: #1c1c1c;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+            border-color: #d4af37;
+        }
+
+        .event-name {
+            font-family: 'Cinzel', serif;
+            color: #d4af37; /* Gold color from screenshot */
+            font-size: 1.6rem;
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+        }
+
+        .winner-text {
+            font-size: 1rem;
+            margin: 12px 0;
+            color: #aaaaaa;
+        }
+
+        .winner-name {
+            color: #ffffff;
+            font-weight: 600;
+            margin-left: 5px;
+        }
+
+        .loading {
+            text-align: center;
+            color: #d4af37;
+            font-size: 1.2rem;
+            font-family: 'Cinzel', serif;
+            grid-column: 1 / -1;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>RESULTS</h1>
+    <div class="header-line"></div>
+
+    <div id="results-container" class="results-grid">
+        <p class="loading">Loading latest results...</p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
