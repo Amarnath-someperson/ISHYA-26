@@ -1,4 +1,4 @@
-// This specific gviz URL bypasses Google's strict CORS blocking
+// gsheet linked to this page
 const SHEET_ID = '1A6V5ZtKOUVZ0ThIsCC4AmL_ECP-Hvo3dpCckvThT40g';
 const GVIZ_URL = `https://docs.google.com/spreadsheets/d/e/2PACX-1vSn_em0uPT3-FdSZg-3aeobZFB_5fG7So6YfTVDGS3O9gAXVYs3FiJIMkc5DDcLfwq-5IcrMAa529Qx/pub?output=csv`;
 
@@ -37,7 +37,7 @@ async function fetchResults() {
                     <div class="card-container">
                         <div class="card-content">
                             <div class="card-title">${eventName}</div>
-                            <p class="card-winner"><strong>Winner:</strong> ${winner}</p>
+                            <p class="card-winner"><strong>First Place:</strong> ${winner}</p>
                             <p class="card-winner"><strong>Second Place:</strong> ${second}</p>
                             <p class="card-winner"><strong>Third Place:</strong> ${third}</p>
                         </div>
