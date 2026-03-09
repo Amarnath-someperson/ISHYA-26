@@ -3,15 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/x-icon" href="../Logo Ishya.ico">
     <title>Room Booking System | Ishya IISER TVM</title>
     
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     
+    <!-- Your Global Header/Footer CSS and JS -->
+    <link rel="stylesheet" href="/global.css">
+    <script src="/layout.js" defer></script>
+    
     <!-- Google Identity Services -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 
-    <!-- Unified CSS -->
+    <!-- Unified App CSS -->
     <style>
         :root {
             --bg-dark: #121212;
@@ -29,35 +34,14 @@
             --border-radius: 10px;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        body {
+        /* Scoped to #app so it doesn't break your global header/footer */
+        #app {
             background-color: var(--bg-dark);
             color: var(--text-main);
-            min-height: 100vh;
+            min-height: calc(100vh - 150px);
             display: flex;
             flex-direction: column;
-        }
-
-        /* Top Header & Banner */
-        header {
-            background-color: var(--bg-card);
-            padding: 20px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #333;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-        }
-
-        header h1 {
-            font-size: 1.5rem;
-            color: var(--accent-gold);
+            font-family: 'Poppins', sans-serif;
         }
 
         .booking-notice-banner {
@@ -71,8 +55,23 @@
             letter-spacing: 0.5px;
         }
 
-        /* Layout */
-        main {
+        .app-toolbar {
+            background-color: var(--bg-card);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #333;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        .app-toolbar h1 {
+            font-size: 1.5rem;
+            color: var(--accent-gold);
+            margin: 0;
+        }
+
+        main.app-content {
             flex: 1;
             padding: 40px;
             max-width: 1200px;
@@ -88,7 +87,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        h2 { margin-bottom: 25px; font-weight: 500; }
+        #app h2 { margin-bottom: 25px; font-weight: 500; color: var(--text-main); }
 
         /* Buttons */
         .cta-btn, .back-btn {
@@ -123,7 +122,7 @@
             transform: translateY(-5px);
             box-shadow: 0 8px 20px rgba(240, 185, 11, 0.1);
         }
-        .room-card h3 { color: var(--accent-gold); margin-bottom: 10px; }
+        .room-card h3 { color: var(--accent-gold); margin-bottom: 10px; font-size: 1.3rem;}
 
         /* Schedule Container */
         .schedule-container {
@@ -176,7 +175,6 @@
             text-align: center;
         }
 
-        /* SLOT STATES */
         .slot-btn.available { border-color: var(--color-available); }
         .slot-btn.available:hover { background-color: rgba(16, 185, 129, 0.2); }
         .slot-btn.selected { background-color: var(--color-available); color: #000; font-weight: bold; border-color: var(--color-available); }
@@ -187,7 +185,6 @@
 
         .slot-btn.booked { background-color: var(--color-booked); color: white; border-color: var(--color-booked); cursor: not-allowed; opacity: 0.5; }
         
-        /* THE 24-HOUR CONSTRAINT BLACKOUT */
         .slot-btn.blacked-out {
             background-color: var(--color-blacked-out);
             color: #666;
@@ -197,7 +194,7 @@
         }
 
         /* Legend */
-        .timeslot-legend { display: flex; gap: 20px; margin-bottom: 20px; font-size: 0.9rem; }
+        .timeslot-legend { display: flex; gap: 20px; margin-bottom: 20px; font-size: 0.9rem; flex-wrap: wrap;}
         .legend-item { display: flex; align-items: center; gap: 8px; }
         .legend-color-box { width: 16px; height: 16px; border-radius: 4px; }
 
@@ -240,30 +237,34 @@
         .form-group input, .form-group textarea {
             width: 100%; padding: 10px; border-radius: 5px;
             background-color: #222; border: 1px solid #444; color: white;
+            box-sizing: border-box;
         }
         .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--accent-gold); }
 
         /* Responsive */
         @media (max-width: 768px) {
             .schedule-container { grid-template-columns: 1fr; }
-            header { flex-direction: column; gap: 15px; }
+            .app-toolbar { flex-direction: column; gap: 15px; text-align: center; }
         }
     </style>
 </head>
 <body>
 
-    <!-- 24-HOUR CONSTRIANT BANNER -->
-    <div class="booking-notice-banner">
-        🕒 <b>Note:</b> You can only book slots exactly 24 hours before the slot opens. All future slots beyond this are blacked out.
-    </div>
+    <!-- YOUR CUSTOM HEADER -->
+    <ishya-header></ishya-header>
 
     <div id="app">
-        <header>
-            <h1>IISER TVM Room Booking</h1>
+        <!-- 24-HOUR CONSTRIANT BANNER -->
+        <div class="booking-notice-banner">
+            🕒 <b>Note:</b> You can only book slots exactly 24 hours before the slot opens. All future slots beyond this are blacked out.
+        </div>
+
+        <div class="app-toolbar">
+            <h1>Room Booking System</h1>
             <div id="auth-container">
-                <!-- Google Sign In Button renders here -->
+                <!-- IMPORTANT: Replace the client_id below with your Client ID from Google Cloud Console -->
                 <div id="g_id_onload"
-                     data-client_id="YOUR_GOOGLE_CLIENT_ID_HERE"
+                     data-client_id="750824340469-nrqmioc1jgoe6rjnuaqjdu9mh0b4or2o.apps.googleusercontent.com" 
                      data-callback="handleCredentialResponse"
                      data-auto_prompt="false">
                 </div>
@@ -271,12 +272,11 @@
             </div>
             <div id="user-info" class="hidden" style="display: flex; gap: 15px; align-items: center;">
                 <span id="welcome-text"></span>
-                <button id="my-bookings-btn" class="cta-btn" style="padding: 5px 10px; font-size: 0.8rem;">My Bookings</button>
                 <button onclick="logout()" class="back-btn" style="margin:0; padding: 5px 10px; font-size: 0.8rem;">Logout</button>
             </div>
-        </header>
+        </div>
 
-        <main>
+        <main class="app-content">
             <!-- Step 1: Room Selection -->
             <section id="room-selection" class="step active">
                 <h2>Select a Room / Service</h2>
@@ -358,10 +358,13 @@
         </div>
     </div>
 
+    <!-- YOUR CUSTOM FOOTER -->
+    <ishya-footer></ishya-footer>
+
     <!-- UNIFIED JAVASCRIPT LOGIC -->
     <script>
         // ==========================================
-        // CONFIGURATION - UPDATE THESE URLS
+        // CONFIGURATION - UPDATE THIS URL
         // ==========================================
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzoEAbzSE5dbmajKBDERwn-SIhuCz0RR9I18sz1eEIrHj66FI1N_OkmxI-BzObrXOmQLw/exec"; 
         
@@ -379,7 +382,6 @@
         let availableSlotsData = {};
         let selectedSlots =[];
 
-        // predefined standard slots (Modify if you need specific hours)
         const STANDARD_SLOTS =[
             "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", 
             "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00"
@@ -493,9 +495,7 @@
             grid.innerHTML = '';
             
             const monthNames =["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            document.getElementById('month-year').innerText = `${monthNames[displayMonth]} ${displayYear}`;
-
-            // Add Day Headers['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach(day => {
+            document.getElementById('month-year').innerText = `${monthNames[displayMonth]} ${displayYear}`;['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach(day => {
                 const el = document.createElement('div');
                 el.className = 'day-header';
                 el.innerText = day;
