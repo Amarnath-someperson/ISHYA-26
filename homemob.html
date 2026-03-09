@@ -294,107 +294,54 @@
 
     /* SECTION 5: SPONSORS */
     .sponsors-container { width: 100%; }
-    .title-sponsors-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 14px;
-        margin-bottom: 16px;
-    }
-    .title-sponsor-card {
-        position: relative;
-        min-height: 170px;
-        padding: 20px 16px;
-        border-radius: 10px;
-        border: 1.5px solid rgba(214, 194, 106, 0.72);
-        background: rgba(15, 16, 12, 0.98);
-        box-shadow: 0 10px 22px rgba(0,0,0,0.48);
-        overflow: hidden;
-        text-align: center;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
-    .title-sponsor-card::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: radial-gradient(circle at top right, rgba(214,194,106,0.22), transparent 55%);
-        pointer-events: none;
-    }
-    .title-sponsor-card .sponsor-tag {
-        color: var(--accent-gold);
-        margin-bottom: 8px;
-    }
-    .title-sponsor-card .sponsor-name {
-        font-size: clamp(1rem, 2.2vw, 1.3rem);
-    }
-    .title-sponsor-icon {
-        position: absolute;
-        top: 10px;
-        right: 12px;
-        color: rgba(214,194,106,0.85);
-        font-size: 0.82rem;
-    }
     .sponsors-carousel-shell {
         position: relative;
         overflow: hidden;
-        border-radius: 10px;
-        border: 1.5px solid rgba(214, 194, 106, 0.48);
-        background: rgba(7, 10, 8, 0.96);
-        padding: 18px 18px 68px;
-        box-shadow: 0 18px 34px rgba(0,0,0,0.55);
+        border-radius: 18px;
+        border: 1px solid rgba(214, 194, 106, 0.25);
+        background: radial-gradient(circle at top left, rgba(214, 194, 106, 0.12), rgba(5, 10, 6, 0.9));
+        padding: 20px 50px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.6);
     }
-    .sponsor-cards-stage {
-        position: relative;
-        height: 300px;
-        width: 100%;
-        overflow: hidden;
-        perspective: 900px;
+    .sponsors-track {
+        display: flex;
+        transition: transform 0.55s ease;
+        will-change: transform;
     }
-    .sponsor-card {
-        position: absolute;
-        width: min(82%, 430px);
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        padding: 30px 20px;
-        border-radius: 16px;
-        border: 1px solid rgba(214, 194, 106, 0.2);
-        background: linear-gradient(150deg, rgba(15, 22, 11, 0.95), rgba(4, 8, 5, 0.92));
+    .sponsor-slide {
+        min-width: 100%;
+        display: grid;
+        place-items: center;
+        padding: 45px 18px;
         text-align: center;
-        box-shadow: 0 14px 35px rgba(0,0,0,0.55);
-        transition: border-color 0.25s ease;
-        will-change: transform, opacity, filter;
-    }
-    .sponsor-card::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        border-radius: inherit;
-        border: 1px solid rgba(255,255,255,0.04);
-        pointer-events: none;
+        border-radius: 12px;
+        border: 1px solid rgba(214, 194, 106, 0.14);
+        background: rgba(0, 0, 0, 0.28);
     }
     .sponsor-tag {
         font-family: var(--font-tech);
-        font-size: 0.75rem;
-        letter-spacing: 1.8px;
+        font-size: 0.78rem;
+        letter-spacing: 1.7px;
         text-transform: uppercase;
         color: var(--accent-green);
-        margin-bottom: 12px;
+        margin-bottom: 10px;
     }
     .sponsor-name {
         font-family: var(--font-display);
-        font-size: clamp(1.2rem, 3vw, 1.8rem);
+        font-size: clamp(1.5rem, 3vw, 2rem);
         color: #fefce8;
         line-height: 1.2;
     }
-    .sponsor-card.active { border-color: rgba(214, 194, 106, 0.7); }
+    .sponsor-slide.title-sponsor {
+        background: radial-gradient(circle at center, rgba(214, 194, 106, 0.24), rgba(0, 0, 0, 0.45));
+        border-color: rgba(214, 194, 106, 0.5);
+        box-shadow: inset 0 0 50px rgba(214, 194, 106, 0.18);
+    }
+    .sponsor-slide.title-sponsor .sponsor-tag {
+        color: var(--accent-gold);
+    }
     .sponsors-controls {
-        position: absolute;
-        left: 0;
-        right: 0;
-        bottom: 16px;
-        margin-top: 0;
+        margin-top: 16px;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -552,12 +499,9 @@
         .team-content-wrapper { padding: 30px 20px; text-align: center; }
         .team-text { font-size: 1rem; }
 
-        .sponsors-carousel-shell { padding: 12px; }
-        .title-sponsors-grid { grid-template-columns: 1fr; gap: 10px; }
-        .title-sponsor-card { min-height: 120px; padding: 16px 14px; }
-        .sponsor-cards-stage { height: 250px; }
-        .sponsor-card { width: 88%; padding: 24px 14px; }
-        .sponsor-name { font-size: 1.1rem; }
+        .sponsors-carousel-shell { padding: 14px; }
+        .sponsor-slide { padding: 32px 12px; }
+        .sponsor-name { font-size: 1.2rem; }
         
         .hero-countdown { gap: 10px; }
         .time-block { padding: 10px; min-width: 60px; }
@@ -717,25 +661,34 @@
             </div>
             <div class="content-zone">
                 <div class="sponsors-container">
-                    <div class="title-sponsors-grid">
-                        <article class="title-sponsor-card">
-                            <i class="fa-solid fa-crown title-sponsor-icon" aria-hidden="true"></i>
-                            <div class="sponsor-tag">Title Sponsor</div>
-                            <div class="sponsor-name">Title Sponsor — Placeholder</div>
-                        </article>
-                        <article class="title-sponsor-card">
-                            <i class="fa-solid fa-gem title-sponsor-icon" aria-hidden="true"></i>
-                            <div class="sponsor-tag">Powered By</div>
-                            <div class="sponsor-name">Powered By — Placeholder</div>
-                        </article>
-                    </div>
-                    <div class="sponsors-carousel-shell">
-                        <div class="sponsor-cards-stage" id="sponsorsCardCarousel"></div>
-                        <div class="sponsors-controls">
-                            <button id="sponsorPrevBtn" class="nav-btn" aria-label="Previous sponsor"><i class="fa-solid fa-arrow-left"></i></button>
-                            <span id="sponsorsIndicator" class="sponsors-indicator">01 / 05</span>
-                            <button id="sponsorNextBtn" class="nav-btn" aria-label="Next sponsor"><i class="fa-solid fa-arrow-right"></i></button>
+                    <div class="sponsors-carousel-shell glass-panel">
+                        <div class="sponsors-track" id="sponsorsTrack">
+                            <div class="sponsor-slide title-sponsor">
+                                <div class="sponsor-tag">Title Sponsor</div>
+                                <div class="sponsor-name">Title Sponsor — Placeholder</div>
+                            </div>
+                            <div class="sponsor-slide title-sponsor">
+                                <div class="sponsor-tag">Powered By</div>
+                                <div class="sponsor-name">Powered By — Placeholder</div>
+                            </div>
+                            <div class="sponsor-slide">
+                                <div class="sponsor-tag">Co-Sponsor</div>
+                                <div class="sponsor-name">Co-Sponsor — Placeholder</div>
+                            </div>
+                            <div class="sponsor-slide">
+                                <div class="sponsor-tag">Associate Partner</div>
+                                <div class="sponsor-name">Associate Partner — Placeholder</div>
+                            </div>
+                            <div class="sponsor-slide">
+                                <div class="sponsor-tag">Media Partner</div>
+                                <div class="sponsor-name">Media Partner — Placeholder</div>
+                            </div>
                         </div>
+                    </div>
+                    <div class="sponsors-controls">
+                        <button id="sponsorPrevBtn" class="nav-btn" aria-label="Previous sponsor"><i class="fa-solid fa-arrow-left"></i></button>
+                        <span id="sponsorsIndicator" class="sponsors-indicator">01 / 05</span>
+                        <button id="sponsorNextBtn" class="nav-btn" aria-label="Next sponsor"><i class="fa-solid fa-arrow-right"></i></button>
                     </div>
                 </div>
             </div>
@@ -1059,87 +1012,40 @@
     }
 
     function initSponsorsCarousel() {
-        const stage = document.getElementById('sponsorsCardCarousel');
+        const track = document.getElementById('sponsorsTrack');
         const prevBtn = document.getElementById('sponsorPrevBtn');
         const nextBtn = document.getElementById('sponsorNextBtn');
         const indicator = document.getElementById('sponsorsIndicator');
-        if (!stage || !prevBtn || !nextBtn || !indicator) return;
+        if (!track || !prevBtn || !nextBtn || !indicator) return;
 
-        const sponsorsData = [
-            { tag: 'Co-Sponsor', name: 'Co-Sponsor — Placeholder' },
-            { tag: 'Fest Partner', name: 'Fest Partner — Placeholder' },
-            { tag: 'Associate Partner', name: 'Associate Partner — Placeholder' },
-            { tag: 'Category Partner', name: 'Category Partner — Placeholder' },
-            { tag: 'Media Partner', name: 'Media Partner — Placeholder' }
-        ];
-
+        const slides = Array.from(track.children);
         let activeIndex = 0;
-        const cardElements = sponsorsData.map((item, index) => {
-            const card = document.createElement('article');
-            card.className = 'sponsor-card';
-            card.innerHTML = `
-                <div class="sponsor-tag">${item.tag}</div>
-                <div class="sponsor-name">${item.name}</div>
-            `;
-            card.addEventListener('click', () => {
-                if (activeIndex !== index) {
-                    activeIndex = index;
-                    updateSponsors();
-                }
-            });
-            stage.appendChild(card);
-            return card;
-        });
 
         function updateSponsors() {
-            cardElements.forEach((card, index) => {
-                const offset = index - activeIndex;
-                const abs = Math.abs(offset);
-                const clamped = Math.min(abs, 2);
-                const translateX = offset * (isMobile ? 120 : 170);
-                const scale = 1 - (clamped * 0.14);
-                const depth = -clamped * 90;
-                const opacity = abs > 3 ? 0 : 1 - (clamped * 0.24);
-                const gray = offset === 0 ? 0 : 100;
-
-                card.classList.toggle('active', offset === 0);
-
-                gsap.to(card, {
-                    x: translateX,
-                    z: depth,
-                    scale,
-                    opacity,
-                    zIndex: 100 - abs,
-                    filter: `grayscale(${gray}%)`,
-                    duration: 0.55,
-                    ease: 'power2.out',
-                    overwrite: 'auto'
-                });
-            });
-
-            indicator.textContent = `${String(activeIndex + 1).padStart(2, '0')} / ${String(cardElements.length).padStart(2, '0')}`;
+            track.style.transform = `translateX(-${activeIndex * 100}%)`;
+            indicator.textContent = `${String(activeIndex + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
         }
 
         prevBtn.addEventListener('click', () => {
-            activeIndex = (activeIndex - 1 + cardElements.length) % cardElements.length;
+            activeIndex = (activeIndex - 1 + slides.length) % slides.length;
             updateSponsors();
         });
 
         nextBtn.addEventListener('click', () => {
-            activeIndex = (activeIndex + 1) % cardElements.length;
+            activeIndex = (activeIndex + 1) % slides.length;
             updateSponsors();
         });
 
         let touchStartX = 0;
-        stage.addEventListener('touchstart', e => touchStartX = e.changedTouches[0].screenX, { passive: true });
-        stage.addEventListener('touchend', e => {
+        track.addEventListener('touchstart', e => touchStartX = e.changedTouches[0].screenX, { passive: true });
+        track.addEventListener('touchend', e => {
             const touchEndX = e.changedTouches[0].screenX;
             if (touchStartX - touchEndX > 45) nextBtn.click();
             if (touchEndX - touchStartX > 45) prevBtn.click();
         }, { passive: true });
 
         setInterval(() => {
-            activeIndex = (activeIndex + 1) % cardElements.length;
+            activeIndex = (activeIndex + 1) % slides.length;
             updateSponsors();
         }, 4500);
 
