@@ -105,5 +105,10 @@ function initParticles() {
         anim();
     }
 
+const isMobile = window.innerWidth < 768;
+
+document.addEventListener("DOMContentLoaded", () => {
+    initParticles();
+});
 
 fetchResults();
