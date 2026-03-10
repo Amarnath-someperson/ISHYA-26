@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Closed - Thank You</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* RESET & LAYOUT */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #000501; /* Very dark base */
+        }
+
+        /* CANVAS BACKGROUND */
+        canvas {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        /* TEXT OVERLAY */
+        .content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            text-align: center;
+            width: 90%;
+            max-width: 800px;
+            mix-blend-mode: hard-light;
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 5vw;
+            color: #D4AF37; /* Metallic Gold */
+            text-transform: uppercase;
+            letter-spacing: 0.4em;
+            margin: 0;
+            text-shadow: 
+                0 0 10px rgba(212, 175, 55, 0.3),
+                0 0 20px rgba(212, 175, 55, 0.2),
+                0 0 40px rgba(0, 0, 0, 0.8);
+            opacity: 0;
+            animation: fadeIn 2.5s ease-out forwards;
+            padding-left: 0.4em; /* Optical centering */
+        }
+
+        p {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5vw;
+            color: #E8D399; /* Lighter Gold */
+            letter-spacing: 0.15em;
+            margin-top: 30px;
+            line-height: 1.8;
+            text-shadow: 0 0 15px rgba(0, 0, 0, 0.9);
+            opacity: 0;
+            animation: fadeIn 2.5s ease-out 1.2s forwards; /* Delays appearance for dramatic effect */
+        }
+
+        /* FADE IN ANIMATION */
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(15px) scale(0.95); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* MOBILE FIXES */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; letter-spacing: 0.2em; padding-left: 0.2em; }
+            p { font-size: 1rem; letter-spacing: 0.1em; padding-left: 0.1em; margin-top: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="canvas"></canvas>
+
+    <div class="content">
+        <h1>Shop Closed</h1>
+        <p>Thank you so much for the incredible support.<br>Let's meet again next year.</p>
+    </div>
+
+    <script>
+        /**
+         * ANIMATION ENGINE
+         * Creates a dark green fluid background with rotating gold mandalas and particles.
+         */
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        let particles = [];
+        let blobs =[];
+        let angle = 0; // For mandala rotation
+
+        // CONFIGURATION
+        const colors = {
+            bg: '#010a05',
+            gold: 'rgba(212, 175, 55, 1)',
+            goldDim: 'rgba(212, 175, 55, 0.2)',
+            greenLight: 'rgba(20, 80, 40, 0.05)',
+            greenDark: 'rgba(5, 40, 20, 0.05)'
+        };
+
+        // SETUP CANVAS SIZE
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            initParticles();
+            initBlobs();
+        }
+
+        // 1. BACKGROUND BLOBS (Simulates the green smoke/swirls)
+        class Blob {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.size = Math.random() * 300 + 200;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.color = Math.random() > 0.5 ? colors.greenLight : colors.greenDark;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                
+                // Bounce off edges gently
+                if (this.x < -100 || this.x > width + 100) this.vx *= -1;
+                if (this.y < -100 || this.y > height + 100) this.vy *= -1;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+        }
+
+        // 2. GOLD PARTICLES (The glowing dust)
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * width;
+                this.y = height + Math.random() * 100;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = -Math.random() * 1 - 0.2; // Move upwards
+                this.size = Math.random() * 2;
+                this.alpha = Math.random();
+                this.fade = Math.random() * 0.01 + 0.005;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.alpha -= this.fade;
+
+                if (this.alpha <= 0 || this.y < -10) {
+                    this.reset();
+                    this.alpha = 0; 
+                    this.y = height + 10;
+                    this.alpha = 1; 
+                }
+            }
+
+            draw() {
+                ctx.globalAlpha = this.alpha;
+                ctx.fillStyle = colors.gold;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.globalAlpha = 1;
+            }
+        }
+
+        // 3. MANDALA DRAWING FUNCTION
+        function drawMandala(centerX, centerY, size, rotation, complexity) {
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            ctx.rotate(rotation);
+            ctx.strokeStyle = colors.goldDim;
+            ctx.lineWidth = 1;
+
+            // Draw concentric complex shapes
+            for (let i = 0; i < complexity; i++) {
+                ctx.rotate(Math.PI / (complexity/2));
+                
+                ctx.beginPath();
+                // Petal shape
+                ctx.moveTo(0, 0);
+                ctx.quadraticCurveTo(size/2, size/2, 0, size);
+                ctx.quadraticCurveTo(-size/2, size/2, 0, 0);
+                ctx.stroke();
+
+                // Inner detail
+                ctx.beginPath();
+                ctx.arc(0, size * 0.7, size * 0.1, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+            
+            // Outer Circles
+            ctx.beginPath();
+            ctx.arc(0, 0, size * 0.8, 0, Math.PI * 2);
+            ctx.strokeStyle = 'rgba(212, 175, 55, 0.1)';
+            ctx.stroke();
+
+            ctx.restore();
+        }
+
+        // INITIALIZATION
+        function initBlobs() {
+            blobs =[];
+            for (let i = 0; i < 15; i++) {
+                blobs.push(new Blob());
+            }
+        }
+
+        function initParticles() {
+            particles =
