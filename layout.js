@@ -71,7 +71,7 @@ class IshyaHeader extends HTMLElement {
   // ==========================================
         // MAGIC BASE URL FIXER FOR SHADOW DOM
         // ==========================================
-        const BASE_URL = "https://adityakatti.github.io/ISHYA-2026/";
+        const BASE_URL = "https://adityakatti.github.io//ishyawebsite-max/ISHYA-2026/";
         
         // 1. Automatically fix all <a> links (Home, Gallery, Events, etc.)
         this.shadowRoot.querySelectorAll('a').forEach(link => {
