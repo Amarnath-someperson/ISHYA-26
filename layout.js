@@ -38,15 +38,15 @@ class IshyaHeader extends HTMLElement {
             <nav class="ishya-nav-container" id="ishyaHeader">
                 <div class="ishya-logo-btn">
                     <!-- Note: Ensure this path is correct relative to your HTML files -->
-                    <img src="/Logo Ishya.ico" alt="ISHYA">
+                    <img src="https://www.ishyaiisertvm.in/Logo Ishya.ico" alt="ISHYA">
                 </div>
                 <div class="ishya-menu-grid">
-                    <a href="/index.html" class="ishya-link"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span>Home</span></a>
-                    <a href="/EVENTS/index.html" class="ishya-link"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18"/></svg><span>Events</span></a>
-                    <a href="/bookrooms/index.html" class="ishya-link"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M9 6a3 3 0 1 0 6 0"/><circle cx="12" cy="13" r="3"/></svg><span>Book Rooms</span></a>
-                    <a href="/TEAM/index.html" class="ishya-link"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Team</span></a>
-                    <a href="/Gallery/index.html" class="ishya-link"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Gallery</span></a>
-                    <a href="/STORE/index.html" class="ishya-link"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1"/><circle cx="17" cy="20" r="1"/><path d="M3 3h2l2.5 12h10l2-8H6"/></svg><span>Store</span></a>
+                    <a href="https://www.ishyaiisertvm.in/index.html" class="ishya-link"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span>Home</span></a>
+                    <a href="https://www.ishyaiisertvm.in/EVENTS/index.html" class="ishya-link"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18"/></svg><span>Events</span></a>
+                    <a href="https://www.ishyaiisertvm.in/bookrooms/index.html" class="ishya-link"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M9 6a3 3 0 1 0 6 0"/><circle cx="12" cy="13" r="3"/></svg><span>Book Rooms</span></a>
+                    <a href="https://www.ishyaiisertvm.in/TEAM/index.html" class="ishya-link"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Team</span></a>
+                    <a href="https://www.ishyaiisertvm.in/Gallery/index.html" class="ishya-link"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Gallery</span></a>
+                    <a href="https://www.ishyaiisertvm.in/STORE/index.html" class="ishya-link"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1"/><circle cx="17" cy="20" r="1"/><path d="M3 3h2l2.5 12h10l2-8H6"/></svg><span>Store</span></a>
             </nav>
         </div>
       `;
@@ -68,29 +68,7 @@ class IshyaHeader extends HTMLElement {
   }
   customElements.define('ishya-header', IshyaHeader);
   
-  // ==========================================
-        // MAGIC BASE URL FIXER FOR SHADOW DOM
-        // ==========================================
-        const BASE_URL = "https://ishyawebsite-max.github.io/ISHYA-26/"; // <-- Updated!
-        
-        // 1. Automatically fix all <a> links (Home, Gallery, Events, etc.)
-        this.shadowRoot.querySelectorAll('a').forEach(link => {
-            let href = link.getAttribute('href');
-            if (href && !href.startsWith('http')) {
-                if (href.startsWith('/')) href = href.substring(1); 
-                link.setAttribute('href', BASE_URL + href);
-            }
-        });
-
-        // 2. Automatically fix all images (like your logo)
-        this.shadowRoot.querySelectorAll('img').forEach(img => {
-            let src = img.getAttribute('src');
-            if (src && !src.startsWith('http') && !src.startsWith('data:')) {
-                if (src.startsWith('/')) src = src.substring(1);
-                img.setAttribute('src', BASE_URL + src);
-            }
-        });
-        // ==========================================
+  
   // --- 2. FOOTER COMPONENT ---
   class IshyaFooter extends HTMLElement {
     connectedCallback() {
