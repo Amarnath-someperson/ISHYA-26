@@ -68,7 +68,32 @@ class IshyaHeader extends HTMLElement {
   }
   customElements.define('ishya-header', IshyaHeader);
   
-  
+  // ==========================================
+        // MAGIC BASE URL FIXER FOR SHADOW DOM
+        // ==========================================
+        const BASE_URL = "https://adityakatti.github.io/ISHYA-2026/";
+        
+        // 1. Automatically fix all <a> links (Home, Gallery, Events, etc.)
+        this.shadowRoot.querySelectorAll('a').forEach(link => {
+            let href = link.getAttribute('href');
+            // If it's a relative link (doesn't start with http)
+            if (href && !href.startsWith('http')) {
+                // Remove a leading slash if you used one (like /gallery.html)
+                if (href.startsWith('/')) href = href.substring(1); 
+                link.setAttribute('href', BASE_URL + href);
+            }
+        });
+
+        // 2. Automatically fix all images (like your logo)
+        this.shadowRoot.querySelectorAll('img').forEach(img => {
+            let src = img.getAttribute('src');
+            // If it's a relative image link
+            if (src && !src.startsWith('http') && !src.startsWith('data:')) {
+                if (src.startsWith('/')) src = src.substring(1);
+                img.setAttribute('src', BASE_URL + src);
+            }
+        });
+        // ==========================================
   // --- 2. FOOTER COMPONENT ---
   class IshyaFooter extends HTMLElement {
     connectedCallback() {
