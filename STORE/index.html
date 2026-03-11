@@ -261,8 +261,22 @@
                 const imgList = p.images ? p.images.split(',').map(s => s.trim()) :['https://via.placeholder.com/300x300/181C10/4D8F48?text=NO+IMAGE'];
                 productImageRegistry[p.id] = { currentIdx: 0, images: imgList, timer: null };
 
-                const stockStatus = (p.stock || "").toString().toLowerCase().trim();
-                const isOutOfStock = stockStatus === "not-available" || stockStatus === "unavailable" || stockStatus === "out of stock";
+                // --- NEW ROBUST STOCK CHECKING LOGIC ---
+                const rawStock = (p.stockRaw !== undefined ? p.stockRaw : (p.stock || "")).toString().toLowerCase().trim();
+                let isOutOfStock = (rawStock === "not-available" || rawStock === "unavailable" || rawStock === "out of stock" || rawStock === "0");
+                
+                if (p.stockParsed) {
+                    if (p.stockParsed.total === 0 || (p.stockParsed.status && p.stockParsed.status.toLowerCase() === "out of stock")) {
+                        isOutOfStock = true;
+                    }
+                }
+                
+                // If it's a variant product (has ':' in stock string) but all valid sizes were filtered out by the backend
+                if (!p.sizes && rawStock.includes(':')) {
+                    isOutOfStock = true;
+                }
+                // ---------------------------------------
+
                 const disabledAttr = isOutOfStock ? 'disabled' : '';
 
                 const oosBadge = isOutOfStock ? `<div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%) rotate(-10deg); background:rgba(0,0,0,0.8); border:2px solid #d64a4a; color:#d64a4a; padding:10px 15px; font-weight:bold; z-index:20; font-family:var(--font-mono); white-space:nowrap; pointer-events:none; letter-spacing: 2px;">OUT OF STOCK</div>` : '';
@@ -642,7 +656,7 @@
                         mBody.innerHTML = `<div style="text-align:center; padding:30px;"><h2 style="color:var(--green)">ORDER SECURED</h2><p style="color:#fff; margin:10px 0;">ID: ${orderId}</p><p style="color:#888;">Confirmation sent to email.</p><button class="btn btn-primary" onclick="window.location.reload()" style="margin-top:20px;">DISMISS</button></div>`;
                         cart = []; updateCartCount();
                     } else { throw new Error(result.message); }
-                } catch (e) { alert("Transmission Failed: " + e.message); btn.innerText = "RETRY"; btn.disabled = false; }
+                } catch (e) { alert("Transmission Failed: \n" + e.message); btn.innerText = "RETRY"; btn.disabled = false; }
             };
         }
 
