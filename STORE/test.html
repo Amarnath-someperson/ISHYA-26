@@ -76,7 +76,30 @@
             <button class="btn-large" onclick="openProshowModal()">BUY TICKET NOW</button>
         </div>
     </div>
-
+   <!-- CONTACT FOR QUERIES SECTION -->
+            <div style="margin-top: 5px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed var(--olive); text-align: center;">
+                <p style="color: var(--gold); font-family: var(--font-mono); font-size: 0.95rem; margin-bottom: 15px; letter-spacing: 1px;">FOR QUERIES CONTACT:</p>
+                
+                <div style="display: flex; justify-content: center; gap: 25px; flex-wrap: wrap; font-family: var(--font-mono); font-size: 1.1rem;">
+                    <!-- Contact 1 -->
+                    <div>
+                        <span style="color: #888; font-size: 0.9rem; text-transform: uppercase;">Akash:</span> 
+                        <a href="tel:+916238593559" style="color: #fff; text-decoration: none; font-weight: bold;">+91 62385 93559</a>
+                    </div>
+                    
+                    <!-- Contact 2 -->
+                    <div>
+                        <span style="color: #888; font-size: 0.9rem; text-transform: uppercase;">Ajin:</span> 
+                        <a href="tel:+918078385449" style="color: #fff; text-decoration: none; font-weight: bold;">+91 80783 85449</a>
+                    </div>
+                    
+                    <!-- Contact 3 -->
+                    <div>
+                        <span style="color: #888; font-size: 0.9rem; text-transform: uppercase;">Ashmith:</span> 
+                        <a href="tel:+918477989974" style="color: #fff; text-decoration: none; font-weight: bold;">+91 84779 89974</a>
+                    </div>
+                </div>
+            </div>
     <div id="proshow-modal-overlay">
         <div class="proshow-container">
             <div class="modal-header">
@@ -89,7 +112,7 @@
 
     <script>
         // 🚨 YOUR API LINK GOES HERE
-        const PROSHOW_API = "https://script.google.com/macros/s/AKfycbxjBQuo_06wlrQUecQUsJBxl3g1UGPX2FPMupyPy7nAtutDIkcbfLaH60VSBJeHICWQ/exec";
+        const PROSHOW_API = "https://script.google.com/macros/s/AKfycbzBExtu9CuKN2WIt9nadJCJgASLccg3m7FKfjQndEpnQQlQtTJaRIf6Lqqj0Z5aHWf-/exec";
         
         let TICKET_PRICES = {}; 
         let BATCH_UPI_MAP_PROSHOW = {}, usedStudentEmails = [], psDetails = {}; 
@@ -133,10 +156,6 @@
             const emailVal = emailInput.value.trim().toLowerCase();
             const typeSelect = document.getElementById('pType');
             const currentSelection = typeSelect.value;
-            
-            const priceStudent = TICKET_PRICES["Student"] || 299;
-            const priceVisitor = TICKET_PRICES["Visitor"] || 499;
-            const priceProject = TICKET_PRICES["Project Student"] || 499;
 
             typeSelect.innerHTML = '<option value="">-- SELECT TICKET CATEGORY --</option>';
 
@@ -150,15 +169,15 @@
 
             if (isIiser) {
                 if (hasUsedStudentQuota) {
-                    typeSelect.innerHTML += `<option value="Visitor">VISITOR TICKET (₹${priceVisitor}) - Student Quota Used</option>`;
+                    typeSelect.innerHTML += `<option value="Visitor">VISITOR TICKET - Student Quota Used</option>`;
                 } else {
-                    typeSelect.innerHTML += `<option value="Student">STUDENT TICKET (₹${priceStudent}) - 1 Per Email</option>`;
-                    typeSelect.innerHTML += `<option value="Visitor">VISITOR TICKET (₹${priceVisitor})</option>`;
+                    typeSelect.innerHTML += `<option value="Student">STUDENT TICKET - 1 Per Email</option>`;
+                    typeSelect.innerHTML += `<option value="Visitor">VISITOR TICKET</option>`;
                 }
                 // Allow IISER emails to pick Project Student too
-                typeSelect.innerHTML += `<option value="Project Student">PROJECT STUDENT (₹${priceProject})</option>`;
+                typeSelect.innerHTML += `<option value="Project Student">PROJECT STUDENT</option>`;
             } else {
-                typeSelect.innerHTML += `<option value="Project Student">PROJECT STUDENT (₹${priceProject}) - Personal Email</option>`;
+                typeSelect.innerHTML += `<option value="Project Student">PROJECT STUDENT - Personal Email</option>`;
             }
 
             if (Array.from(typeSelect.options).some(opt => opt.value === currentSelection)) {
@@ -237,7 +256,7 @@
                         </select>
                     </div>
                     
-                    <div class="form-group"><label>AFFILIATION</label><input class="input-box" id="pAffil" value="${psDetails.affiliation||''}"></div>
+                    <div class="form-group"><label>AFFILIATION(OPTIONAL)</label><input class="input-box" id="pAffil" value="${psDetails.affiliation||''}"></div>
                     <div class="btn-row"><button type="button" class="btn btn-sec" onclick="closeProshowModal()">CANCEL</button><button type="submit" class="btn btn-primary">NEXT: PAYMENT</button></div>
                 </form>
             `;
