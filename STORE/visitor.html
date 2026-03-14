@@ -166,7 +166,7 @@
             if (isIist) {
                 typeSelect.innerHTML += `<option value="Visitor" selected>VISITOR TICKET - IIST</option>`;
             } else {
-                typeSelect.innerHTML += `<option value="" disabled>Only @iist.ac.in emails are allowed on this portal.</option>`;
+                typeSelect.innerHTML += `<option value="" disabled>Only @ug.iist.ac.in emails are allowed on this portal.</option>`;
             }
         }
 
@@ -220,8 +220,8 @@
                     
                     <div class="form-group">
                         <label>EMAIL ADDRESS</label>
-                        <p class="email-notice"><strong>NOTE:</strong> IIST Mail ID (@iist.ac.in) is strictly required for IIST Visitor tickets.</p>
-                        <input class="input-box" type="email" id="pEmail" required oninput="updateTicketCategory()" value="${psDetails.email||''}" placeholder="e.g. name@iist.ac.in">
+                        <p class="email-notice"><strong>NOTE:</strong> IIST Mail ID (@ug.iist.ac.in) is strictly required for IIST Visitor tickets.</p>
+                        <input class="input-box" type="email" id="pEmail" required oninput="updateTicketCategory()" value="${psDetails.email||''}" placeholder="e.g. name@ug.iist.ac.in">
                     </div>
 
                     <div class="form-group"><label>PHONE</label><input class="input-box" type="tel" id="pPhone" required value="${psDetails.phone||''}"></div>
@@ -254,8 +254,8 @@
             const email = document.getElementById('pEmail').value.trim().toLowerCase();
             const type = document.getElementById('pType').value;
             
-            if (!email.endsWith("@iist.ac.in")) {
-                alert("This portal is exclusively for IIST Visitors. A valid @iist.ac.in email address is required.");
+            if (!email.endsWith("@ug.iist.ac.in")) {
+                alert("This portal is exclusively for IIST Visitors. A valid @ug.iist.ac.in email address is required.");
                 return;
             }
             if (!type || type !== "Visitor") {
