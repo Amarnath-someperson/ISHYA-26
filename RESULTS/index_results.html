@@ -4,16 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ISHYA Results</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --green-deep: #0a1612;
+            --green-dark: #0f1f18;
+            --green-mid: #1a3328;
+            --green-accent: #2dd4a0;
+            --green-glow: #34d399;
+            --green-soft: #6ee7b7;
+            --green-muted: #86efac;
+            --green-dim: #4ade80;
+            --white-soft: #e8f5e9;
+            --white-dim: #b8d4be;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            /* Dark background matching your theme */
-            background-color: #0f0f0f;
-            background-image: radial-gradient(circle at center, #1a1a1a 0%, #050505 100%);
-            color: white;
-            font-family: 'Montserrat', sans-serif;
+            background: var(--green-deep);
+            background-image: 
+                radial-gradient(ellipse 120% 80% at 50% -20%, rgba(45, 212, 160, 0.12) 0%, transparent 50%),
+                radial-gradient(ellipse 80% 50% at 80% 100%, rgba(26, 51, 40, 0.6) 0%, transparent 45%),
+                radial-gradient(circle at center, var(--green-dark) 0%, #050a08 100%);
+            color: var(--white-soft);
+            font-family: 'Outfit', sans-serif;
             margin: 0;
-            padding: 50px 20px;
+            padding: 50px 24px 80px;
             min-height: 100vh;
         }
 
@@ -22,107 +41,188 @@
             top: 0;
             left: 0;
             z-index: -1;
-            opacity: 0.8;
+            opacity: 0.7;
             pointer-events: none;
         }
-        
-        h1 {
+
+        .page-header {
             text-align: center;
+            margin-bottom: 48px;
+        }
+
+        h1 {
             font-family: 'Cinzel', serif;
-            font-size: 3.5rem;
-            letter-spacing: 4px;
-            margin-bottom: 10px;
-            color: #ffffff;
+            font-size: clamp(2.2rem, 5vw, 3.5rem);
+            letter-spacing: 0.2em;
+            margin: 0 0 12px 0;
+            color: transparent;
+            background: linear-gradient(135deg, var(--green-soft) 0%, var(--green-accent) 50%, var(--green-glow) 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            text-shadow: 0 0 40px rgba(45, 212, 160, 0.2);
         }
 
         .header-line {
-            width: 100px;
-            height: 2px;
-            background-color: #d4af37; /* Elegant gold accent */
-            margin: 0 auto 50px auto;
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--green-accent), transparent);
+            margin: 0 auto;
+            border-radius: 2px;
+            box-shadow: 0 0 20px rgba(45, 212, 160, 0.4);
         }
 
         .results-grid {
             display: grid;
-            grid-template-columns: 1fr;
-            gap: 30px;
-            max-width: 400px;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 28px;
+            max-width: 1100px;
             margin: 0 auto;
         }
 
         .card-container {
             position: relative;
-                background: var(--card-bg);
-                backdrop-filter: blur(10px);
-                border: 1px solid rgba(216, 212, 207, 0.2);
-                border-radius: 20px;
-                padding: 20px;
-                padding-top: 40px;
-                text-align: center;
-                transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
-                overflow: hidden;
-                cursor: pointer;
-                animation: fadeInUp 0.6s ease-out both;
-                max-width: 350px;
-                max-height: 350px;
-                min-height: 350px;
-                min-width: 350px;
+            background: linear-gradient(145deg, rgba(15, 31, 24, 0.85) 0%, rgba(10, 22, 18, 0.95) 100%);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(45, 212, 160, 0.18);
+            border-radius: 20px;
+            padding: 24px;
+            text-align: center;
+            transition: transform 0.35s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.35s ease, border-color 0.35s ease;
+            overflow: hidden;
+            cursor: default;
+            animation: cardIn 0.6s cubic-bezier(0.23, 1, 0.32, 1) both;
+        }
+
+        .card-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--green-accent), transparent);
+            opacity: 0.6;
         }
 
         .card-container:hover {
-            transform: translateY(-5px);
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35), 0 0 30px rgba(45, 212, 160, 0.08);
+            border-color: rgba(45, 212, 160, 0.35);
+        }
+
+        @keyframes cardIn {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .card-content {
             width: 100%;
-            height: 100%;
-            background-color: rgba(22, 26, 32, 0.92);
-            border-radius: 30px;
-            color: #838383;
-            font-size: 12px;
-            padding: 25px 18px;
+            min-height: 200px;
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 16px;
             text-align: center;
+            padding: 8px 0 0;
         }
 
         .card-title {
             font-family: 'Cinzel', serif;
             font-weight: 600;
-            color: #d4af37;
-            font-size: 1.4rem;
-            margin-bottom: 8px;
+            color: var(--green-accent);
+            font-size: 1.35rem;
+            margin: 0 0 4px 0;
+            letter-spacing: 0.05em;
+            text-shadow: 0 0 20px rgba(45, 212, 160, 0.2);
         }
 
         .card-winner {
-            font-size: 1rem;
-            margin: 8px 0;
-            color: #aaaaaa;
+            font-size: 0.95rem;
+            margin: 0;
+            color: var(--white-dim);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 8px 12px;
+            background: rgba(26, 51, 40, 0.4);
+            border-radius: 12px;
+            border-left: 3px solid transparent;
         }
 
+        .card-winner.place-1 { border-left-color: var(--green-glow); background: rgba(45, 212, 160, 0.08); }
+        .card-winner.place-2 { border-left-color: var(--green-soft); }
+        .card-winner.place-3 { border-left-color: var(--green-muted); }
+
         .card-winner strong {
-            color: #ffffff;
-            font-weight: 600;
+            color: var(--green-soft);
+            font-weight: 500;
+            min-width: 95px;
+            text-align: left;
+        }
+
+        .card-winner span {
+            color: var(--white-soft);
+            font-weight: 400;
         }
 
         .loading {
             text-align: center;
-            color: #d4af37;
-            font-size: 1.2rem;
-            font-family: 'Cinzel', serif;
+            color: var(--green-accent);
+            font-size: 1.1rem;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 500;
             grid-column: 1 / -1;
+            padding: 40px 20px;
+            letter-spacing: 0.05em;
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            margin-left: 6px;
+            background: var(--green-glow);
+            border-radius: 50%;
+            animation: pulse 1s ease-in-out infinite;
+            vertical-align: 0.2em;
+            box-shadow: 0 0 12px var(--green-accent);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        .error-msg {
+            text-align: center;
+            color: var(--green-soft);
+            padding: 24px;
+            background: rgba(26, 51, 40, 0.5);
+            border: 1px solid rgba(45, 212, 160, 0.25);
+            border-radius: 16px;
+            max-width: 480px;
+            margin: 0 auto;
         }
     </style>
 </head>
 <body>
     <ishya-header></ishya-header>
     <canvas id="ashCanvas"></canvas>
-    <h1>RESULTS</h1>
-    <div class="header-line"></div>
+    <div class="page-header">
+        <h1>RESULTS</h1>
+        <div class="header-line"></div>
+    </div>
 
     <div id="results-container" class="results-grid">
-        <p class="loading">Loading latest results...</p>
+        <p class="loading">Loading latest results</p>
     </div>
 
     <script src="script.js"></script>

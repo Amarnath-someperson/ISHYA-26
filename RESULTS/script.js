@@ -34,12 +34,12 @@ async function fetchResults() {
 
             if (eventName) {
                 container.innerHTML += `
-                    <div class="card-container">
+                    <div class="card-container" style="animation-delay: ${(i - 1) * 0.08}s">
                         <div class="card-content">
                             <div class="card-title">${eventName}</div>
-                            <p class="card-winner"><strong>First Place:</strong> ${winner}</p>
-                            <p class="card-winner"><strong>Second Place:</strong> ${second}</p>
-                            <p class="card-winner"><strong>Third Place:</strong> ${third}</p>
+                            <p class="card-winner place-1"><strong>First</strong><span>${winner}</span></p>
+                            <p class="card-winner place-2"><strong>Second</strong><span>${second}</span></p>
+                            <p class="card-winner place-3"><strong>Third</strong><span>${third}</span></p>
                         </div>
                     </div>
                 `;
@@ -47,8 +47,8 @@ async function fetchResults() {
         }
     } catch (error) {
         console.error("CRITICAL FETCH ERROR:", error);
-        document.getElementById('results-container').innerHTML = 
-            "Data fetch failed. Contact website team asap.";
+        document.getElementById('results-container').innerHTML =
+            '<p class="error-msg">Data fetch failed. Please contact the website team.</p>';
     }
 }
 
@@ -73,7 +73,7 @@ function initParticles() {
                 this.y = height + Math.random() * 100; 
                 this.size = Math.random() * (isMobile ? 3 : 5) + 2;
                 this.speed = Math.random() * 1 + 0.5;
-                this.color = Math.random() > 0.5 ? '#4D8F48' : '#D6C26A';
+                this.color = ['#2dd4a0', '#34d399', '#4ade80', '#6ee7b7', '#22c55e'][Math.floor(Math.random() * 5)];
                 this.rot = Math.random() * 360;
             }
             update() { 

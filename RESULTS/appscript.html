@@ -1,0 +1,908 @@
+// Function to convert Google Drive URLs to direct image URLs with enhanced error handling
+function getDirectImageUrl(driveUrl) {
+  if (!driveUrl) return '';
+  Logger.log('Original Drive URL: ' + driveUrl);
+
+  // Extract file ID from various Google Drive URL formats
+  // Updated to specifically handle the open?id= format
+  var fileId = null;
+  
+  if (driveUrl.includes('open?id=')) {
+    // Format: https://drive.google.com/open?id=FILE_ID
+    fileId = driveUrl.split('open?id=')[1];
+    // Remove any additional parameters
+    if (fileId && fileId.includes('&')) {
+      fileId = fileId.split('&')[0];
+    }
+  } else if (driveUrl.includes('/d/')) {
+    // Format: https://drive.google.com/file/d/FILE_ID/view
+    var match = driveUrl.match(/\/d\/([^\/]+)/);
+    if (match) fileId = match[1];
+  } else if (driveUrl.includes('id=')) {
+    // Format: https://drive.google.com/uc?id=FILE_ID
+    var match = driveUrl.match(/id=([^&]+)/);
+    if (match) fileId = match[1];
+  }
+
+  if (fileId) {
+    // Use the thumbnail URL format which is more reliable for images
+    // This format works better for embedding images in web pages
+    var directUrl = 'https://drive.google.com/thumbnail?id=' + fileId + '&sz=w1000';
+    Logger.log('Converted Direct URL: ' + directUrl);
+    return directUrl;
+  } else {
+    Logger.log('Failed to parse Drive URL: ' + driveUrl);
+    return '';
+  }
+}
+// Main function to generate the web app
+function doGet() {
+  // Open the spreadsheet
+  var sheet = SpreadsheetApp.openById('1eXdRx6sA0oo0fjNb3bmLt5GPDDvMHnYpRB3nO9Y4XRI').getSheetByName('Sheet1');
+  var data = sheet.getDataRange().getValues();
+
+  // Group events by Event Type
+  var eventGroups = {};
+  var currentEventType = '';
+  for (var i = 1; i < data.length; i++) {
+    var row = data[i];
+
+    var eventType = row[2]; // Column C - Event Type
+    var eventName = row[3]; // Column D - Event Name
+    var firstPlace = row[4]; // Column E - First Place
+    var secondPlace = row[5]; // Column F - Second Place
+    var thirdPlace = row[6]; // Column G - Third Place
+    var bestActor = row[8]; // Column H - Best Actor (new)
+    var bestActress = row[9]; // Column I - Best Actress (new)
+    var eventPhoto = row[7]; // Column J - Event Photo URL (moved from H to J)
+    var bestShowstopper = row[14]; //Column for best showstopper (new)..
+    // Skip rows with missing eventName
+    if (!eventName) continue;
+
+    // If eventType is empty, use the last known eventType
+    if (eventType) {
+      currentEventType = eventType;
+    } else {
+      eventType = currentEventType;
+    }
+
+    // Skip if eventType is still empty
+    if (!eventType) continue;
+
+    // Collect winners - FIX: Check if values are strings before calling trim()
+    var winners = [];
+    if (firstPlace && typeof firstPlace === 'string' && firstPlace.trim() !== '') {
+      winners.push({ name: firstPlace, position: "1st Place", medal: "🥇" });
+    } else if (firstPlace && typeof firstPlace !== 'string') {
+      // Handle non-string values (like numbers)
+      winners.push({ name: String(firstPlace), position: "1st Place", medal: "🥇" });
+    }
+    
+    if (secondPlace && typeof secondPlace === 'string' && secondPlace.trim() !== '') {
+      winners.push({ name: secondPlace, position: "2nd Place", medal: "🥈" });
+    } else if (secondPlace && typeof secondPlace !== 'string') {
+      winners.push({ name: String(secondPlace), position: "2nd Place", medal: "🥈" });
+    }
+    
+    if (thirdPlace && typeof thirdPlace === 'string' && thirdPlace.trim() !== '') {
+      winners.push({ name: thirdPlace, position: "3rd Place", medal: "🥉" });
+    } else if (thirdPlace && typeof thirdPlace !== 'string') {
+      winners.push({ name: String(thirdPlace), position: "3rd Place", medal: "🥉" });
+    }
+    
+    // Add Best Actor
+    if (bestActor && typeof bestActor === 'string' && bestActor.trim() !== '') {
+      winners.push({ name: bestActor, position: "Best Actor", medal: "🕺" });
+    } else if (bestActor && typeof bestActor !== 'string') {
+      winners.push({ name: String(bestActor), position: "Best Actor", medal: "🕺" });
+    }
+    
+    // Add Best Actress
+    if (bestActress && typeof bestActress === 'string' && bestActress.trim() !== '') {
+      winners.push({ name: bestActress, position: "Best Actress", medal: "💃🏻" });
+    } else if (bestActress && typeof bestActress !== 'string') {
+      winners.push({ name: String(bestActress), position: "Best Actress", medal: "💃🏻" });
+    }
+
+    // Add Best Showstopper
+    if (bestShowstopper && typeof bestShowstopper === 'string' && bestShowstopper.trim() !== '') {
+      winners.push({ name: bestShowstopper, position: "Best Showstopper", medal: "🕺" });
+    } else if (bestShowstopper && typeof bestShowstopper !== 'string') {
+      winners.push({ name: String(bestShowstopper), position: "Best Showstopper", medal: "🕺" });
+    }
+
+    // Group events
+    if (!eventGroups[eventType]) {
+      eventGroups[eventType] = [];
+    }
+    eventGroups[eventType].push({
+      eventName: eventName,
+      winners: winners,
+      photo: eventPhoto
+    });
+  }
+
+  // Generate HTML with enhanced CSS and JavaScript
+  var html = `
+    <!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Results</title>
+        <base href="https://ishyawebsite-max.github.io/ISHYA-26/">
+        
+        <link rel="stylesheet" href="https://ishyawebsite-max.github.io/ISHYA-26/global.css"> 
+        <script src="https://ishyawebsite-max.github.io/ISHYA-26/layout.js" defer></script>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Foldit:wght@400;600;800;900&family=Syncopate:wght@400;700&family=Space+Grotesk:wght@300;500;700&family=Cormorant+Garamond:ital,wght@1,300;1,600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
+
+        <style>
+          :root {
+            /* --- COLORS --- */
+            --primary-bg: #001142;
+            --secondary-bg: #002c5a;
+            --accent-color: #ffd700;
+            --text-color: #fff8e1;
+            --accent-green: #ffd700;
+            --silver-color: #c0c0c0;
+            --bronze-color: #cd7f32;
+            --bg-dark: #051408;       
+            --accent-gold: #D6C26A;   
+            --accent-olive: #6B7540;  
+            --accent-green: #4D8F48;  
+            --text-light: #e0e0e0;
+             /* FONTS */
+            --font-display: 'Syncopate', sans-serif;
+            --font-fold: 'Foldit', display;
+            --font-body: 'Space Grotesk', sans-serif;
+            --font-tech: 'Share Tech Mono', monospace;
+            --font-serif: 'Cormorant Garamond', serif;
+          }
+          
+          * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+          }
+          
+          body {
+            background-color: #060606;
+            color: var(--silver-color);
+            font-family: 'Space Grotesk', Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            position: relative;
+            min-height: 100vh;
+            overflow-x: hidden;
+          }
+
+          /*background canvas*/
+          #ashCanvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.8; pointer-events: none; }
+          
+
+          .noise-overlay {
+            position: fixed; inset: 0; pointer-events: none; z-index: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+        }
+
+          .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+          }
+          
+          .page-header {
+            padding: 15px 0; /* Keep original padding for PC */
+            /*background: linear-gradient(to right, rgba(0, 17, 66, 0.4), rgba(0, 44, 90, 0.4)); /* 60% transparent */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            position: relative;
+            top: 0;
+            z-index: 100;
+          }
+
+          
+          
+          .event-group {
+            margin-bottom: 40px;
+          }
+          
+          .event {
+            margin: 20px auto;
+            padding: 25px;
+            background: #121f01;
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            cursor: pointer;
+            animation: fadeInUp 0.6s ease-out both;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            max-width: 800px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(255, 215, 0, 0.1);
+          }
+          
+          .event:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+          }
+          
+          h1 {
+            color: var(--accent-green);
+            font-size: clamp(50px, 6vw, 85px);
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+          }
+
+          .highlighttext{
+            /*font-family: 'Black ops one', serif;*/
+            color: #D6C26A !important;
+            translate: none; rotate: none; scale: none; opacity: 1; transform: translate(0px, 0px);
+            font-family: 'Cinzel', serif;
+            font-size: clamp(3.5rem, 12vw, 8rem);
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            margin: 0;
+            text-shadow: 0 0 40px rgba(77, 143, 72, 0.6);
+            text-align: center;
+            will-change: transform, opacity;
+          }
+          
+          h2 {
+            color: #D6C26A !important;
+            font-family: 'Cinzel', serif;
+            font-size: clamp(24px, 4vw, 32px);
+            margin: 30px 0 20px;
+            padding-bottom: 10px;
+            position: relative;
+            display: inline-block;
+            text-shadow: 0 0 40px rgba(77, 143, 72, 0.6);
+            text-align: center;
+            will-change: transform, opacity;
+          }
+          
+          h2::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 25%;
+            right: 25%;
+            height: 3px;
+            background: linear-gradient(to right, transparent, var(--accent-green), transparent);
+          }
+          
+          h3 {
+            color: var(--text-light);
+            font-size: clamp(25px, 3.5vw, 28px);
+            margin: 10px 0 20px;
+          }
+          
+          h4 {
+            color: var(--text-color);
+            font-size: clamp(19px, 2.5vw, 20px);
+            margin: 5px 0;
+            font-weight: 600;
+          }
+          
+          .winners-container {
+            display: flex;
+            flex-wrap: wrap; 
+            flex-direction: row; 
+            justify-content: center;
+            gap: 15px;
+            width: 100%;
+          }
+
+          .winner-card {
+            /* This tells the card: 'Try to be 300px wide, but grow to fill space' */
+            flex: 1 1 300px; 
+            min-width: 250px; /* Ensures it doesn't get too skinny */
+            max-width: 100%;  /* Ensures it doesn't overflow on small phones */
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+          }
+
+          /* Force the photo to stay on top of the stack on mobile */
+          .event-content {
+            display: flex;
+            flex-wrap: wrap;
+            flex-direction: row;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 20px;
+          }
+
+          .event-photo {
+            width: 100%;
+            max-height: 250px;
+            object-fit: cover;
+            border-radius: 10px;
+          }
+          
+          .winner-card:hover {
+            transform: scale(1.05);
+          }
+          
+          .first-place {
+            border-color: var(--accent-green);
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+          }
+          
+          .second-place {
+            border-color: var(--silver-color);
+            box-shadow: 0 0 10px rgba(192, 192, 192, 0.3);
+          }
+          
+          .third-place {
+            border-color: var(--bronze-color);
+            box-shadow: 0 0 10px rgba(205, 127, 50, 0.3);
+          }
+          
+          .medal {
+            font-size: 24px;
+            margin-bottom: 5px;
+          }
+          
+          .winner-name {
+            font-size: clamp(17px, 2vw, 18px);
+            font-weight: 400;
+          }
+          
+          
+          
+          .event-photo:hover {
+            transform: scale(1.02);
+          }
+          
+          .search-container {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+          }
+          
+          .search-input {
+            padding: 12px 15px;
+            font-size: 16px;
+            border-radius: 25px;
+            border: 2px solid var(--accent-green);
+            background-color: rgba(0, 0, 0, 0.2);
+            color: var(--text-color);
+            width: clamp(200px, 50vw, 400px);
+            transition: all 0.3s ease;
+          }
+          
+          .search-input:focus {
+            outline: none;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.3);
+          }
+          
+          .search-button {
+            padding: 12px 20px;
+            font-size: 16px;
+            background: linear-gradient(to right, var(--accent-green), #0c4312);
+            color: #000;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+          }
+          
+          .search-button:hover {
+            background: linear-gradient(to right, #0c4312, var(--accent-green));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+          }
+          
+          .reset-button {
+            background: linear-gradient(to right, var(--accent-green), #0c4312);
+            color: black;
+          }
+          
+          .reset-button:hover {
+            background: linear-gradient(to right, #0c4312, var(--accent-green));
+          }
+          
+          .no-results {
+            padding: 30px;
+            font-size: 18px;
+            color: var(--accent-green);
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            margin: 30px auto;
+            max-width: 600px;
+            display: none;
+          }
+          
+          .filter-container {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+          }
+          
+          .filter-button {
+            padding: 8px 15px;
+            font-size: 14px;
+            background-color: rgba(0, 0, 0, 0.3);
+            color: var(--text-color);
+            border: 1px solid var(--accent-green);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+          }
+          
+          .filter-button:hover, .filter-button.active {
+            background-color: var(--accent-green);
+            color: var(--primary-bg);
+          }
+          
+          .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--accent-green);
+            color: var(--primary-bg);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+          }
+          
+          .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+          }
+          
+          .loading {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 215, 0, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--accent-green);
+            animation: spin 1s ease-in-out infinite;
+            margin: 20px auto;
+          }
+          
+          @keyframes spin {
+            to { transform: rotate(360deg); }
+          }
+          
+          /* Use 'body .container' to make this rule impossible to override */
+          body .container .event-content .winners-container {
+            display: flex !important;
+            flex-direction: column !important; /* Force column by default */
+            flex-wrap: nowrap !important;
+            gap: 15px !important;
+            width: 100% !important;
+          }
+          
+          body .container .event-content .winner-card {
+            display: block !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            flex: none !important; /* This stops them from trying to fit in a row */
+            margin-bottom: 10px;
+          }
+          
+          /* Now, ONLY turn it into a row for big screens */
+          @media screen and (min-width: 769px) {
+            body .container .event-content .winners-container {
+              flex-direction: row !important;
+              justify-content: center !important;
+            }
+            
+            body .container .event-content .winner-card {
+              flex: 1 !important;
+              width: auto !important;
+            }
+          }
+             
+        </style>
+      </head>
+      <body>
+        <canvas id="ashCanvas"></canvas>
+        <div class="noise-overlay"></div>
+        <div class="fold-line"></div>
+        <ishya-header></ishya-header>
+        
+        <header class="page-header">
+          <h1 class="highlighttext">Results</h1>
+          <br>
+          <div class="search-container">
+            <input type="text" id="searchInput" class="search-input" placeholder="Search events..." aria-label="Search events">
+            <button id="searchButton" class="search-button">Search</button>
+            <button id="resetButton" class="search-button reset-button">Reset</button>
+          </div>
+          
+          <div class="filter-container" id="filterContainer">
+            </div>
+        </header>
+        
+        <div class="container">
+          <div id="loadingIndicator" class="loading"></div>
+          <div id="noResults" class="no-results">No matching events found. Please try a different search.</div>
+          <div id="resultsContainer">
+`;
+
+  // Generate HTML for each event group
+  var eventTypes = Object.keys(eventGroups);
+  for (var i = 0; i < eventTypes.length; i++) {
+    var eventType = eventTypes[i];
+    html += `
+      <div class="event-group" data-type="${eventType.replace(/\s+/g, '-').toLowerCase()}">
+        <h2>${eventType}</h2>
+    `;
+    
+    for (var j = 0; j < eventGroups[eventType].length; j++) {
+      var event = eventGroups[eventType][j];
+      html += `
+        <div class="event" data-name="${event.eventName.toLowerCase()}">
+          <h3>${event.eventName}</h3>
+          <div class="event-content">
+      `;
+
+
+      // Add event photo if available
+      var photoUrl = getDirectImageUrl(event.photo);
+      if (photoUrl) {
+        html += `
+          <div class="event-photo-container">
+          <img class="event-photo" 
+           src="${photoUrl}" 
+           alt="${event.eventName}" 
+           onerror="this.onerror=null; this.src='https://via.placeholder.com/300x200?text=Image+Unavailable'; this.classList.add('fallback-img');"
+           loading="lazy">
+    </div>
+  `;
+}
+
+      // Add winners with enhanced styling
+      html += `<div class="winners-container">`;
+      for (var k = 0; k < event.winners.length; k++) {
+        var winner = event.winners[k];
+        var placeClass = '';
+        
+        if (winner.position === "1st Place") placeClass = "first-place";
+        else if (winner.position === "2nd Place") placeClass = "second-place";
+        else if (winner.position === "3rd Place") placeClass = "third-place";
+        
+        html += `
+          <div class="winner-card ${placeClass}">
+            <div class="medal">${winner.medal}</div>
+            <h4>${winner.position}</h4>
+            <p class="winner-name">${winner.name}</p>
+          </div>
+        `;
+      }
+      html += `</div>`; // Close winners-container
+      html += `</div></div>`; // Close event-content and event
+    }
+    
+    html += `</div>`; // Close event-group
+  }
+
+  html += `
+          </div>
+        </div>
+        
+        <button id="backToTop" class="back-to-top" aria-label="Back to top">↑</button>
+        
+        <script>
+        const isMobile = window.innerWidth < 768;
+          // Add this to your JavaScript section
+const handleImageErrors = () => {
+  document.querySelectorAll('.event-photo').forEach(img => {
+    img.addEventListener('error', function() {
+      // If the thumbnail URL failed, try the direct download URL
+      if (!this.src.includes('export=download')) {
+        const fileId = this.src.includes('id=') ? 
+          this.src.match(/id=([^&]+)/)[1] : 
+          null;
+          
+        if (fileId) {
+          console.log('Retrying with download URL for:', fileId);
+          this.src = 'https://drive.google.com/uc?export=download&id=' + fileId;
+        } else {
+          // If we can't get the ID or already tried download URL, use placeholder
+          this.src = 'https://via.placeholder.com/300x200?text=Image+Unavailable';
+          this.classList.add('fallback-img');
+        }
+      } else {
+        // If download URL also failed, use placeholder
+        this.src = 'https://via.placeholder.com/300x200?text=Image+Unavailable';
+        this.classList.add('fallback-img');
+      }
+    });
+  });
+};
+
+// Call this function after the page loads
+document.addEventListener('DOMContentLoaded', function() {
+  // ... existing code
+  
+  // Add image error handling
+  handleImageErrors();
+  initParticles();
+});
+          
+          
+          // Initialize the app
+          document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const searchButton = document.getElementById('searchButton');
+            const resetButton = document.getElementById('resetButton');
+            const resultsContainer = document.getElementById('resultsContainer');
+            const noResults = document.getElementById('noResults');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const backToTop = document.getElementById('backToTop');
+            const filterContainer = document.getElementById('filterContainer');
+            
+            // Hide loading indicator initially
+            loadingIndicator.style.display = 'none';
+            
+            // Create event type filters
+            const eventGroups = document.querySelectorAll('.event-group');
+            const eventTypes = new Set();
+            
+            eventGroups.forEach(group => {
+              eventTypes.add(group.getAttribute('data-type'));
+            });
+            
+            // Add "All" filter
+            const allFilter = document.createElement('button');
+            allFilter.textContent = 'All Events';
+            allFilter.classList.add('filter-button', 'active');
+            allFilter.setAttribute('data-filter', 'all');
+            filterContainer.appendChild(allFilter);
+            
+            // Add type-specific filters
+            eventTypes.forEach(type => {
+              const originalType = type.replace(/-/g, ' ').replace(/\\b\\w/g, l => l.toUpperCase());
+              const button = document.createElement('button');
+              button.textContent = originalType;
+              button.classList.add('filter-button');
+              button.setAttribute('data-filter', type);
+              filterContainer.appendChild(button);
+            });
+            
+            // Filter functionality
+            const filterButtons = document.querySelectorAll('.filter-button');
+            
+            filterButtons.forEach(button => {
+              button.addEventListener('click', function() {
+                // Remove active class from all buttons
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                const filter = this.getAttribute('data-filter');
+                
+                // Show/hide event groups based on filter
+                eventGroups.forEach(group => {
+                  if (filter === 'all' || group.getAttribute('data-type') === filter) {
+                    group.style.display = '';
+                  } else {
+                    group.style.display = 'none';
+                  }
+                });
+                
+                // Update search results
+                checkNoResults();
+              });
+            });
+            
+            // Search functionality
+            function performSearch() {
+              const searchTerm = searchInput.value.toLowerCase().trim();
+              
+              // Show loading indicator
+              loadingIndicator.style.display = 'block';
+              
+              // Delay search slightly to show loading indicator
+              setTimeout(() => {
+                if (searchTerm === '') {
+                  // Reset all events to visible if search is cleared
+                  resetSearch();
+                } else {
+                  const events = document.querySelectorAll('.event');
+                  let hasResults = false;
+                  
+                  events.forEach(event => {
+                    const eventName = event.getAttribute('data-name');
+                    const eventContent = event.textContent.toLowerCase();
+                    
+                    if (eventName.includes(searchTerm) || eventContent.includes(searchTerm)) {
+                      event.style.display = '';
+                      hasResults = true;
+                    } else {
+                      event.style.display = 'none';
+                    }
+                  });
+                  
+                  // Update event group visibility
+                  updateEventGroupVisibility();
+                  
+                  // Show/hide no results message
+                  noResults.style.display = hasResults ? 'none' : 'block';
+                }
+                
+                // Hide loading indicator
+                loadingIndicator.style.display = 'none';
+              }, 300);
+            }
+            
+            function resetSearch() {
+              searchInput.value = '';
+              const events = document.querySelectorAll('.event');
+              
+              events.forEach(event => {
+                event.style.display = '';
+              });
+              
+              // Reset filters to "All"
+              filterButtons.forEach(btn => btn.classList.remove('active'));
+              filterButtons[0].classList.add('active');
+              
+              // Show all event groups
+              eventGroups.forEach(group => {
+                group.style.display = '';
+              });
+              
+              noResults.style.display = 'none';
+            }
+            
+            function updateEventGroupVisibility() {
+              eventGroups.forEach(group => {
+                const visibleEvents = Array.from(group.querySelectorAll('.event')).filter(
+                  event => event.style.display !== 'none'
+                );
+                
+                group.style.display = visibleEvents.length > 0 ? '' : 'none';
+              });
+            }
+            
+            function checkNoResults() {
+              const visibleGroups = Array.from(eventGroups).filter(
+                group => group.style.display !== 'none'
+              );
+              
+              noResults.style.display = visibleGroups.length > 0 ? 'none' : 'block';
+            }
+            
+            // Event listeners
+            searchButton.addEventListener('click', performSearch);
+            resetButton.addEventListener('click', resetSearch);
+            
+            searchInput.addEventListener('keyup', function(event) {
+              if (event.key === 'Enter') {
+                performSearch();
+              }
+            });
+            
+            // Back to top functionality
+            window.addEventListener('scroll', function() {
+              if (window.pageYOffset > 300) {
+                backToTop.classList.add('visible');
+              } else {
+                backToTop.classList.remove('visible');
+              }
+            });
+            
+            backToTop.addEventListener('click', function() {
+              window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+              });
+            });
+            
+            // Lazy load images
+            const lazyLoadImages = function() {
+              const images = document.querySelectorAll('.event-photo');
+              
+              const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                  if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.src = img.dataset.src;
+                    img.classList.add('loaded');
+                    imageObserver.unobserve(img);
+                  }
+                });
+              });
+              
+              images.forEach(img => {
+                if (img.dataset.src) {
+                  imageObserver.observe(img);
+                }
+              });
+            };
+            
+            // Initialize lazy loading if supported
+            if ('IntersectionObserver' in window) {
+              lazyLoadImages();
+            }
+          });
+
+          function initParticles() {
+        const canvas = document.getElementById('ashCanvas');
+        const ctx = canvas.getContext('2d');
+        let width, height, particles = [];
+        
+        const particleCount = isMobile ? 15 : 50; 
+
+        function resize() { 
+            width = canvas.width = window.innerWidth; 
+            height = canvas.height = window.innerHeight; 
+        }
+        window.addEventListener('resize', resize); 
+        resize();
+
+        class P {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = Math.random() * width; 
+                this.y = height + Math.random() * 100; 
+                this.size = Math.random() * (isMobile ? 3 : 5) + 2;
+                this.speed = Math.random() * 1 + 0.5;
+                this.color = Math.random() > 0.5 ? '#4D8F48' : '#D6C26A';
+                this.rot = Math.random() * 360;
+            }
+            update() { 
+                this.y -= this.speed; 
+                this.rot += 1; 
+                if(this.y < -50) this.reset(); 
+            }
+            draw() {
+                ctx.save(); 
+                ctx.translate(this.x, this.y); 
+                ctx.rotate(this.rot * Math.PI/180);
+                ctx.fillStyle = this.color; 
+                ctx.globalAlpha = 0.6;
+                ctx.fillRect(-this.size/2, -this.size/2, this.size, this.size);
+                ctx.restore();
+            }
+        }
+
+        for(let i=0; i<particleCount; i++) particles.push(new P());
+
+        function anim() { 
+            ctx.clearRect(0,0,width,height); 
+            for(let i=0; i<particles.length; i++) {
+                particles[i].update(); 
+                particles[i].draw();
+            }
+            requestAnimationFrame(anim); 
+        }
+        anim();
+    }
+        </script>
+      </body>
+    </html>
+  `;
+
+  // Allow embedding in iframes
+  return HtmlService.createHtmlOutput(html)
+    .setTitle('Event Results')
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+}
