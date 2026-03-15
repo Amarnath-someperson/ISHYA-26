@@ -1,230 +1,380 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ISHYA Results</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --green-deep: #0a1612;
-            --green-dark: #0f1f18;
-            --green-mid: #1a3328;
-            --green-accent: #2dd4a0;
-            --green-glow: #34d399;
-            --green-soft: #6ee7b7;
-            --green-muted: #86efac;
-            --green-dim: #4ade80;
-            --white-soft: #e8f5e9;
-            --white-dim: #b8d4be;
-        }
+// Main function to generate the web app
+function doGet() {
+  // Open the spreadsheet
+  var sheet = SpreadsheetApp.openById('1eXdRx6sA0oo0fjNb3bmLt5GPDDvMHnYpRB3nO9Y4XRI').getSheetByName('Sheet1');
+  var data = sheet.getDataRange().getValues();
 
-        * {
-            box-sizing: border-box;
-        }
+  // Group events by Event Type
+  var eventGroups = {};
+  var currentEventType = '';
 
-        body {
-            background: var(--green-deep);
-            background-image: 
-                radial-gradient(ellipse 120% 80% at 50% -20%, rgba(45, 212, 160, 0.12) 0%, transparent 50%),
-                radial-gradient(ellipse 80% 50% at 80% 100%, rgba(26, 51, 40, 0.6) 0%, transparent 45%),
-                radial-gradient(circle at center, var(--green-dark) 0%, #050a08 100%);
-            color: var(--white-soft);
-            font-family: 'Outfit', sans-serif;
-            margin: 0;
-            padding: 50px 24px 80px;
-            min-height: 100vh;
-        }
+  // Helper function to safely read strings
+  function cleanString(val) {
+    if (val === null || val === undefined) return '';
+    var str = String(val).trim();
+    return str !== '' ? str : null;
+  }
 
-        #ashCanvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: -1;
-            opacity: 0.7;
-            pointer-events: none;
-        }
+  for (var i = 1; i < data.length; i++) {
+    var row = data[i];
 
-        .page-header {
-            text-align: center;
-            margin-bottom: 48px;
-        }
+    var eventType = cleanString(row[2]); // Column C - Event Type
+    var eventName = cleanString(row[3]); // Column D - Event Name
+    var firstPlace = cleanString(row[4]); // Column E - First Place
+    var secondPlace = cleanString(row[5]); // Column F - Second Place
+    var thirdPlace = cleanString(row[6]); // Column G - Third Place
+    var bestActor = cleanString(row[8]); // Column I - Best Actor 
+    var bestActress = cleanString(row[9]); // Column J - Best Actress
+    
+    // NEW: Best Showstopper from Column L (Index 11)
+    var bestShowstopper = cleanString(row[11]); 
 
-        h1 {
-            font-family: 'Cinzel', serif;
-            font-size: clamp(2.2rem, 5vw, 3.5rem);
-            letter-spacing: 0.2em;
-            margin: 0 0 12px 0;
-            color: transparent;
-            background: linear-gradient(135deg, var(--green-soft) 0%, var(--green-accent) 50%, var(--green-glow) 100%);
-            background-clip: text;
-            -webkit-background-clip: text;
-            text-shadow: 0 0 40px rgba(45, 212, 160, 0.2);
-        }
+    // Skip rows with missing eventName
+    if (!eventName) continue;
 
-        .header-line {
-            width: 80px;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, var(--green-accent), transparent);
-            margin: 0 auto;
-            border-radius: 2px;
-            box-shadow: 0 0 20px rgba(45, 212, 160, 0.4);
-        }
+    // If eventType is empty, use the last known eventType
+    if (eventType) {
+      currentEventType = eventType;
+    } else {
+      eventType = currentEventType;
+    }
 
-        .results-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 28px;
-            max-width: 1100px;
-            margin: 0 auto;
-        }
+    if (!eventType) continue;
 
-        .card-container {
-            position: relative;
-            background: linear-gradient(145deg, rgba(15, 31, 24, 0.85) 0%, rgba(10, 22, 18, 0.95) 100%);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            border: 1px solid rgba(45, 212, 160, 0.18);
-            border-radius: 20px;
-            padding: 24px;
-            text-align: center;
-            transition: transform 0.35s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.35s ease, border-color 0.35s ease;
-            overflow: hidden;
-            cursor: default;
-            animation: cardIn 0.6s cubic-bezier(0.23, 1, 0.32, 1) both;
-        }
+    // Collect winners & Special awards conditionally
+    var winners = [];
+    
+    if (firstPlace) winners.push({ name: firstPlace, position: "1st Place", class: "place-1" });
+    if (secondPlace) winners.push({ name: secondPlace, position: "2nd Place", class: "place-2" });
+    if (thirdPlace) winners.push({ name: thirdPlace, position: "3rd Place", class: "place-3" });
+    if (bestActor) winners.push({ name: bestActor, position: "Best Actor", class: "place-special" });
+    if (bestActress) winners.push({ name: bestActress, position: "Best Actress", class: "place-special" });
+    
+    // Will ONLY add Best Showstopper if the cell in Column L is NOT empty
+    if (bestShowstopper) winners.push({ name: bestShowstopper, position: "Best Showstopper", class: "place-special" });
 
-        .card-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--green-accent), transparent);
-            opacity: 0.6;
-        }
+    // Group events
+    if (!eventGroups[eventType]) {
+      eventGroups[eventType] = [];
+    }
+    eventGroups[eventType].push({
+      eventName: eventName,
+      winners: winners
+    });
+  }
 
-        .card-container:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35), 0 0 30px rgba(45, 212, 160, 0.08);
-            border-color: rgba(45, 212, 160, 0.35);
-        }
-
-        @keyframes cardIn {
-            from {
-                opacity: 0;
-                transform: translateY(24px);
+  // Generate HTML using your NEW design
+  var html = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>ISHYA Results</title>
+        <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+        <style>
+            :root {
+                --green-deep: #0a1612;
+                --green-dark: #0f1f18;
+                --green-mid: #1a3328;
+                --green-accent: #2dd4a0;
+                --green-glow: #34d399;
+                --green-soft: #6ee7b7;
+                --green-muted: #86efac;
+                --green-dim: #4ade80;
+                --white-soft: #e8f5e9;
+                --white-dim: #b8d4be;
             }
-            to {
-                opacity: 1;
-                transform: translateY(0);
+
+            * { box-sizing: border-box; }
+
+            body {
+                background: var(--green-deep);
+                background-image: 
+                    radial-gradient(ellipse 120% 80% at 50% -20%, rgba(45, 212, 160, 0.12) 0%, transparent 50%),
+                    radial-gradient(ellipse 80% 50% at 80% 100%, rgba(26, 51, 40, 0.6) 0%, transparent 45%),
+                    radial-gradient(circle at center, var(--green-dark) 0%, #050a08 100%);
+                color: var(--white-soft);
+                font-family: 'Outfit', sans-serif;
+                margin: 0;
+                padding: 50px 24px 80px;
+                min-height: 100vh;
             }
+
+            #ashCanvas {
+                position: fixed;
+                top: 0;
+                left: 0;
+                z-index: -1;
+                opacity: 0.7;
+                pointer-events: none;
+            }
+
+            .page-header {
+                text-align: center;
+                margin-bottom: 48px;
+            }
+
+            h1 {
+                font-family: 'Cinzel', serif;
+                font-size: clamp(2.2rem, 5vw, 3.5rem);
+                letter-spacing: 0.2em;
+                margin: 0 0 12px 0;
+                color: transparent;
+                background: linear-gradient(135deg, var(--green-soft) 0%, var(--green-accent) 50%, var(--green-glow) 100%);
+                background-clip: text;
+                -webkit-background-clip: text;
+                text-shadow: 0 0 40px rgba(45, 212, 160, 0.2);
+            }
+
+            .header-line {
+                width: 80px;
+                height: 3px;
+                background: linear-gradient(90deg, transparent, var(--green-accent), transparent);
+                margin: 0 auto;
+                border-radius: 2px;
+                box-shadow: 0 0 20px rgba(45, 212, 160, 0.4);
+            }
+
+            .results-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+                gap: 28px;
+                max-width: 1100px;
+                margin: 0 auto;
+            }
+
+            .category-header {
+                grid-column: 1 / -1;
+                text-align: center;
+                font-family: 'Cinzel', serif;
+                color: var(--green-accent);
+                font-size: 2rem;
+                margin: 30px 0 10px 0;
+                text-shadow: 0 0 20px rgba(45, 212, 160, 0.2);
+                border-bottom: 1px solid rgba(45, 212, 160, 0.2);
+                padding-bottom: 15px;
+            }
+
+            .card-container {
+                position: relative;
+                background: linear-gradient(145deg, rgba(15, 31, 24, 0.85) 0%, rgba(10, 22, 18, 0.95) 100%);
+                backdrop-filter: blur(14px);
+                -webkit-backdrop-filter: blur(14px);
+                border: 1px solid rgba(45, 212, 160, 0.18);
+                border-radius: 20px;
+                padding: 24px;
+                text-align: center;
+                transition: transform 0.35s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.35s ease, border-color 0.35s ease;
+                overflow: hidden;
+                cursor: default;
+                animation: cardIn 0.6s cubic-bezier(0.23, 1, 0.32, 1) both;
+            }
+
+            .card-container::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 2px;
+                background: linear-gradient(90deg, transparent, var(--green-accent), transparent);
+                opacity: 0.6;
+            }
+
+            .card-container:hover {
+                transform: translateY(-6px);
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35), 0 0 30px rgba(45, 212, 160, 0.08);
+                border-color: rgba(45, 212, 160, 0.35);
+            }
+
+            @keyframes cardIn {
+                from { opacity: 0; transform: translateY(24px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+
+            .card-content {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+                padding: 8px 0 0;
+            }
+
+            .card-title {
+                font-family: 'Cinzel', serif;
+                font-weight: 600;
+                color: var(--green-accent);
+                font-size: 1.35rem;
+                margin: 0 0 4px 0;
+                letter-spacing: 0.05em;
+                text-shadow: 0 0 20px rgba(45, 212, 160, 0.2);
+            }
+
+            .card-winner {
+                font-size: 0.95rem;
+                margin: 0;
+                color: var(--white-dim);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+                padding: 8px 12px;
+                background: rgba(26, 51, 40, 0.4);
+                border-radius: 12px;
+                border-left: 3px solid transparent;
+            }
+
+            .card-winner.place-1 { border-left-color: var(--green-glow); background: rgba(45, 212, 160, 0.08); }
+            .card-winner.place-2 { border-left-color: var(--green-soft); }
+            .card-winner.place-3 { border-left-color: var(--green-muted); }
+            /* Styling for Best Showstopper, Actor, and Actress */
+            .card-winner.place-special { border-left-color: var(--green-accent); background: rgba(45, 212, 160, 0.05); }
+
+            .card-winner strong {
+                color: var(--green-soft);
+                font-weight: 500;
+                min-width: 95px;
+                text-align: left;
+            }
+
+            .card-winner span {
+                color: var(--white-soft);
+                font-weight: 400;
+            }
+
+            .error-msg {
+                text-align: center;
+                color: var(--green-soft);
+                padding: 24px;
+                background: rgba(26, 51, 40, 0.5);
+                border: 1px solid rgba(45, 212, 160, 0.25);
+                border-radius: 16px;
+                max-width: 480px;
+                margin: 0 auto;
+                grid-column: 1 / -1;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Header Custom Tag if needed -->
+        <ishya-header></ishya-header>
+        <canvas id="ashCanvas"></canvas>
+        
+        <div class="page-header">
+            <h1>RESULTS</h1>
+            <div class="header-line"></div>
+        </div>
+
+        <div id="results-container" class="results-grid">
+  `;
+
+  // Dynamically inject the grouped events into the new Grid format
+  var eventTypesList = Object.keys(eventGroups);
+  
+  if (eventTypesList.length === 0) {
+      html += `<div class="error-msg">No results available yet. Please check back later!</div>`;
+  } else {
+      for (var j = 0; j < eventTypesList.length; j++) {
+        var eType = eventTypesList[j];
+        
+        // Add Category Section Header
+        html += `<h2 class="category-header">${eType}</h2>`;
+        
+        // Generate a card for each event
+        for (var k = 0; k < eventGroups[eType].length; k++) {
+          var event = eventGroups[eType][k];
+          
+          html += `
+            <div class="card-container">
+                <div class="card-content">
+                    <h3 class="card-title">${event.eventName}</h3>
+          `;
+
+          // Iterate through dynamically created winners & showstoppers
+          for (var w = 0; w < event.winners.length; w++) {
+            var winner = event.winners[w];
+            html += `<p class="card-winner ${winner.class}"><strong>${winner.position}</strong><span>${winner.name}</span></p>`;
+          }
+
+          html += `
+                </div>
+            </div>
+          `;
         }
+      }
+  }
 
-        .card-content {
-            width: 100%;
-            min-height: 200px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            text-align: center;
-            padding: 8px 0 0;
-        }
+  // Close containers and append the particle script (carried over so your new canvas works!)
+  html += `
+        </div>
 
-        .card-title {
-            font-family: 'Cinzel', serif;
-            font-weight: 600;
-            color: var(--green-accent);
-            font-size: 1.35rem;
-            margin: 0 0 4px 0;
-            letter-spacing: 0.05em;
-            text-shadow: 0 0 20px rgba(45, 212, 160, 0.2);
-        }
+        <script>
+            // Initialize background particles effect for the canvas in your new design
+            function initParticles() {
+                const canvas = document.getElementById('ashCanvas');
+                if(!canvas) return;
+                const ctx = canvas.getContext('2d');
+                let width, height, particles = [];
+                
+                const isMobile = window.innerWidth < 768;
+                const particleCount = isMobile ? 15 : 50; 
 
-        .card-winner {
-            font-size: 0.95rem;
-            margin: 0;
-            color: var(--white-dim);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 8px 12px;
-            background: rgba(26, 51, 40, 0.4);
-            border-radius: 12px;
-            border-left: 3px solid transparent;
-        }
+                function resize() { 
+                    width = canvas.width = window.innerWidth; 
+                    height = canvas.height = window.innerHeight; 
+                }
+                window.addEventListener('resize', resize); 
+                resize();
 
-        .card-winner.place-1 { border-left-color: var(--green-glow); background: rgba(45, 212, 160, 0.08); }
-        .card-winner.place-2 { border-left-color: var(--green-soft); }
-        .card-winner.place-3 { border-left-color: var(--green-muted); }
+                class P {
+                    constructor() { this.reset(); }
+                    reset() {
+                        this.x = Math.random() * width; 
+                        this.y = height + Math.random() * 100; 
+                        this.size = Math.random() * (isMobile ? 3 : 5) + 2;
+                        this.speed = Math.random() * 1 + 0.5;
+                        this.color = Math.random() > 0.5 ? '#4D8F48' : '#34d399'; // Green accents
+                        this.rot = Math.random() * 360;
+                    }
+                    update() { 
+                        this.y -= this.speed; 
+                        this.rot += 1; 
+                        if(this.y < -50) this.reset(); 
+                    }
+                    draw() {
+                        ctx.save(); 
+                        ctx.translate(this.x, this.y); 
+                        ctx.rotate(this.rot * Math.PI/180);
+                        ctx.fillStyle = this.color; 
+                        ctx.globalAlpha = 0.6;
+                        ctx.fillRect(-this.size/2, -this.size/2, this.size, this.size);
+                        ctx.restore();
+                    }
+                }
 
-        .card-winner strong {
-            color: var(--green-soft);
-            font-weight: 500;
-            min-width: 95px;
-            text-align: left;
-        }
+                for(let i=0; i<particleCount; i++) particles.push(new P());
 
-        .card-winner span {
-            color: var(--white-soft);
-            font-weight: 400;
-        }
+                function anim() { 
+                    ctx.clearRect(0,0,width,height); 
+                    for(let i=0; i<particles.length; i++) {
+                        particles[i].update(); 
+                        particles[i].draw();
+                    }
+                    requestAnimationFrame(anim); 
+                }
+                anim();
+            }
 
-        .loading {
-            text-align: center;
-            color: var(--green-accent);
-            font-size: 1.1rem;
-            font-family: 'Outfit', sans-serif;
-            font-weight: 500;
-            grid-column: 1 / -1;
-            padding: 40px 20px;
-            letter-spacing: 0.05em;
-        }
+            document.addEventListener('DOMContentLoaded', initParticles);
+        </script>
+    </body>
+    </html>
+  `;
 
-        .loading::after {
-            content: '';
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            margin-left: 6px;
-            background: var(--green-glow);
-            border-radius: 50%;
-            animation: pulse 1s ease-in-out infinite;
-            vertical-align: 0.2em;
-            box-shadow: 0 0 12px var(--green-accent);
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.2); }
-        }
-
-        .error-msg {
-            text-align: center;
-            color: var(--green-soft);
-            padding: 24px;
-            background: rgba(26, 51, 40, 0.5);
-            border: 1px solid rgba(45, 212, 160, 0.25);
-            border-radius: 16px;
-            max-width: 480px;
-            margin: 0 auto;
-        }
-    </style>
-</head>
-<body>
-    <ishya-header></ishya-header>
-    <canvas id="ashCanvas"></canvas>
-    <div class="page-header">
-        <h1>RESULTS</h1>
-        <div class="header-line"></div>
-    </div>
-
-    <div id="results-container" class="results-grid">
-        <p class="loading">Loading latest results</p>
-    </div>
-
-    <script src="script.js"></script>
-</body>
-</html>
+  return HtmlService.createHtmlOutput(html)
+    .setTitle('ISHYA Results')
+    .addMetaTag('viewport', 'width=device-width, initial-scale=1')
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+}
